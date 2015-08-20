@@ -15,7 +15,7 @@ github_username:  jaxxstorm
 #disqus_shortname: freshman21
 favicon:     "/images/favicon.ico"
 aboutme: "Hello, I'm Lee Briggs, and this is my blog. You might find posts about sport, DevOps and IT, or more than likely, nothing at all. To learn more about who I am, visit the About page"
-aboutme_photo: "http://www.leebriggs.co.uk/logo.png"
+aboutme_photo: "https://en.gravatar.com/userimage/10502965/db46bb1d5c51272b00bb822a102b4134.png?size=200"
 google_analytics_key: "UA-34865189-1" 
 
 ### Site setting:
