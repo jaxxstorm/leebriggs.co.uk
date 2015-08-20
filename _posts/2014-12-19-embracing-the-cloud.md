@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Embracing the cloud
+category: blog
 ---
 
 For a long time, I ran a blog, wiki and static website on a VPS which I managed. As I finished education and started in the work force, I realised that managing a server in my spare time just wasn't fun anymore, and the website and blog fell into disarray. You can't spend that much time worrying about SSH hardening, config management for Apache and other medial tasks when all you want to do is write a blog post or update your resume.

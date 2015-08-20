@@ -1,5 +1,45 @@
-# General Jekyll Config
+### Site info:
+title: Lee Briggs 
+tagline: "Yet another blog about DevOps"
+author: Lee Briggs
+email: contact@leebriggs.co.uk
+description: "Forever Learning DevOps - Lee Briggs"
+keywords: "Jekyll, theme, Freshman21"
+baseurl: "" 
+url: "http://leebriggs.co.uk"
+locale: en_US
+
+### Personal info and site tools info:
+twitter_username: briggsl
+github_username:  jaxxstorm
+#disqus_shortname: freshman21
+favicon:     "/images/favicon.ico"
+aboutme: "Hello, I'm Lee Briggs, and this is my blog. You might find posts about sport, DevOps and IT, or more than likely, nothing at all. To learn more about who I am, visit the About page"
+aboutme_photo: "http://www.leebriggs.co.uk/logo.png"
+google_analytics_key: "UA-34865189-1" 
+
+### Site setting:
+ShowContactInfo: "True" 
+default_column: "two" 
+default_locale: "en" 
+
+locales:
+    en:
+      Aboutme: "About Me"
+      Archives: "Archives"
+      Categories: "Categories"
+      Copyright_Notice: "Copyright Notice"
+      Recent_Posts: "Recent Posts"
+      Tags: "Tags"
+      Previous: "Older"
+      Next: "Newer"
+      PostedInCategories: "Posted in"
+      Taggedwith: "and tagged"
+      PostDate: "on "
+      Google_search: "Site Search"
+
+### Build settings
+markdown: kramdown
 highlighter: pygments
-url: http://www.leebriggs.co.uk
-lsi: false
-exclude: [LICENSE, CNAME, README.md, .gitignore, Gemfile, Gemfile.lock]
+paginate: 5
+excerpt_separator: <!-- more -->

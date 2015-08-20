@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "GOTCHA: Syncing PuppetLabs Repos with MRepo"
+category: "infrastructure"
 tags: mrepo puppetlabs
 ---
 At {place of work}, in order to reduce our outband bandwidth, we do the sensible thing and mirror the CentOS repos locally in order to not, y'know, pull down a couple gig of RPM's every time we do a server build. Obviously, a lot of people do this, and there's various methods of achieveing the same thing. We use a nice python tool called [mrepo](http://dag.wiee.rs/home-made/mrepo/) to do the bulk of the work, with the added nicety that PuppetLabs already wrote a [module](https://github.com/puppetlabs/puppetlabs-mrepo) to do a lot of the heavy lifting.
