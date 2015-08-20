@@ -43,3 +43,4 @@ markdown: kramdown
 highlighter: pygments
 paginate: 5
 excerpt_separator: <!-- more -->
+exclude: [vendor]
