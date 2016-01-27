@@ -169,3 +169,5 @@ of course, with JSON, just make sure the command field uses the substitution:
 }
 
 {% endhighlight %}
+
+Hopefully this clears up some questions about how exactly sensu redaction is used in the wild, as it's fairly easy to implement and yet not a lot of people seem to do it!
