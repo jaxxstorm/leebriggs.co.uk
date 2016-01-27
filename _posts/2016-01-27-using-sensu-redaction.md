@@ -8,7 +8,7 @@ Sensu has a lot of cool features, but some of them are rarely used because eithe
 
 Well, fortunately, this is pretty easy to rectify with a few tweaks.
 
-It's worth mentioning at this point that I use sensu to deploy my sensu clients and checks, so this will assume you're doing the same. I'll try include pure JSON examples where possible so that those of you that use other config management tools can follow along.
+It's worth mentioning at this point that I use puppet to deploy my sensu clients and checks, so this will assume you're doing the same. I'll try include pure JSON examples where possible so that those of you that use other config management tools can follow along.
 
 ### Let's redact some shit
 
