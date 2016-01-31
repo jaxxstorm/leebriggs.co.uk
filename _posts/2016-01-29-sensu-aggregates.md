@@ -191,4 +191,4 @@ Notice I make use of the "source" parameter so that sensu will create a [JIT cli
 
 This will work, and you'll have monitoring of your aggregate working - yay!
 
-One thing to note though, is that this check is that this will be running on your monitoring server all the time, and this might not be desirable. In the next post I'll talk about another use of sensu-server side checks and how we can use them to schedule the check to run on only one of the hosts in a subscription, to make a check highly available across your fleet!
+One thing to note though, is that this check will be running on your monitoring server all the time, and this might not be desirable. In the next post I'll talk about another use of sensu-server side checks and how we can use them to schedule the check to run on only one of the hosts in a subscription, to make a check highly available across your fleet!
