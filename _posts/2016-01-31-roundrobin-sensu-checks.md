@@ -2,6 +2,7 @@
 layout: post
 title: Roundrobin Sensu Checks
 category: sensu
+---
 
 In my last post, I discussed sensu aggregates and server side checks and how to use them in order to monitor clusters or machines.
 
