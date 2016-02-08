@@ -165,7 +165,7 @@ Now we're in a position to know how many of our webservers are responding easily
 
 ## Alerting on an aggregate check
 
-You can write any number of custom checks here to make this work, but I chose to make use of the available [check-aggregate.rb](https://github.com/sensu/sensu-community-plugins/blob/master/plugins/sensu/check-aggregate.rb) in the community plugins repo. You invoke it like so:
+You can write any number of custom checks here to make this work, but I chose to make use of the available [check-aggregate.rb](https://github.com/sensu-plugins/sensu-plugins-sensu/blob/master/bin/check-aggregate.rb) in the community plugins repo. You invoke it like so:
 
 {% highlight bash %}
 /etc/sensu/plugins/check-aggregate.rb -a http://sensu-server.example.com:4567 -c check-webserver -u admin -p <password> -C 10 -M "10% of your webservers are down!"
