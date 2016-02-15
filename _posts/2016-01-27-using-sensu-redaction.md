@@ -99,9 +99,8 @@ sensu::redact
   - "pass"
   - "api_key"
 sensu::client_custom:
-  - sensu::client_custom:
   nexus:
-    password: "correct-horse-battery-staple'
+    password: "correct-horse-battery-staple"
 {% endhighlight %}
 
 The resulting JSON, for those that use different config management systems, looks like this:
