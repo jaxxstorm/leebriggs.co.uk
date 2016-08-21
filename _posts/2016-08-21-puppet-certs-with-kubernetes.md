@@ -1,7 +1,10 @@
 ---
 layout: post
 title: Using Puppet's certificates with Kubernetes
-category: puppet, kubernetes
+category: puppet
+tags:
+  - puppet
+  - kubernetes
 ---
 
 We're finally beginning to build out our production [Kubernetes](http://kubernetes.io/) infrastructure at work, after some extensive testing in dev. Kubernetes relies heavily on TLS for securing communications between all of the components (quite understandably) and while you can disable TLS on many components, obviously once you get to production, you don't really want to be doing that.
