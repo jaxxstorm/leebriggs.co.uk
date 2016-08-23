@@ -12,7 +12,7 @@ My favourite part of Gitlab is the flexibility and robustness of the [gitlab-ci.
 
 I also make heavy use of [travis-ci](https://travis-ci.org) in my public and open source projects, and I really like the [matrix feature](https://docs.travis-ci.com/user/customizing-the-build#Build-Matrix) that Travis offers. Fortunately, there's a similar (but not quite the same) feature available in Gitlab CI but I feel like the [documentation](http://docs.gitlab.com/ce/ci/yaml/README.html#special-yaml-features) is lacking a little bit, so I figured I'd write up a step by step guide to how I've started to use these features for our pipelines.
 
-## An starting example
+## A starting example
 
 Let's say you have a starting .gitlab-ci.yml like so:
 
