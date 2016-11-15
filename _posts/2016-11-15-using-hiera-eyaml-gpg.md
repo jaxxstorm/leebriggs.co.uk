@@ -118,7 +118,7 @@ sub   2048R/XXXXXXX 2016-11-14
 
 GPG keys operate under the model that everyone has their own public and private key, and everyone in your team trusts each other (hopefully you trust your colleagues!). In the previous step, you generated a key, now, you need to make sure all your colleagues sign your key to verify its authenticity and confirm it's valid. In order to do this, you need to distribute your _public_ key to everyone and they need to sign it.
 
-The way you distribute the public keys is up to you, but there are tools like [Keybase](https://keybase.io) or private keyservers available which you may choosr to use. Obviously, it's not recommended to send your puppetmasters GPG key to keybase. The most important consideration here is that the public keys can't be modified in transit somehow. This means sending the GPG keys via email over the internet is probably not a fantastic idea, however sending to your colleagues via internal email probably wouldn't be so terrible.
+The way you distribute the public keys is up to you, but there are tools like [Keybase](https://keybase.io) or private keyservers available which you may choose to use. Obviously, it's not recommended to send your puppetmasters GPG key to keybase. The most important consideration here is that the public keys can't be modified in transit somehow. This means sending the GPG keys via email over the internet is probably not a fantastic idea, however sending to your colleagues via internal email probably wouldn't be so terrible.
 
 At a very minimum, you'll need to sign the keys from your puppetmaster that you generated earlier. In order to do that, export the key in ASCII format:
 
@@ -170,7 +170,7 @@ sudo gem install hiera-eyaml-gpg
 
 ### The Recipients File
 
-One of the main ways that `hiera-eyaml-gpg` differs from standard `hiera-eyaml` is the `gpg.recipients` file. This file essentially lists the GPG keys that are available to decrypt secrets withi a directory in hiera. This is an incredibly powerful tool, especially if you wish to allow users to encrypt/decrypt some secrets in your environment, but not others. 
+One of the main ways that `hiera-eyaml-gpg` differs from standard `hiera-eyaml` is the `gpg.recipients` file. This file essentially lists the GPG keys that are available to decrypt secrets with a directory in hiera. This is an incredibly powerful tool, especially if you wish to allow users to encrypt/decrypt some secrets in your environment, but not others. 
 
 When the `eyaml` command is invoked, it will search in the current working directory for this file, and if one is not found it will go up through the directory tree until one is found. As an example, your hieradats directory might look like this:
 
@@ -188,7 +188,7 @@ When the `eyaml` command is invoked, it will search in the current working direc
     └── role.eyaml
 {% endhighlight %}
 
-With this kind of layout, it's possible to allow users access to certain app credentials, dcs or even environments, without compromising all the credentials in hiera.
+With this kind of layout, it's possible to allow users access to certain app credentials, datacenters or even environments, without compromising all the credentials in hiera.
 
 The format of the hiera-eyaml-gpg.recipients file is simple, it simply lists the GPG keys that are allowed to encrypt/decrypt values:
 
