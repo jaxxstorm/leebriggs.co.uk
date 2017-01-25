@@ -27,7 +27,7 @@ In order to run it, you need to specify a config file, and an address for a [sta
 
 The config file makes use of [HCL](https://github.com/hashicorp/hcl) which means you can either write a human readable config file, or use a machine generated JSON config file. An example config file looks like this:
 
-{% highlight %}
+{% highlight bash %}
 
 interval = 10 # A global interval. Can be overwritten per target group
 prefix = "graphping" # A global prefix for statsd metrics
