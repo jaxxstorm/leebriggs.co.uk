@@ -60,7 +60,7 @@ target_group "news_sites" {
 
 This all comes together to allow you to create graphs very similar to SmokePing. Here's an example:
 
-![](http://i.imgur.com/K4noGoN.png)
+![](http://i.imgur.com/1766B2Z.png)
 
 This is only my second project in Go, so there might be some issues or bugs and the code quality might not be fantastic. Hopefully as time goes on, further improvements will come.
 
