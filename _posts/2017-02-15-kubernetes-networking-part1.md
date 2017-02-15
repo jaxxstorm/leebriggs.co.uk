@@ -38,7 +38,7 @@ So, back to Kubernetes. Every pod gets an IP right? How does it do that?
 
 Well, the pod network mentioned above (you know, that yaml file you downloaded and blindly installed) is usually the thing that controls that. The way it does that varies slightly depending on your chosen network provider (whether it be flannel, weave, calico etc) but the basics remain essentially the same.
 
-# A subnet for every host
+# An IP for every container
 
 When the pod network starts up, you usually have to provide a relatively large subnet for configuration. [The CoreOS flannel docs](https://coreos.com/flannel/docs/latest/flannel-config.html), for example suggest using the subnet ` 10.1.0.0/16`. You'll see why this is so large in a moment.
 
