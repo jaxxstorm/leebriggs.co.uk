@@ -78,7 +78,7 @@ When a container comes online, it looks at the preprovided subnet, and will give
 
 Now, just because there's a subnet assigned, doesn't mean there's *connectivity*. And if you remember previously, pods need to have connectivity, even across different hosts.
 
-This is important, and is something you should ensure works before you start deploying this to Kubernetes. From kubernetes node, *you should be able to get icmp traffic any pod on your network* and you should *also be able to ping any pod ip from another pod*. It's dependeny on your pod network how this work. With [flannel](https://github.com/coreos/flannel) for example, you get an interface added on each host (usually `flannel0`) and the connectivity is provided across a layer2 overlay network using vxlan. This is relatively simple, but there are some performance penalties. Calico uses a more elegant but more complicated solution which I'll cover in much more detail in the next post.
+This is important, and is something you should ensure works before you start deploying this to Kubernetes. From kubernetes node, *you should be able to get icmp traffic any pod on your network* and you should *also be able to ping any pod ip from another pod*. It depends on your pod network how this work. With [flannel](https://github.com/coreos/flannel) for example, you get an interface added on each host (usually `flannel0`) and the connectivity is provided across a layer2 overlay network using vxlan. This is relatively simple, but there are some performance penalties. Calico uses a more elegant but more complicated solution which I'll cover in much more detail in the next post.
 
 In the meantime, let's look at what a working config looks like in action.
 
@@ -111,7 +111,7 @@ rtt min/avg/max/mdev = 0.433/0.433/0.433/0.000 ms
 
 *if this doesn't work from any node in your cluster, something is probably wrong*
 
-Similarly, you should be enter to enter another pod and ping across pods:
+Similarly, you should be able to enter another pod and ping across pods:
 
 {% highlight bash %}
 # ping -c 1 192.168.90.131
