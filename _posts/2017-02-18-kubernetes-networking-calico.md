@@ -63,7 +63,7 @@ As you can see, it's connecting to the etcd nodes and reading from there, and it
 
 If you examine the repo, you'll notice three directories.
 
-Firstly, there's a `conf.d` directory. This directory contains a bunch of toml configuration files. Let's examine on of them:
+Firstly, there's a `conf.d` directory. This directory contains a bunch of toml configuration files. Let's examine one of them:
 
 {% highlight go %}
 [template]
