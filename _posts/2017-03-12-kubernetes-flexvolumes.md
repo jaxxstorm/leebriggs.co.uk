@@ -108,7 +108,7 @@ So let's log into this host, and find the device:
 {% highlight bash %}
 findmnt /dev/xvdba
 TARGET                                                                                               SOURCE     FSTYPE OPTIONS
-/var/lib/kubelet/plugins/kubernetes.io/aws-ebs/mounts/vol-07420f271b73fcd44                          /dev/xvdba ext4   rw,relatime,data=ordered
+/var/lib/kubelet/plugins/kubernetes.io/aws-ebs/mounts/vol-xxxxxxxxxxxxxxxxx                          /dev/xvdba ext4   rw,relatime,data=ordered
 /var/lib/kubelet/pods/b6c57370-0733-11e7-8421-06533dc554b3/volumes/kubernetes.io~aws-ebs/test-volume /dev/xvdba ext4   rw,relatime,data=ordered
 {% endhighlight %}
 
