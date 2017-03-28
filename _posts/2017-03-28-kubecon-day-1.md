@@ -18,7 +18,7 @@ First up, we had an update from [Eduardo Silva](https://twitter.com/edsiper) fro
 
 # OpenTracing update
 
-Next, we had [Priyanka Sharma](https://twitter.com/pritianka) on stage to talk about [OpenTracing](http://opentracing.io/). This is something I was aware of, but hadn't fully investigated, and it Priyanka made it much clearer by demoing a custom "donut order" application she'd written with OpenTracing built in. She did a demo of the app (as a side note, she also asked everyone in the conference room to open a website, which I thought was crazy given the traditional state of conference wifi, but it worked!) and then drilled down into performance problems using OpenTracing. It was a fantastic visualization of how OpenTracing can solve problems, and I got a lot of value out of it!
+Next, we had [Priyanka Sharma](https://twitter.com/pritianka) on stage to talk about [OpenTracing](http://opentracing.io/). This is something I was aware of, but hadn't fully investigated, and Priyanka made it much clearer by demoing a custom "donut order" application she'd written with OpenTracing built in. She did a demo of the app (as a side note, she also asked everyone in the conference room to open a website, which I thought was crazy given the traditional state of conference wifi, but it worked!) and then drilled down into performance problems using OpenTracing. It was a fantastic visualization of how OpenTracing can solve problems, and I got a lot of value out of it!
 
 # Linkerd update
 
@@ -32,7 +32,7 @@ With that in mind, Miek provided an update on CoreDNS, what it can do and why it
 
 # Panel
 
-The panel was a real disappointment for me. It consisted of 3 senior/executive level employees of TicketMaster, Amadeus and Haufe-Lexware discussiong their transition to Kubernetes. I would have loved to have my bosses, and _their_ bosses watch this panel, because there was some good conversation around how to transitions organisations to new ways of thinking, but it was nothing I hadn't already heard. I would have loved to have had maybe 5/10 operators on stage talking war stories of Kubernetes in production, with a little less "media training" feel to it. I understand there's a wide range of attendees at this conference though, and I'm sure more people got value out of it than I did.
+The panel was a real disappointment for me. It consisted of 3 senior/executive level employees of TicketMaster, Amadeus and Haufe-Lexware discussiong their transition to Kubernetes. I would have loved to have my bosses, and _their_ bosses watch this panel, because there was some good conversation around how to transition organisations to new ways of thinking, but it was nothing I hadn't already heard. I would have loved to have had maybe 5/10 operators on stage talking war stories of Kubernetes in production, with a little less "media training" feel to it. I understand there's a wide range of attendees at this conference though, and I'm sure more people got value out of it than I did.
 
 As a side note, I was very disappointed at the lack of diversity in the panel. I'm sure we could have found someone from a more diverse background/gender to be involved in the discussions.
 
@@ -42,7 +42,7 @@ There was a nice short talk about the capabilities of the [Mirantis Appcontrolle
 
 # BGP Routing in Kubernetes
 
-This talk confused me, because it basically described [Calico](http://projectcalico.org/) already does, unless I'm missing something? Would love someone to fill in the gaps here.
+This talk confused me, because it basically described what [Calico](http://projectcalico.org/) already does, unless I'm missing something? Would love someone to fill in the gaps here.
 
 # Fluentd Logging Pipelines
 
