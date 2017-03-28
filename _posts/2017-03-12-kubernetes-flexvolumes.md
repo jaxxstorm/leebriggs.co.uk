@@ -6,7 +6,7 @@ tags:
 - kubernetes
 - volumes
 - storage
-- flexvolume
+- FlexVolume
 ---
 
 Kubernetes has a reputation for being great for stateless application deployment. If you don't require any kind of local storage inside your containers, the barrier to entry for you to deploy on Kubernetes is probably very, very low. However, it's a fact of life that some applications require _some_ kind of local storage.
@@ -15,7 +15,7 @@ Kubernetes supports this using [Volumes](https://kubernetes.io/docs/user-guide/v
 
 There are situations however, where you might be deploying your cluster to a different platform, like physical datacenters or perhaps another "cloud" provider like [DigitalOcean](https://www.digitalocean.com/). In these situations, you might think you're a little bit screwed, and up until recently you kind of were. The only way to get a new storage provider supported in Kubernetes was to write one, and then run the gauntlet of getting a merge request accepted into the main kubernetes repo. 
 
-However, a new volume type has opened up the door to custom volume providers, and they are exceptionally simple to write and use. [FlexVolumes](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/flexvolume/README.md) are a relatively new addition to the kubernetes volume list, and they allow you to run an arbitrary script or volume provisioner on the kubernetes host to create a volume.
+However, a new volume type has opened up the door to custom volume providers, and they are exceptionally simple to write and use. [FlexVolumes](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/FlexVolume/README.md) are a relatively new addition to the kubernetes volume list, and they allow you to run an arbitrary script or volume provisioner on the kubernetes host to create a volume.
 
 Before we dive too deep into FlexVolumes, it's worth refreshing exactly how volumes work on Kubernetes and how they are mapped into the container.
 
@@ -72,7 +72,7 @@ spec:
 
 Now, if you look in the pod, you'll see a mount at `/test-ebs`, but how has it got there? The answer is actually surprisingly simple.
 
-If you examine the ebs volume that was created, you'll see it's been attaced to an instance!
+If you examine the ebs volume that was created, you'll see it's been attached to an instance!
 
 {% highlight bash %}
 aws ec2 describe-volumes --volume-ids vol-xxxxxxxxxxxxxxxxx
@@ -124,9 +124,9 @@ The main point here is that when we provide a pod with a volume mount, it's the 
 
 # FlexVolumes examined
 
-Okay, so now we know how volumes work in Kubernetes, we can start to examine how flexvolumes work.
+Okay, so now we know how volumes work in Kubernetes, we can start to examine how FlexVolumes work.
 
-FlexVolumes are essentially very simple script executed by the Kubelet on the host. The script should have 5 functions
+FlexVolumes are essentially very simple scripts executed by the Kubelet on the host. The script should have 5 functions
 
 * init - to initialize the volume driver. This could be just an empty function if needed
 * attach - to attach the volume to the host. In many cases, this might be empty, but in some cases, like for EBS, you might have to make an API call to attach it to the host
@@ -139,7 +139,7 @@ The last passed argument is interesting, because it's actually a JSON string wit
 
 ## LVM Example
 
-The kubernetes repo has a helpful [LVM example](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/flexvolume/lvm) in the form of a bash script, which makes it nice and readable and easy to understand. Let's look at some of the functions..
+The kubernetes repo has a helpful [LVM example](https://github.com/kubernetes/kubernetes/blob/master/examples/volumes/FlexVolume/lvm) in the form of a bash script, which makes it nice and readable and easy to understand. Let's look at some of the functions..
 
 ### Init
 
@@ -223,7 +223,7 @@ This is a little bit more involved, but still relatively simple. Essentially, wh
 
 ### Parameters
 
-You may be wondering, where do these parameters I keep talking about come from? The answer is from the pod manifest sent to the kubelet. Here's an example that uses the above LVM flexvolume:
+You may be wondering, where do these parameters I keep talking about come from? The answer is from the pod manifest sent to the kubelet. Here's an example that uses the above LVM FlexVolume:
 
 {% highlight yaml %}
 apiVersion: v1
@@ -254,20 +254,20 @@ spec:
 The key section here is the "options" section. This volume ID, size and volume group is all passed to the kubelet as `$3` as a JSON string, which is why there's a bunch of [jq](https://stedolan.github.io/jq/) munging happening in the above scripts.
 
 # Using FlexVolumes
-Now you understand how flexvolumes work, you need to make the kubelet aware of them. Currently, the only way to do this is to install them on the host under a specific directory.
+Now you understand how FlexVolumes work, you need to make the kubelet aware of them. Currently, the only way to do this is to install them on the host under a specific directory.
 
-FlexVolumes need a "namespace" (for want of a better word) and a name. So for example, my personally built lvm flexvolume might be `leebriggs.co.uk/lvm`. When we install our script, it needs to be installed like so on the host that runs the kubelet:
+FlexVolumes need a "namespace" (for want of a better word) and a name. So for example, my personally built lvm FlexVolume might be `leebriggs.co.uk/lvm`. When we install our script, it needs to be installed like so on the host that runs the kubelet:
 
 {% highlight bash %}
 mkdir -p /usr/libexec/kubernetes/kubelet-plugins/volume/exec/leebriggs.co.uk~lvm
 mv lvm /usr/libexec/kubernetes/kubelet-plugins/volume/exec/leebriggs.co.uk~lvm/lvm
 {% endhighlight %}
 
-Once you've done this, restart the kubelet, and you should be able to use your flexvolume as you need.
+Once you've done this, restart the kubelet, and you should be able to use your FlexVolume as you need.
 
 ## Manifest
 
-The manifest above give you an example of how to use flexvolumes. It's worth noting that not all flexvolumes will be in the same format though. Make sure the driver name matches the directory under the `exec` folder (in our case, `leebriggs.co.uk~lvm` and that you pass your required options around.
+The manifest above give you an example of how to use FlexVolumes. It's worth noting that not all FlexVolumes will be in the same format though. Make sure the driver name matches the directory under the `exec` folder (in our case, `leebriggs.co.uk~lvm` and that you pass your required options around.
 
 # Wrapping up
 
@@ -276,10 +276,10 @@ This was a relative crash course in FlexVolumes for Kubernetes. There are a coup
 * The example is written in bash, which isn't great at manipulating JSON
 * It uses LVM, which isn't exactly multi host compatible
 
-The first point is easily solved, by writing a driver in a language with JSON parsing built in. There are a few flexvolume drivers popping up in [Go](https://golang.org/) - [I wrote one](https://github.com/jaxxstorm/ploop-flexvol) for [ploop](https://openvz.org/Ploop) in Go using a [library](https://github.com/jaxxstorm/flexvolume) which was written to ease the process, but there are  others:
+The first point is easily solved, by writing a driver in a language with JSON parsing built in. There are a few FlexVolume drivers popping up in [Go](https://golang.org/) - [I wrote one](https://github.com/jaxxstorm/ploop-flexvol) for [ploop](https://openvz.org/Ploop) in Go using a [library](https://github.com/jaxxstorm/FlexVolume) which was written to ease the process, but there are  others:
 
-* Github user [TonyZuo](https://github.com/tonyzou/) has written a couple of interesting ones. One  for [DigitalOcean](https://www.digitalocean.com/) and one for [Packet](https://www.packet.net/). Check them out [here](https://github.com/tonyzou/flexvolumes)
+* Github user [TonyZuo](https://github.com/tonyzou/) has written a couple of interesting ones. One  for [DigitalOcean](https://www.digitalocean.com/) and one for [Packet](https://www.packet.net/). Check them out [here](https://github.com/tonyzou/FlexVolumes)
 * There's a [Rancher Flexvolume](https://github.com/rancher/rancher-flexvol) for those using Rancher
-* Finally, one very interesting one is this [Vault Flexvolume](https://github.com/fcantournet/kubernetes-flexvolume-vault-plugin) which can map [Vault](https://vaultproject.io) to directories inside containers. 
+* Finally, one very interesting one is this [Vault Flexvolume](https://github.com/fcantournet/kubernetes-FlexVolume-vault-plugin) which can map [Vault](https://vaultproject.io) to directories inside containers. 
 
-All of this deals with mapping single, static volumes into containers, but there is more. Currently, you have to manually provision the volumes you use before spinning up a pod, and as you start to create more and more volumes, you may want to deal with [Persistent Volumes](https://kubernetes.io/docs/user-guide/persistent-volumes/) to have a process that automatically creates the volumes for you. My next post will detail how you can _use_ these flexvolumes in a custom provisioner which resembles the persistent volumes in AWS and GCE!
+All of this deals with mapping single, static volumes into containers, but there is more. Currently, you have to manually provision the volumes you use before spinning up a pod, and as you start to create more and more volumes, you may want to deal with [Persistent Volumes](https://kubernetes.io/docs/user-guide/persistent-volumes/) to have a process that automatically creates the volumes for you. My next post will detail how you can _use_ these FlexVolumes in a custom provisioner which resembles the persistent volumes in AWS and GCE!
