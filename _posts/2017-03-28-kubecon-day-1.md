@@ -24,6 +24,8 @@ Next, we had [Priyanka Sharma](https://twitter.com/pritianka) on stage to talk a
 
 Next up was [Oliver Gould](https://twitter.com/olix0r) with an update about [Linkerd](https://linkerd.io/) and the big news here is that Linkerd [now has TCP Support!](https://github.com/linkerd/linkerd-tcp). This is a massive step forward, and judging by reaction to my [tweet](https://twitter.com/briggsl/status/846757094359519234) the community agrees!
 
+Additionally, something that caught me eye is that linkerd now supports [kubernetes ingress](https://twitter.com/briggsl/status/846756604477353986) in its config. I found a [great blog post about this](https://blog.buoyant.io/2016/11/18/a-service-mesh-for-kubernetes-part-v-dogfood-environments-ingress-and-edge-routing/) on the bouyant blog, and this has me really excited.
+
 # CoreDNS update
 
 The next thing I really paid attention to was the [CoreDNS](https://coredns.io/) update by [Miek Gieben](https://twitter.com/miekg) and this really stuck in my mind because I've really had some trouble and concerns around the kube-dns/skyDNS implementation currently being used in Kube. For some reason, a go shim coupled with dnsmasq and a sidecar container just doesn't feel like the right way to do something that's a critical component of the kubernetes stack.
