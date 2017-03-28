@@ -14,7 +14,7 @@ _Note - this is not an exhaustive recap. The stuff here is mainly what caught my
 
 # Fluentd update
 
-First up, we had an update from [Eduardo Silva](https://twitter.com/edsiper) from [https://www.treasuredata.com/](Treasure Data) about the fantastic [FluentD](http://www.fluentd.org/) project. The main highlight I can remember is that Fluentd now supports Windows logging. Eduardo's made a [joke](https://twitter.com/briggsl/status/846753046667448320) about "Windows being a serious system" and got a great laugh. There was a brief discussion of how fluentd solves the logging pipeline problem, and it's definitely something I'll be investigating as we try and better ship logs in our Kubernetes implementation.
+First up, we had an update from [Eduardo Silva](https://twitter.com/edsiper) from [TreasureData](https://www.treasuredata.com/) about the fantastic [FluentD](http://www.fluentd.org/) project. The main highlight I can remember is that Fluentd now supports Windows logging. Eduardo's made a [joke](https://twitter.com/briggsl/status/846753046667448320) about "Windows being a serious system" and got a great laugh. There was a brief discussion of how fluentd solves the logging pipeline problem, and it's definitely something I'll be investigating as we try and better ship logs in our Kubernetes implementation.
 
 # OpenTracing update
 
