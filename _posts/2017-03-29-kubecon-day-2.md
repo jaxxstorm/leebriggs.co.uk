@@ -53,7 +53,7 @@ The most up to date example of this is [Steward by Deis](https://github.com/deis
 
 Some other fun tidbits I picked up today:
 
-[James Munnelly](https://twitter.com/jamesmunnelly) of [Jetstack](https://jetstack.io] has created a very awesome [keepalived](https://github.com/munnerz/keepalived-cloud-provider) cloud provider, which operates as an out of tree load balancer type, allowing those of us unlucky enough to be running bare metal based kubernetes clusters to use the load balancer service type.
+[James Munnelly](https://twitter.com/jamesmunnelly) of [Jetstack](https://jetstack.io) has created a very awesome [keepalived](https://github.com/munnerz/keepalived-cloud-provider) cloud provider, which operates as an out of tree load balancer type, allowing those of us unlucky enough to be running bare metal based kubernetes clusters to use the load balancer service type.
 
 [Quay](https://quay.io/) - the container registry from [CoreOS](https://coreos.com/) now supports [serving helm charts](https://coreos.com/blog/quay-application-registry-for-kubernetes.html) from its registry which is obviously super useful for those people using quay.
 
