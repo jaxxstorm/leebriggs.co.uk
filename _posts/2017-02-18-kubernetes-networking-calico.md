@@ -9,7 +9,7 @@ tags:
 
 In the previous post, I went over some basics of how Kubernetes networking works from a fundamental standpoint. The requirements are simple: every pod needs to have connectivity to every other pod. The only differentiation between the many options were how that was achieved.
 
-In this post, I'm going to cover some of the fundamentals of how  [Calico](https://https://www.projectcalico.org/) works. As I mentioned in the previous post, I really don't like the idea that with these kubernetes deployments, you simple grab a yaml file and deploy it, sometimes with little to no explanation of what's actually happening. Hopefully, this post will servce to better understand what's going on.
+In this post, I'm going to cover some of the fundamentals of how  [Calico](https://www.projectcalico.org/) works. As I mentioned in the previous post, I really don't like the idea that with these kubernetes deployments, you simply grab a yaml file and deploy it, sometimes with little to no explanation of what's actually happening. Hopefully, this post will servce to better understand what's going on.
 
 As before, I'm not by any means a networking expert, so if you spot any mistakes, please [send a pull request!](https://github.com/jaxxstorm/jaxxstorm.github.io/pulls)
 
@@ -59,7 +59,7 @@ PID   USER     TIME   COMMAND
 11786 root       0:00 ps
 {% endhighlight %}
 
-As you can see, it's connecting to the etcd nodes and reading from there, and it has a confd directory passed to it. The source of that confd directory can be found in the [calicoctl github repository](https://github.com/projectcalico/calicoctl/tree/master/calico_node/filesystem/etc/calico/confd).
+As you can see, it's connecting to the etcd nodes and reading from there, and it has a confd directory passed to it. The source of that confd directory can be found in the [calicoctl github repository](https://github.com/projectcalico/calico/tree/master/calico_node/filesystem/etc/calico/confd).
 
 If you examine the repo, you'll notice three directories.
 
@@ -85,9 +85,9 @@ $  etcdctl ls /calico/v1/ipam/v4/pool/
 
 So in this case, it's getting the pod cidr we've assigned. I'll cover this in more detail later.
 
-In order to understand what it does with that key, you need to take a look at the [src template confd is using](https://github.com/projectcalico/calicoctl/blob/master/calico_node/filesystem/etc/calico/confd/templates/bird_ipam.cfg.template).
+In order to understand what it does with that key, you need to take a look at the [src template confd is using](https://github.com/projectcalico/calico/blob/master/calico_node/filesystem/etc/calico/confd/templates/bird_ipam.cfg.template).
 
-Now, this at first glance looks a little complicated, but it's not. It's writing a file in the Go templating language that confd is familiar with. This is a standard BIRD configuration file, populated with keys from etcd. Take [this](https://github.com/projectcalico/calicoctl/blob/master/calico_node/filesystem/etc/calico/confd/templates/bird_ipam.cfg.template#L5-L8) for example:
+Now, this at first glance looks a little complicated, but it's not. It's writing a file in the Go templating language that confd is familiar with. This is a standard BIRD configuration file, populated with keys from etcd. Take [this](https://github.com/projectcalico/calico/blob/master/calico_node/filesystem/etc/calico/confd/templates/bird_ipam.cfg.template#L5-L8) for example:
 
 This is essentially:
 
@@ -121,7 +121,7 @@ The final component in the calico stack is the calico-felix daemon. This is the 
 It does all this by connecting to etcd and reading information from there. It runs inside the calico/node DaemonSet alongside confd and BIRD.
 
 # Calico in Action
-In order to get started, it's recommend that you've deployed Calico using the installation instructions [here](http://docs.projectcalico.org/v2.0/getting-started/kubernetes/installation/). Ensure that:
+In order to get started, it's recommend that you've deployed Calico using the installation instructions [here](http://docs.projectcalico.org/v2.3/getting-started/kubernetes/installation/). Ensure that:
 
 * you've got a calico/node container running on every kubernetes host
 * You can see in the calico/node logs that there's no errors or issues. Use `kubectl get logs` on a few hosts to ensure it's working as expected
