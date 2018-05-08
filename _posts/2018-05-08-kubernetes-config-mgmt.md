@@ -13,7 +13,7 @@ It's been over a year since my last blog post, and since then I've been working 
 
 ## Configuration Management
 
-Back in the "old days" - way before I even got started in this game, a bunch of sysadmins got pretty tired of manually configuring their hosts. Sysadmins at the time would configure their fleet of machines, whether it be large or small, using either a set of custom and hand crafted processes and runbooks, or maybe if they were very talented, a set of perl/bash or PHP scripts which would take weeks to figure out for anyone new to the org.
+Back in the "old days" - way before I even got started in this game, a bunch of sysadmins decided that manually configuring their hosts was silly. Sysadmins at the time would configure their fleet of machines, whether it be large or small, using either a set of custom and hand crafted processes and runbooks, or maybe if they were very talented, a set of perl/bash or PHP scripts which would take weeks to figure out for anyone new to the org.
 
 People got pretty tired of this, and a new suite of tools was born - configuration management. From CFEngine, to Puppet, to Chef, to Ansible, these tools came along and revolutionized our industry. 
 
