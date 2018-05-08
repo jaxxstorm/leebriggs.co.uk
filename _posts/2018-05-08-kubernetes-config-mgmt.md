@@ -90,19 +90,19 @@ Once it was realised that the ansible helm module isn't really ready for prime t
 
 ## Terraform
 
-We also looked at Terraform as an option, as it makes sense. Terraform works at the cloud provider layer, and works with the Infrastructure as Code mindset. The abstraction layer it's used to working at makes sense from a Kuberntes perspective. There's a well written Terraform [provider](https://github.com/mcuadros/terraform-provider-helm) and I was keen to give it a try. The problems we had with Terraform were similar to the Puppet issues however:
+Terraform, by Hashicorp, was also considered as a potential option. It epitomizes the ideals of Infrastructure as Code by being both idempotent, as well as declarative. It interacts directly with the APIs of major cloud providers, and has a relatively short ramp-up/learning curve. Hashicorp also provides a well-written provider specifically for [Kubernetes](https://github.com/terraform-providers/terraform-provider-kubernetes) as well as a community written [Helm provider](https://github.com/mcuadros/terraform-provider-helm) and I was keen to give it a try. Unfortunately, we encountered issues that echoed the problems faced with Puppet:
 
-  - Terraform simply defines an endstate, and makes it so, similar to Puppet but at a different level. The multi stage deployments (ie do X, then do Y) aren't really supported in Terraform which causes us problems when switching config
-  - We have several clusters in AWS, but some outside AWS. Having to store state for non AWS resources in an S3 bucket or such like was annoying. Obviously it's possible to store state elsewhere, but it's not a simple process
+  - Terraform simply defines an endstate, and makes it so, similar to Puppet but at a different level. The multi stage deployments (ie do X, then do Y) aren't really supported in Terraform which causes us problems when switching config.
+  - We have several clusters in AWS, but some outside AWS. Having to store state for non AWS resources in an S3 bucket or such like was annoying. Obviously it's possible to store state elsewhere, but it's not a simple process.
   - By default, Terraform destroys and recreates resources you change. You can modify this behaviour using [lifecycle](https://www.terraform.io/docs/internals/lifecycle.html) but it's mentality is very different than the Kubernetes/Helm concepts.
 
 ## Ksonnet
 
-I was very excited by [Ksonnet](https://ksonnet.io/) at one point. Jsonnet is a [Heptio](https://heptio.com/) project that is designed to streamline deployments to Kubernetes. It has a bunch of really useful concept, such as [environments](https://ksonnet.io/docs/concepts#environment) which allow you to tailor components to a unique cluster. This would have been perfect to run from a CI pipeline, unfortunately the issues were:
+I was very excited by [Ksonnet](https://ksonnet.io/) at one point. Jsonnet is a [Heptio](https://heptio.com/) project that is designed to streamline deployments to Kubernetes. It has a bunch of really useful concepts, such as [environments](https://ksonnet.io/docs/concepts#environment) which allow you to tailor components to a unique cluster. This would have been perfect to run from a CI pipeline, unfortunately the issues were:
 
   - Doesn't support helm ([yet](https://github.com/ksonnet/ksonnet/issues/522)). This means anything you install, you need to take all of the helm configuration that is figured out for you and write it again. A lot of overhead
   - Has a steep learning curve. [Jsonnet](https://jsonnet.org/) (which ksonnet uses under the hood) is a language itself, which takes some learning and isn't well documented.
-  - Ksonnet's multi cluster support still [isn't really figured out](https://github.com/ksonnet/ksonnet/issues/277), so you need to manage the credentials manually.
+  - Ksonnet's multi cluster support still [hasn't really been figured out](https://github.com/ksonnet/ksonnet/issues/277), so you need to manage the credentials manually and switch between them across clusters.
 
 # Other Contenders
 
