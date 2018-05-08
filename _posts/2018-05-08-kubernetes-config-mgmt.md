@@ -98,7 +98,7 @@ Terraform, by Hashicorp, was also considered as a potential option. It epitomize
 
 ## Ksonnet
 
-I was very excited by [Ksonnet](https://ksonnet.io/) at one point. Jsonnet is a [Heptio](https://heptio.com/) project that is designed to streamline deployments to Kubernetes. It has a bunch of really useful concepts, such as [environments](https://ksonnet.io/docs/concepts#environment) which allow you to tailor components to a unique cluster. This would have been perfect to run from a CI pipeline, unfortunately the issues were:
+I was very excited by [Ksonnet](https://ksonnet.io/) at one point. Ksonnet is a [Heptio](https://heptio.com/) project that is designed to streamline deployments to Kubernetes. It has a bunch of really useful concepts, such as [environments](https://ksonnet.io/docs/concepts#environment) which allow you to tailor components to a unique cluster. This would have been perfect to run from a CI pipeline, unfortunately the issues were:
 
   - Doesn't support helm ([yet](https://github.com/ksonnet/ksonnet/issues/522)). This means anything you install, you need to take all of the helm configuration that is figured out for you and write it again. A lot of overhead
   - Has a steep learning curve. [Jsonnet](https://jsonnet.org/) (which ksonnet uses under the hood) is a language itself, which takes some learning and isn't well documented.
