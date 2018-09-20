@@ -10,17 +10,17 @@ tags:
 
 A few months back, I wrote an article which got a bit of interest around the issues configuring and maintaining multiple clusters, and keeping the components required to make them useful in sync. Essentially, the missing piece of the puzzle was that there was no _cluster aware_ configuration management tool.
 
-Internally, we created an excellent tool at `$work` to solve this using [jsonnet](http://jsonnet.org/) which has been very nice because it's meant we get to use actual code to solve this problem. The only issue is that the code we have to write in is relatively niche!
+Internally, we created an excellent tool at `$work` to solve this using [jsonnet](http://jsonnet.org/), which has been very nice because it's meant we get to use actual code to solve this problem. The only issue is that the code we have to write in is relatively niche!
 
-When [Pulumi](https://pulumi.io/) was announced back in June, I got very excited. After seeing the that Pulumi [now supports Kubernetes natively](https://blog.pulumi.com/cloud-native-infrastructure-with-kubernetes-and-pulumi) I wanted to dig in and see if it would help with the configuration management problem.
+When [Pulumi](https://pulumi.io/) was announced back in June, I got very excited. After seeing the that Pulumi [now supports Kubernetes natively](https://blog.pulumi.com/cloud-native-infrastructure-with-kubernetes-and-pulumi), I wanted to dig in and see if it would help with the configuration management problem.
 
 # Introductory Concepts
 
-Before I speak about the Kubernetes specific components, I want to do a brief introduction into what Pulumi actually is.
+Before I speak about the Kubernete--specific components, I want to do a brief introduction into what Pulumi actually is.
 
 Pulumi is a tool which allows you to create cloud resources using real programming languages. In my personal opinion, it is essentially [terraform](https://www.terraform.io/) with full programming languages on top of it, instead of [HCL](https://github.com/hashicorp/hcl). 
 
-Having real programming languages means you can make the resources you configure as flexible or complex as you like. Each _provider_ (AWS, GCE, Azure and Kubernetes) has supported for different languages. Currently the AWS provider has support for Go, Python and Javascript/Typescript whereas the Kubernetes provider has support only for Javascript/Typescript at the moment.
+Having real programming languages means you can make the resources you configure as flexible or complex as you like. Each _provider_ (AWS, GCE, Azure and Kubernetes) has support for different languages. Currently, the AWS provider has support for Go, Python and Javascript/Typescript whereas the Kubernetes provider has support only for Javascript/Typescript at the moment.
 
 ## Stacks
 
