@@ -1,5 +1,5 @@
 ---
-title: Using pulumi for Kubernetes configuration management
+title: Using Pulumi for Kubernetes configuration management
 layout: post
 category: blog
 tags:
