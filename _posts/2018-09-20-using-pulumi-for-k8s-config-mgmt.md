@@ -18,7 +18,7 @@ When [Pulumi](https://pulumi.io/) was announced back in June, I got very excited
 
 Before I speak about the Kubernetes specific components, I want to do a brief introduction into what Pulumi actually is.
 
-Pulumi is a tool which allows you to created cloud resources using real programming languages. In my personal opinion, it is essentially [terraform](https://www.terraform.io/) without full programming languages on top of it, instead of [HCL](https://github.com/hashicorp/hcl). 
+Pulumi is a tool which allows you to create cloud resources using real programming languages. In my personal opinion, it is essentially [terraform](https://www.terraform.io/) with full programming languages on top of it, instead of [HCL](https://github.com/hashicorp/hcl). 
 
 Having real programming languages means you can make the resources you configure as flexible or complex as you like. Each _provider_ (AWS, GCE, Azure and Kubernetes) has supported for different languages. Currently the AWS provider has support for Go, Python and Javascript/Typescript whereas the Kubernetes provider has support only for Javascript/Typescript at the moment.
 
