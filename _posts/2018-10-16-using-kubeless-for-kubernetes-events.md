@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
 {% endhighlight %}
 
-Okay, so now we have events being pushed to NATS. We need to fancy this up a bit, to allow for running in and out of cluster, as well as building a Docker image. The final script can be found [here](). The changes are to include a logger module, as well as argparse to allow for running in and out of the cluster, as well as make some options configurable.
+Okay, so now we have events being pushed to NATS. We need to fancy this up a bit, to allow for running in and out of cluster, as well as building a Docker image. The final script can be found [here](https://github.com/jaxxstorm/kubeless-events-example/blob/master/events/main.py). The changes are to include a logger module, as well as argparse to allow for running in and out of the cluster, as well as make some options configurable.
 
 You should now deploy this to your cluster using the provided deployment manifests, which also include the (rather permissive!) RBAC configuration needed for the deployment to be able to read pod information from the API.
 
