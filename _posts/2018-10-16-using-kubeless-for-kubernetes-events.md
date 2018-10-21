@@ -12,7 +12,7 @@ Serverless computing is all the rage at the moment, and why wouldn't it be? The 
 
 The increase in excitement around serverless frameworks means that naturally, there's been an increase in providers in the Kubernetes world. A quick look at the [CNCF Landscape page](https://landscape.cncf.io/landscape=serverless) shows just how many options there are to Kubernetes cluster operators.
 
-In this post I wanted to look [Kubeless](https://kubeless.io) a serverless framework written by the awesome people at [Bitnami](https://bitnami.com/).
+In this post I wanted to look at [Kubeless](https://kubeless.io), a serverless framework written by the awesome people at [Bitnami](https://bitnami.com/).
 
 Kubeless appealed to me specifically for a few reasons:
 
@@ -26,7 +26,8 @@ Before you get started with this, you'll probably want to follow the [Quick Star
 To follow along here you'll need:
 
   - A working kubeless deployment, including the kubeless cli
-  - A working NATS cluster, perhaps using the [NATS Operator](https://github.com/nats-io/nats-operator) as well the [Kubeless NATS Trigger](https://github.com/kubeless/nats-trigger) installed
+  - A working NATS cluster, perhaps using the [NATS Operator](https://github.com/nats-io/nats-operator).
+  - You'll also need the as the [Kubeless NATS Trigger](https://github.com/kubeless/nats-trigger) installed in your cluster.
 
 In this walkthrough, I wanted to show you how easy it is to get Kubernetes events (in this case, pod creations) and then use kubeless to perform actions on them (like post to a slack channel).
 
@@ -36,7 +37,7 @@ _I'm aware there are tools out there that already fulfill this function (ie even
 
 Before you can trigger kubeless functions, you first need to have events from Kubernetes published to your NATS cluster.
 
-To do this, I used the excellent [kubeless python library](https://github.com/kubernetes-client/python)
+To do this, I used the excellent [kubernetes python library](https://github.com/kubernetes-client/python)
 
 An easy way to do this is simply connect to the API using the in_cluster capabilities and then list all the pods, like so:
 
@@ -134,7 +135,8 @@ if __name__ == '__main__':
 
 Okay, so now we have events being pushed to NATS. We need to fancy this up a bit, to allow for running in and out of cluster, as well as building a Docker image. The final script can be found [here](https://github.com/jaxxstorm/kubeless-events-example/blob/master/events/main.py). The changes are to include a logger module, as well as argparse to allow for running in and out of the cluster, as well as make some options configurable.
 
-You should now deploy this to your cluster using the provided deployment manifests, which also include the (rather permissive!) RBAC configuration needed for the deployment to be able to read pod information from the API.
+You should now deploy this to your cluster using the provided [deployment manifests](https://github.com/jaxxstorm/kubeless-events-example/blob/master/manifests/events.yaml), which also include the (rather permissive!) RBAC configuration needed for the deployment to be able to read pod information from the API.
+
 
 {% highlight bash %}
 
@@ -166,7 +168,7 @@ What's happening here, exactly?
 
  - runtime: specify a runtime for the function, in this case, python 3.6
  - from-file: path to your file containing your function
- - handler: this is the important part. A handler is the kubeless function to call when an event is received. It's in the format <filename>.<functionname>. So in our case, our file was called test.py and our function was called dump, so we specify `test.dump`.
+ - handler: this is the important part. A handler is the kubeless function to call when an event is received. It's in the format `<filename>`.`<functionname>`. So in our case, our file was called `test.py` and our function was called `dump`, so we specify `test.dump`.
  - namespace: make sure you specify the namespace you deployed kubeless to!
 
 So you should now have a function deployed:
@@ -179,7 +181,7 @@ test	kubeless 	test.dump	python3.6	            	1/1 READY
 
 {% endhighlight %}
 
-So now, we need to make this function be triggered by the NATS messages. To do that, we add a trigger:
+So now, we need to have this function be triggered by the NATS messages. To do that, we add a trigger:
 
 {% highlight python %}
 kubeless trigger nats create test --function-selector created-by=kubeless,function=test --trigger-topic k8s_events -n kubeless
@@ -187,9 +189,9 @@ kubeless trigger nats create test --function-selector created-by=kubeless,functi
 
 What's going on here?
 
-  - We create a trigger with name test
-  - function-selector: use labels created by kubeless function to select the function to run
-  - trigger-topc: specify a trigger topic of k8s_events (which is specified in the event publisher from earlier)
+  - We create a trigger with `name` test
+  - `function-selector`: use labels created by kubeless function to select the function to run
+  - `trigger-topic`: specify a trigger topic of k8s_events (which is specified in the event publisher from earlier)
   - Same namespace!
 
 Okay, so now, let's cycle the event publisher and test things out!
@@ -266,7 +268,7 @@ kubeless function deploy slack --runtime python3.6 --handler slack.slack_message
 {% endhighlight %}
 
 
-The only thing you might be confused about here is the `--dependencies` file. Kubeless uses this to determine which dependencies you need to install for the function runtime. In the python case, it's a requirements.txt. You can find a working one in the related [github repo](https://github.com/jaxxstorm/kubeless-events-example/blob/master/functions/slack.py) linked to this post.
+The only thing you might be confused about here is the `--dependencies` file. Kubeless uses this to determine which dependencies you need to install for the function runtime. In the python case, it's a requirements.txt. You can find a working one in the related [github repo](https://github.com/jaxxstorm/kubeless-events-example/blob/master/functions/slack.py) linked to this post. This example better formats the slack responses into nice slack output, so it's worth taking a look at.
 
 You'll obviously need a slack org to try this out, and need to generate a slack token to get API access. However, now, once you cycle the events pod again (or, run another pod of course!) - you'll now see these events pushed to slack!
 
