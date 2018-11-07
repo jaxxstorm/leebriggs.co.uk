@@ -9,13 +9,13 @@ tags:
   - kr8
 ---
 
-Previous visitors to this blog will remember I wrote about configuration mgmt for Kubernetes clusters, and how the space was lacking. For those not familiar, the problem statement is this: it's really hard to maintain and manage configuration for components of multiple Kubernetes clusters. As the number of clusters you have starts to scale, keeping the things you need to run in them (such as ingress controllers) configured and in sync, as well as managed the subtle differences that need to be managed across accounts and regions.
+Previous visitors to this blog will remember [I wrote about configuration mgmt for Kubernetes clusters](https://leebriggs.co.uk/blog/2018/05/08/kubernetes-config-mgmt.html), and how the space was lacking. For those not familiar, the problem statement is this: it's really hard to maintain and manage configuration for components of multiple Kubernetes clusters. As the number of clusters you have starts to scale, keeping the things you need to run in them (such as ingress controllers) configured and in sync, as well as managed the subtle differences that need to be managed across accounts and regions.
 
-With that in mind, it's my pleasure to announce that at my employer, [Apptio](https://www.apptio.com) we have tried to solve this problem with [kr8](https://github.com/apptio/kr8). kr8 is an opinionated Kubernetes cluster configuration management tool, designed to be simple, flexible and use off the shelf tools where possible. This blog post will detail some of the design goals of kr8, as well as detail some of the benefits and a few examples.
+With that in mind, it's my pleasure to announce that at my employer, [Apptio](https://www.apptio.com) we have tried to solve this problem with [kr8](https://github.com/apptio/kr8). kr8 is an opinionated Kubernetes cluster configuration management tool, designed to be simple, flexible and use off the shelf tools where possible. This blog post details some of the design goals of kr8, as well as some of the benefits and a few examples.
 
 # Design Goals
 
-The intention when making kr8 was to allow us to generate manifests for a variety of Kubernetes clusters, but give us the ability to template and override yaml parameters where possible. We took inspiration from a variety of different tools such as [Kustomize](https://github.com/kubernetes-sigs/kustomize), [Kasane](https://github.com/google/kasane), [Ksonnet](https://github.com/ksonnet/ksonnet) and many others on our journey to creating a configuration management framework that is relatively simple to use, but follows some of the practices we're used to as Puppet administrators.
+The intention when making kr8 was to allow us to generate manifests for a variety of Kubernetes clusters, and give us the ability to template and override yaml parameters where possible. We took inspiration from a variety of different tools such as [Kustomize](https://github.com/kubernetes-sigs/kustomize), [Kasane](https://github.com/google/kasane), [Ksonnet](https://github.com/ksonnet/ksonnet) and many others on our journey to creating a configuration management framework that is relatively simple to use, and follows some of the practices we're used to as Puppet administrators.
 
 Other design goals included:
   - No templating engine
@@ -29,7 +29,7 @@ The end goal was to be able to take existing helm charts, or yaml installation m
 
 ## kr8
 
-kr8 itself is the only component of the kr8 framework that we wrote at Apptio. It's purposes are:
+kr8 itself is the only component of the kr8 framework that we wrote at Apptio. Its purposes are:
 
   - Discover clusters in a [hierarchical directory tree](https://github.com/apptio/kr8-configs/tree/master/clusters)
   - Discover components in a [components directory](https://github.com/apptio/kr8-configs/tree/master/components)
@@ -55,7 +55,7 @@ However, using the kr8 binary alone is probably not what you want to do. We bund
 ## Task
 
 [Task](https://github.com/go-task/task) does a lot of the heavy lifting for kr8. It is a task runner, much like [Make](https://www.gnu.org/software/make/) but with a more flexible DSL (yep, it's yaml/json!) and the ability to run tasks in parallel. We use [Taskfiles](https://taskfile.org/#/usage?id=getting-started) for each component to allow us to build the component config. This gives us the flexibility to use rendering options for each component that make sense, whether it be pulling in a Helm chart or plain yaml. We can then input that yaml with kr8, and manipulate it with jsonnet code to add, modify the resulting kubernetes manifest.
-Alongside this, we use a taskfile to generate deployment tasks and to generate _all_ components for a Task. This gives us the ability to execute lots of generate jobs in relatively short periods of time.
+Alongside this, we use a taskfile to generate deployment tasks and to generate _all_ components for a Task. This gives us the ability to execute lots of generate manifest jobs in relatively short periods of time.
 
 ## Kubecfg
 
@@ -73,9 +73,11 @@ I intend to write many more kr8 blog posts and docs, detailing how kr8 can work,
 
   - [kr8](https://github.com/apptio/kr8) binary
   - [kr8-configs](https://github.com/apptio/kr8-configs) example repo
-  - [cluster_config](https://github.com/jaxxstorm/cluster_config) my personal cluster configuration repo
+  - [cluster_config](https://github.com/jaxxstorm/cluster_config) my cluster configuration repo
 
 
 # Thanks
 
-I'd like to thank Colin Spargo, who came up with the original concept of kr8 and how it might work, as well as contributing large amounts of the kr8 code. I'd also like to thank Sanyu Melwani, who had valuable input into the concept, as well as writing many kr8 components.
+I want to thank Colin Spargo, who came up with the original concept of kr8 and how it might work, as well as contributing large amounts of the kr8 code. I also want to thank Sanyu Melwani, who had valuable input into the concept, as well as writing many kr8 components.
+
+Finally, a thank you to our employer, Apptio, who has allowed us to spend time creating this tool to ease our Kubernetes deployment frustrations. If you're interested in working on fun projects like this, we are [hiring for remote team members](https://www.apptio.com/about/careers/job-openings)
