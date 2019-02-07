@@ -10,7 +10,7 @@ tags:
   - kr8
 ---
 
-I was at [cfgmgmtcamp 2019](https://cfgmgmtcamp.eu) in Ghent, and did a talk which I think was well received about the need for some Kubernetes configuration management as well as the solution we built for it at $work, [kr8](https://kr8.rocks).
+I was at [cfgmgmtcamp 2019](https://cfgmgmtcamp.eu) in Ghent, and [did a talk](https://www.youtube.com/watch?v=eBm3oyUmoAo&feature=youtu.be&t=18586) which I think was well received about the need for some Kubernetes configuration management as well as the solution we built for it at $work, [kr8](https://kr8.rocks).
 
 I made a statement during the talk which ignited some fairly fierce discussion both online, and at the conference:
 
