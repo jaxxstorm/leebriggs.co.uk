@@ -25,7 +25,7 @@ After some conversation, I figured it was probably best to back up my claims in 
 
 ## The configuration problem
 
-Once the applications and infrastructure you're going to manage grows past a certain size, you inevitably end up in some form of complexity hell. If you're only deploying 1 or maybe 2 things, you can write a yaml configuration file and be done with it. However once that grows beyond that, you need to figure out how to manage this complexity. It's incredibly likely that the reason you have multiple configuration files is because the $thing that uses that config is slightly different from its companions. Examples of this include:
+Once the applications and infrastructure you're going to manage grows past a certain size, you inevitably end up in some form of configuration complexity hell. If you're only deploying 1 or maybe 2 things, you can write a yaml configuration file and be done with it. However once you grow beyond that, you need to figure out how to manage this complexity. It's incredibly likely that the reason you have multiple configuration files is because the $thing that uses that config is slightly different from its companions. Examples of this include:
 
   - Applications deployed in different environments, like dev, stg and prod
   - Applications deployed in different regions, like Europe or North American
@@ -34,7 +34,7 @@ Obviously, not _all_ the configuration is different here, but it's likely the co
 
 This configuration complexity has been well known for Operators (System Administrators, DevOps engineers, whatever you want to call them) for some years now. An entire discpline grew up around this in Configuration Management, and each tool solved this problem in their own way, but ultimately, they used YAML to get the job done.
 
-My favourite method has always been [hiera](https://puppet.com/docs/puppet/6.2/hiera_intro.html) which comes bundled with Puppet. Having the ability to hierarachically look up the configuration of specific config needs is incredibly powerful and flexible, and has generally meant you don't actually need to do any templating of yaml at all, except perhaps for embedding Puppet facts into the yaml.
+My favourite method has always been [hiera](https://puppet.com/docs/puppet/6.2/hiera_intro.html) which comes bundled with Puppet. Having the ability to hierarchically look up the variables of specific config needs is incredibly powerful and flexible, and has generally meant you don't actually need to do any templating of yaml at all, except perhaps for embedding Puppet facts into the yaml.
 
 ## Did we go backwards?
 
@@ -73,7 +73,7 @@ Let's say you need to go a step further, and you need to push an array or map in
 {{ "{{- end " }} }}
 {% endhighlight %}
 
-Firstly, let's ignore the irony of having a templating function `toYaml` to convert yaml to yaml and focus more on the whitespace issue here.
+Firstly, let's ignore the madness of having a templating function `toYaml` to convert yaml to yaml and focus more on the whitespace issue here.
 
 YAML has strict requirements and whitespace implementation rules. The following, for example, is not valid or complete yaml:
 
@@ -82,8 +82,8 @@ something: nothing
   hello: goodbye
 {% endhighlight %}
 
-Generally, if you're handwriting something, this isn't necessarily a problem because you just hit backspace twice and it's fixed. However, if you're generating YAML using a templating system, you can't do that. 
-
+Generally, if you're handwriting something, this isn't necessarily a problem because you just hit backspace twice and it's fixed. However, if you're generating YAML using a templating system, you can't do that - and if you're operating above 5 or 10 configuration files, you probably want to be _generating_ your config rather than writing it.
+ 
 So, in the above example, you want to embed the values of `.Values.podAnnotations` under the annotations field, which is indented already. So you're having to not only indent your values, but indent them correctly.
 
 What makes this _even more confusing_ is that the go parser doesn't actually know anything about YAML at all, so if you try to keep the syntax clean and indent the templates like this:
@@ -97,7 +97,7 @@ What makes this _even more confusing_ is that the go parser doesn't actually kno
 
 You actually can't do that, because the templating system gets confused. This is a singular example of the complexity and difficulty you end up facing when generating config data in YAML, but when you really start to do more complex work, it really starts to become obvious that this isn't the way to go.
 
-Needless to say, this isn't what I want to spend _my_ time doing. If fiddling around with whitespace requirements in a templating system doing something it's not really designed for is what suits you, then I'm not going to stop you. I also don't want to spend my time writing configuration in JSON without comments and accidentally missing commas all over the shop. We decided a long time ago that shit wasn't going to work and that's why YAML exists. 
+Needless to say, this isn't what I want to spend _my_ time doing. If fiddling around with whitespace requirements in a templating system doing something it's not really designed for is what suits you, then I'm not going to stop you. I also don't want to spend my time writing configuration in JSON without comments and accidentally missing commas all over the shop. We (as an industry) decided a long time ago that shit wasn't going to work and that's why YAML exists. 
 
 So what should we do instead? That's where [jsonnet](https://jsonnet.org) comes in.
 
@@ -109,7 +109,7 @@ Before we actually talk about Jsonnet, it's worth reminding people of a very imp
 python -c 'import json, sys, yaml ; y=yaml.safe_load(sys.stdin.read()) ; print(json.dumps(y))'
 {% endhighlight %}
 
-So with that in mind, let's talk about Jsonnet
+So with that in mind, let's talk about Jsonnet.
 
 ### Welcome to the church of Jsonnet
 
