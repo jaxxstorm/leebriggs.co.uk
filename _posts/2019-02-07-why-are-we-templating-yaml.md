@@ -10,14 +10,14 @@ tags:
   - kr8
 ---
 
-I was at [cfgmgmtcamp 2019](https://cfgmgmtcamp.eu) iin Ghent, and did a talk which I think was well receieved about the need for some Kubernetes configuration management as well as the solution we built for it at $work, [kr8](https://kr8.rocks).
+I was at [cfgmgmtcamp 2019](https://cfgmgmtcamp.eu) in Ghent, and did a talk which I think was well received about the need for some Kubernetes configuration management as well as the solution we built for it at $work, [kr8](https://kr8.rocks).
 
 I made a statement during the talk which ignited some fairly fierce discussion both online, and at the conference:
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">&quot;If you&#39;re starting to template yaml, ask yourself the question: why am I not *generating* json?&quot; - <a href="https://twitter.com/briggsl?ref_src=twsrc%5Etfw">@briggsl</a> spitting straight fire at <a href="https://twitter.com/hashtag/cfgmgmtcamp?src=hash&amp;ref_src=twsrc%5Etfw">#cfgmgmtcamp</a></p>&mdash; 🌈eric sorenson 🌊 (@ahpook) <a href="https://twitter.com/ahpook/status/1092810831216197643?ref_src=twsrc%5Etfw">February 5, 2019</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-I actually think Eric has downplayed what I said, so I'm going to have myself quoted here for posterity:
+To put this into my own words:
 
 > At some point, we decided it was okay for us to template yaml. When did this happen? How is this acceptable?
 
