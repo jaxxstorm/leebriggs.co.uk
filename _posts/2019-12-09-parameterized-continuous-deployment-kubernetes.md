@@ -602,3 +602,5 @@ You might be wondering at this point, this a lot of work! Why not just use a Hel
 This concludes part 1 of my series. In part 2, I'll talk a little bit about using the CI pipeline to generate these configs and push them to a deploy repo (specifically with Gitlab-CI) and then talk a little bit about using Argo do deployments.
 
 All the code from this post can be found in the [github repo](https://github.com/jaxxstorm/jkcfg-example) if you want to take a look!
+
+Stay tuned for the next post!
