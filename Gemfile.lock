@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.0.2.1)
+    activesupport (6.0.2.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -9,7 +9,7 @@ GEM
       zeitwerk (~> 2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    backports (3.15.0)
+    backports (3.17.0)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -17,7 +17,7 @@ GEM
     colorator (1.1.0)
     commonmarker (0.17.13)
       ruby-enum (~> 0.5)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     dnsruby (1.61.3)
       addressable (~> 2.5)
     em-websocket (0.5.1)
@@ -27,9 +27,9 @@ GEM
       ffi (>= 1.3.0)
     eventmachine (1.2.7)
     execjs (2.7.0)
-    faraday (1.0.0)
+    faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
-    ffi (1.11.3)
+    ffi (1.12.2)
     forwardable-extended (2.6.0)
     gemoji (3.0.1)
     github-pages (204)
@@ -84,10 +84,10 @@ GEM
     html-pipeline (2.12.3)
       activesupport (>= 2)
       nokogiri (>= 1.4)
-    html-proofer (3.14.1)
+    html-proofer (3.15.2)
       addressable (~> 2.3)
       mercenary (~> 0.3)
-      nokogiri (~> 1.10)
+      nokogumbo (~> 2.0)
       parallel (~> 1.3)
       rainbow (~> 3.0)
       typhoeus (~> 1.3)
@@ -108,8 +108,8 @@ GEM
       pathutil (~> 0.9)
       rouge (>= 1.7, < 4)
       safe_yaml (~> 1.0)
-    jekyll-admin (0.9.0)
-      jekyll (>= 3.3, < 5.0)
+    jekyll-admin (0.10.1)
+      jekyll (>= 3.7, < 5.0)
       sinatra (~> 1.4)
       sinatra-contrib (~> 1.4)
     jekyll-avatar (0.7.0)
@@ -206,7 +206,7 @@ GEM
       jekyll (>= 3.0, < 5.0)
     kramdown (1.17.0)
     liquid (4.0.3)
-    listen (3.2.0)
+    listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.3.6)
@@ -218,9 +218,11 @@ GEM
     minitest (5.14.0)
     multi_json (1.14.1)
     multipart-post (2.1.1)
-    nokogiri (1.10.8)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
-    octokit (4.16.0)
+    nokogumbo (2.0.2)
+      nokogiri (~> 1.8, >= 1.8.4)
+    octokit (4.18.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.19.1)
@@ -229,7 +231,7 @@ GEM
     public_suffix (3.1.1)
     pygments.rb (1.2.1)
       multi_json (>= 1.0.0)
-    rack (1.6.11)
+    rack (1.6.13)
     rack-protection (1.5.5)
       rack
     rack-test (1.1.0)
@@ -237,12 +239,12 @@ GEM
     rainbow (3.0.0)
     rake (13.0.1)
     rb-fsevent (0.10.3)
-    rb-inotify (0.10.0)
+    rb-inotify (0.10.1)
       ffi (~> 1.0)
     rouge (3.13.0)
-    ruby-enum (0.7.2)
+    ruby-enum (0.8.0)
       i18n
-    rubyzip (2.2.0)
+    rubyzip (2.3.0)
     safe_yaml (1.0.5)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -269,11 +271,11 @@ GEM
     tilt (2.0.10)
     typhoeus (1.3.1)
       ethon (>= 0.9.0)
-    tzinfo (1.2.6)
+    tzinfo (1.2.7)
       thread_safe (~> 0.1)
-    unicode-display_width (1.6.1)
-    yell (2.2.0)
-    zeitwerk (2.2.2)
+    unicode-display_width (1.7.0)
+    yell (2.2.2)
+    zeitwerk (2.3.0)
 
 PLATFORMS
   ruby
@@ -287,4 +289,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.16.6
+   1.17.2
