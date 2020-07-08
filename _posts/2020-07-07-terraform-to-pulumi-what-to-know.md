@@ -1,5 +1,5 @@
 ---
-title: Pulumi to Terraform - What you need to know
+title: Terraform to Pulumi - What you need to know
 layout: post
 category: blog
 tags:
