@@ -14,13 +14,13 @@ Now, anyone who has previously read this blog will wonder why on earth I'm writi
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">So as I blogged before, the emails contained DKIM information, which the original reporters could and should have verified. So I eventually got a copy of the email and run DKIM verification on it. It passed: <a href="https://t.co/HVjOlMq7QV">https://t.co/HVjOlMq7QV</a></p>&mdash; Robᵉʳᵗ Graham😷, provocateur (@ErrataRob) <a href="https://twitter.com/ErrataRob/status/1322007153415200768?ref_src=twsrc%5Etfw">October 30, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
 
-To provide some context, the Daily Caller (a news organization founded by [Tucker Carlson](https://en.wikipedia.org/wiki/Tucker_Carlson) among others, have printed a story on their website in which they cite evidence from Rob Graham, a well respected Information Security researcher (who is has written powerful and widely used tools). Rob has gone out of his way to retrieve a copy of an email from the Hunter Biden "laptop from hell" and verified the [DKIM signature](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) of one of the most damning emails.
+To provide some context, the Daily Caller (a news organization founded by [Tucker Carlson](https://en.wikipedia.org/wiki/Tucker_Carlson)) among others, have printed a story on their website in which they cite evidence from Rob Graham, a well respected Information Security researcher (who is has written powerful and widely used tools). Rob has gone out of his way to retrieve a copy of an email from the Hunter Biden "laptop from hell" and verified the [DKIM signature](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) of one of the most damning emails.
 
 To quote the Daily Caller, this information _authenticates_ these emails. Here is the exact quote ([at the time of writing](https://web.archive.org/web/20201030052504/https://dailycaller.com/2020/10/29/cybersecurity-expert-authenticates-hunter-biden-burisma-email/)) from the Daily Caller article:
 
 _Graham, who has been cited as a cybersecurity expert in The Washington Post, the Associated Press, Wired, Engadget and other news and technology outlets, told the DCNF that he used a cryptographic signature found in the email’s metadata to validate that Vadym Pozharsky, an advisor to Burisma’s board of directors, emailed Hunter Biden on April 17, 2015._
 
-Before I examime this particular claim, I'd like to assert that I am not, an internet security researcher that has been cited in the Washington Post like Rob. I do, however, have a fairly good understanding of how email DKIM, the internet and computers in general work. 
+Before I examine this particular claim, I'd like to assert that I am not an internet security researcher that has been cited in the Washington Post like Rob. I do, however, have a fairly good understanding of how email, DKIM, the internet and computers in general work. 
 
 I can say with a very high degree of certainty that the quote from the article is spurious at best, and utter horseshit at worst. It is impossible to verify that Vadym Pozharsky sent that email from a DKIM signature alone.
 
@@ -52,7 +52,7 @@ Rob did the heavy lifting for us. The email contains a DKIM signature and Rob ve
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">So you search the Internet for &quot;TXT 20120113._domainkey.gmail.com&quot; and you&#39;ll find lots of answers what the key was 6 years ago:<a href="https://t.co/eK6kHNd9Mn">https://t.co/eK6kHNd9Mn</a></p>&mdash; Robᵉʳᵗ Graham😷, provocateur (@ErrataRob) <a href="https://twitter.com/ErrataRob/status/1322009696149164032?ref_src=twsrc%5Etfw">October 30, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-We can say with a very high degree of certainty that the email linked above originated from a _genuine google email address_. The address the email came from is `v.pozharskyi.ukraine@gmail.com` and if we consider the definition of *authentic* that we can verify the emails origin, we could arguably say that this email is *authentic*.
+We can say with a very high degree of certainty that the email linked above originated from a _genuine google email address_. The address the email came from is `v.pozharskyi.ukraine@gmail.com` and if we consider the definition of *authentic* that we can verify the emails' origin, we could arguably say that this email is *authentic*.
 
 However, if we recall the original article from the Daily Caller, they didn't just claim the email is authentic, they actually said this:
 
@@ -72,7 +72,7 @@ Again, I cannot claim that this email is _not_ from Vadym Pozharskyi, but I also
 
 ## Draw your own conclusions
 
-I have a high degree of respect for Rob, despite the fact I don't agree with his political opinions. What has begun to frustrate me more than anything about discourse in the 21st century is the tendency to provide only enough information to support your argument, and omit vital pieces of information. With that in mind, I'd like to finish this post with a couple of pieces of information.
+I have a high degree of respect for Rob, despite the fact I don't agree with his political opinions. What has begun to frustrate me more than anything about discourse in the 21st century is the tendency to provide only enough information to support your argument, and omit vital pieces of information. With that in mind, I'd like to finish this post with a couple of extra pieces of information you might consider:
 
   - [DKIM is not a flawless protocol](https://noxxi.de/research/breaking-dkim-on-purpose-and-by-chance.html#spoofed_body_dhl), and can be spoofed
   - There is [allegedly evidence](https://blog.intelx.io/2020/10/14/an-osint-investigation-into-the-alleged-hunter-biden-email/) that a user with the email address `v.pozharskyi.ukraine@gmail.com` registered a DNS domain under the street address of Burisma Holdings, however I am unable to independently verify this via the means in this post.
