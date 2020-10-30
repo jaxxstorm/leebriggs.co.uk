@@ -40,7 +40,7 @@ DKIM was created in 2011 to try and attempt to stop some of the issues around th
 
 DKIM is an email enhancement which is designed to prevent the forging of sender addresses in email. It works by using [Public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography) to "sign" emails when they are sent.
 
-When you send an email with DKIM enabled, it's signed by a private key which is held by your outbound mail server (although, not exclusively, but that's beyond the scope of this article). When this happens, your email server embeds an [email header](https://en.wikipedia.org/wiki/Email#Header_fields) into the outgoing email, with key information such as who the sender is, and the location of the public key used in the keypair which can be used to verify the email's origin.
+When you send an email with DKIM enabled, it's signed by a private key which is held by your outbound mail server (although, not exclusively, but that's beyond the scope of this article). When this happens, your email server embeds an [email header](https://en.wikipedia.org/wiki/Email#Header_fields) into the outgoing email, with key information such as who the sender is, and the location of the public key used in the keypair which signed the email. This information can be used to verify the email's origin.
 
 Many of the large email providers enable DKIM by default on outbound mail, because it works wonders in preventing spam originating from their domains. It's for this reason that spammers will often try and hijack the credentials for your email accounts and use them as part of their spam bots - getting access to a valid account on a respected email provider with DKIM enabled will almost always bypass any spam protection the recpient has enabled.
 
