@@ -1,0 +1,14 @@
+- name: Pulumi
+  id: pulumi
+  main_link: /
+  img_src: /assets/img/pulumi.png
+  description_less: >
+    <p>Modern Infrasturucture as Code</p>
+  description_more: >
+    <p></p>
+
+  tags: >
+    <span class="badge badge-info">#cloud</span>
+    <span class="badge badge-success">#infrastructure-as-code</span>
+
+    <span class="badge badge-success">#open-source</span>

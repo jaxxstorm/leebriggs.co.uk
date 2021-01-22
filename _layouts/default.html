@@ -1,37 +1,19 @@
 <!DOCTYPE html>
-<html>
-
-{% include head.html %}
-
+<html lang="en">
+<head>
+{% include meta_tags/base.html %}
+{% include externals/styling.html %}
+</head>
 <body>
-
-<div class="container">
-
-  {% include header.html %}
-
-  {% if site.default_column == "two" %}  
-
-  <div class="page-content col-sm-8">
-    {{ content }}
-    {% include post_pagination.html %}
-  </div>
-  {% include sidebar.html %}
-
-  {% else %}
-
-  <div class="page-content">
-    <div class="wrapper">
-      {{ content }}
-    </div>
-  </div>
-  {% include post_pagination.html %}
-
-  {% endif %}
-
-  {% include footer.html %}
-
+<div class="wrapper">
+{% include header.html %}
+{{ content }}
+<br>
+{% if page.comments %}
+{% include post/disqus.html %}
+{% endif %}
+<br>
+{% include page/about.html %}
 </div>
-
 </body>
-
 </html>
