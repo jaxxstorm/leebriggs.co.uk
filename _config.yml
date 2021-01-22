@@ -1,47 +1,27 @@
-### Site info:
-title: Lee Briggs 
-tagline: "Yet another blog about DevOps"
-author: Lee Briggs
-email: contact@leebriggs.co.uk
-description: "Forever Learning DevOps - Lee Briggs"
-keywords: "Lee Briggs, DevOps, Cloud, Terraform"
+# Site settings
+title: lbr.
+short_logo: lbr.
+description: >
+  Engineering, DevOps & Cloud Computing
 baseurl: "" 
-url: "https://www.leebriggs.co.uk"
-locale: en_US
+url: "https://leebriggs.co.uk" 
 
-### Personal info and site tools info:
-twitter_username: briggsl
-github_username:  jaxxstorm
-#disqus_shortname: freshman21
-favicon:     "/images/favicon.ico"
-aboutme: "Hello, I'm Lee Briggs, and this is my blog. I write mainly about DevOps, Cloud Infrastructure and modern technologies. Most of the site is just personal opinion. To learn more about who I am, visit the About page"
-aboutme_photo: "https://en.gravatar.com/userimage/10502965/db46bb1d5c51272b00bb822a102b4134.png?size=200"
-google_analytics_key: "UA-34865189-1" 
+author:
+  fullname: Lee Briggs
+  github: /jaxxstorm
+  linkedin: /briggsl
+  email: /contact@leebriggs.co.uk
 
-### Site setting:
-ShowContactInfo: "True" 
-default_column: "two" 
-default_locale: "en" 
+g_track_id: UA-34865189-1
 
-locales:
-    en:
-      Aboutme: "About Me"
-      Archives: "Archives"
-      Categories: "Categories"
-      Copyright_Notice: "Copyright Notice"
-      Recent_Posts: "Recent Posts"
-      Tags: "Tags"
-      Previous: "Older"
-      Next: "Newer"
-      PostedInCategories: "Posted in"
-      Taggedwith: "and tagged"
-      PostDate: "on "
-      Google_search: "Site Search"
-
-### Build settings
 markdown: kramdown
-highlighter: rouge
-paginate: 5
-excerpt_separator: <!-- more -->
-exclude: [vendor]
-plugins: [jekyll-paginate]
+
+defaults:
+  -
+    scope:
+      path: _posts
+    values:
+      comments: true
+      listed: true
+      author: Lee Briggs
+      author_link: <a href="https://leebriggs.co.uk/">Lee Briggs<a>
