@@ -41,8 +41,7 @@ To do this, I used the excellent [kubernetes python library](https://github.com/
 
 An easy way to do this is simply connect to the API using the in_cluster capabilities and then list all the pods, like so:
 
-{% highlight python %}
-
+```python
 from kubernetes import client, config, watch
 
 def main():
@@ -57,8 +56,7 @@ def main():
 
 
 main()
-
-{% endhighlight %}
+```
 
 This simple script will log all the information for pods in all namespaces to stdout. It can be run on your local machine, give it a try! 
 
