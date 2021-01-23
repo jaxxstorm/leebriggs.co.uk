@@ -15,9 +15,6 @@ author:
 g_track_id: UA-34865189-1
 
 markdown: kramdown
-kramdown:
-   syntax_highlighter_opts:
-      disable : true
 
 defaults:
   -
