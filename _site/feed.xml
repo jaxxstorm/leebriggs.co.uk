@@ -4,10 +4,10 @@
     <title>lbr.</title>
     <description>Engineering, DevOps &amp; Cloud Computing
 </description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/zfeed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 25 Jan 2021 09:57:36 -0800</pubDate>
-    <lastBuildDate>Mon, 25 Jan 2021 09:57:36 -0800</lastBuildDate>
+    <link>https://leebriggs.co.uk/</link>
+    <atom:link href="https://leebriggs.co.uk/zfeed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 25 Jan 2021 10:31:17 -0800</pubDate>
+    <lastBuildDate>Mon, 25 Jan 2021 10:31:17 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -158,8 +158,8 @@ Our &lt;a href=&quot;https://github.com/pulumi/templates/&quot;&gt;Pulumi templa
 &lt;p&gt;I’ve gone on record before to talk about how much I &lt;a href=&quot;2019-02-07-why-are-we-templating-yaml.md&quot;&gt;loathe templating YAML&lt;/a&gt; and I love the expressibility Pulumi gives me with familiar programming languages. Even though I hated VB.NET in university, I would still prefer to express my cloud resources with a 19-year-old programming language over a configuration language with template replacement.&lt;/p&gt;
 </description>
         <pubDate>Wed, 16 Dec 2020 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/2020/12/16/vb-net-cloud.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2020/12/16/vb-net-cloud.html</guid>
+        <link>https://leebriggs.co.uk/blog/2020/12/16/vb-net-cloud.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2020/12/16/vb-net-cloud.html</guid>
         
         <category>tech</category>
         
@@ -251,8 +251,8 @@ Our &lt;a href=&quot;https://github.com/pulumi/templates/&quot;&gt;Pulumi templa
 
 </description>
         <pubDate>Thu, 29 Oct 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/2020/10/29/draw-your-own-conclusions.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2020/10/29/draw-your-own-conclusions.html</guid>
+        <link>https://leebriggs.co.uk/blog/2020/10/29/draw-your-own-conclusions.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2020/10/29/draw-your-own-conclusions.html</guid>
         
         <category>politics</category>
         
@@ -458,8 +458,8 @@ I could (and hopefully will!) write a whole blog post on this, but essentially w
 &lt;p&gt;There are other aspects of picking up Pulumi which might catch you out, and I may write a second post along the way, but hopefully, this will give you a nice idea of how to continue down your Pulumi journey. If you’re interested in Pulumi and want to give it a try, reach out to me via twitter! Regardless of the technology you choose, enjoy building your infrastructure!&lt;/p&gt;
 </description>
         <pubDate>Tue, 07 Jul 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/2020/07/07/terraform-to-pulumi-what-to-know.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2020/07/07/terraform-to-pulumi-what-to-know.html</guid>
+        <link>https://leebriggs.co.uk/blog/2020/07/07/terraform-to-pulumi-what-to-know.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2020/07/07/terraform-to-pulumi-what-to-know.html</guid>
         
         <category>pulumi</category>
         
@@ -554,8 +554,8 @@ Pulumi allows you to take control of your configuration in your choice of progra
 &lt;p&gt;I joined Pulumi at the end of March, and I’m incredibly excited about being on the frontlines of battling configuration complexity. Going forward, I expect this blog to contain updates (sporadically, of course) about my journey. Already in my short time at Pulumi, I’ve dived into new programming languages (I wrote my first ever dotnet code this week!), heard from users, and been more involved than ever before in an open-source community. Most importantly, I can see a time where I don’t have to write a single line of YAML!&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Apr 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/2020/04/08/next-phase-of-config-management.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2020/04/08/next-phase-of-config-management.html</guid>
+        <link>https://leebriggs.co.uk/blog/2020/04/08/next-phase-of-config-management.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2020/04/08/next-phase-of-config-management.html</guid>
         
         <category>pulumi</category>
         
@@ -1135,8 +1135,8 @@ import &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; Labels &lt;span class=&quo
 &lt;p&gt;Stay tuned for the next post!&lt;/p&gt;
 </description>
         <pubDate>Mon, 09 Dec 2019 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html</guid>
+        <link>https://leebriggs.co.uk/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html</guid>
         
         <category>argocd</category>
         
@@ -1543,8 +1543,8 @@ I knew my container needed to have some environment variables, and it needed to 
 
 </description>
         <pubDate>Sat, 13 Apr 2019 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/2019/04/13/the-fargate-illusion.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2019/04/13/the-fargate-illusion.html</guid>
+        <link>https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html</guid>
         
         <category>fargate</category>
         
@@ -1771,8 +1771,8 @@ I knew my container needed to have some environment variables, and it needed to 
 
 </description>
         <pubDate>Thu, 07 Feb 2019 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/2019/02/07/why-are-we-templating-yaml.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2019/02/07/why-are-we-templating-yaml.html</guid>
+        <link>https://leebriggs.co.uk/blog/2019/02/07/why-are-we-templating-yaml.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2019/02/07/why-are-we-templating-yaml.html</guid>
         
         <category>kubernetes</category>
         
@@ -1832,8 +1832,8 @@ I knew my container needed to have some environment variables, and it needed to 
 &lt;p&gt;I encourage people to open issues in the repos, asking questions about how to implement things. Hopefully this can be my way to give back to the community.&lt;/p&gt;
 </description>
         <pubDate>Sat, 26 Jan 2019 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/2019/01/26/lbrlabs-homelab-configuration.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2019/01/26/lbrlabs-homelab-configuration.html</guid>
+        <link>https://leebriggs.co.uk/blog/2019/01/26/lbrlabs-homelab-configuration.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2019/01/26/lbrlabs-homelab-configuration.html</guid>
         
         <category>kubernetes</category>
         
@@ -1929,8 +1929,8 @@ Alongside this, we use a taskfile to generate deployment tasks and to generate &
 &lt;p&gt;Finally, a thank you to our employer, Apptio, who has allowed us to spend time creating this tool to ease our Kubernetes deployment frustrations. If you’re interested in working on fun projects like this, we are &lt;a href=&quot;https://www.apptio.com/about/careers/job-openings&quot;&gt;hiring for remote team members&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Wed, 07 Nov 2018 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/2018/11/07/kr8-kubernetes-config-mgmt.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2018/11/07/kr8-kubernetes-config-mgmt.html</guid>
+        <link>https://leebriggs.co.uk/blog/2018/11/07/kr8-kubernetes-config-mgmt.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2018/11/07/kr8-kubernetes-config-mgmt.html</guid>
         
         <category>kubernetes</category>
         
@@ -2192,8 +2192,8 @@ kubeless &lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;deploy slack &lt;
 &lt;p&gt;You can check out all the code, deployment and manifests for this post in the &lt;a href=&quot;https://github.com/jaxxstorm/kubeless-events-example&quot;&gt;github repo&lt;/a&gt; that accompanies this post. Pull requests and feedback on my awful Python code are also welcome!&lt;/p&gt;
 </description>
         <pubDate>Tue, 16 Oct 2018 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/2018/10/16/using-kubeless-for-kubernetes-events.html</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/2018/10/16/using-kubeless-for-kubernetes-events.html</guid>
+        <link>https://leebriggs.co.uk/blog/2018/10/16/using-kubeless-for-kubernetes-events.html</link>
+        <guid isPermaLink="true">https://leebriggs.co.uk/blog/2018/10/16/using-kubeless-for-kubernetes-events.html</guid>
         
         <category>kubernetes</category>
         

@@ -3,7 +3,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2020/12/16/vb-net-cloud.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2020/12/16/vb-net-cloud.html</loc>
       
         <lastmod>2020-12-16T00:00:00-08:00</lastmod>
       
@@ -18,7 +18,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2020/10/29/draw-your-own-conclusions.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2020/10/29/draw-your-own-conclusions.html</loc>
       
         <lastmod>2020-10-29T00:00:00-07:00</lastmod>
       
@@ -33,7 +33,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2020/07/07/terraform-to-pulumi-what-to-know.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2020/07/07/terraform-to-pulumi-what-to-know.html</loc>
       
         <lastmod>2020-07-07T00:00:00-07:00</lastmod>
       
@@ -48,7 +48,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2020/04/08/next-phase-of-config-management.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2020/04/08/next-phase-of-config-management.html</loc>
       
         <lastmod>2020-04-08T00:00:00-07:00</lastmod>
       
@@ -63,7 +63,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html</loc>
       
         <lastmod>2019-12-09T00:00:00-08:00</lastmod>
       
@@ -78,7 +78,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2019/04/13/the-fargate-illusion.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html</loc>
       
         <lastmod>2019-04-13T00:00:00-07:00</lastmod>
       
@@ -93,7 +93,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2019/02/07/why-are-we-templating-yaml.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2019/02/07/why-are-we-templating-yaml.html</loc>
       
         <lastmod>2019-02-07T00:00:00-08:00</lastmod>
       
@@ -108,7 +108,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2019/01/26/lbrlabs-homelab-configuration.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2019/01/26/lbrlabs-homelab-configuration.html</loc>
       
         <lastmod>2019-01-26T00:00:00-08:00</lastmod>
       
@@ -123,7 +123,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2018/11/07/kr8-kubernetes-config-mgmt.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2018/11/07/kr8-kubernetes-config-mgmt.html</loc>
       
         <lastmod>2018-11-07T00:00:00-08:00</lastmod>
       
@@ -138,7 +138,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2018/10/16/using-kubeless-for-kubernetes-events.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2018/10/16/using-kubeless-for-kubernetes-events.html</loc>
       
         <lastmod>2018-10-16T00:00:00-07:00</lastmod>
       
@@ -153,7 +153,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2018/09/20/using-pulumi-for-k8s-config-mgmt.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2018/09/20/using-pulumi-for-k8s-config-mgmt.html</loc>
       
         <lastmod>2018-09-20T00:00:00-07:00</lastmod>
       
@@ -168,7 +168,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2018/05/08/kubernetes-config-mgmt.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2018/05/08/kubernetes-config-mgmt.html</loc>
       
         <lastmod>2018-05-08T00:00:00-07:00</lastmod>
       
@@ -183,7 +183,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/03/30/kubecon-day-3.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/03/30/kubecon-day-3.html</loc>
       
         <lastmod>2017-03-30T00:00:00-07:00</lastmod>
       
@@ -198,7 +198,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/03/29/kubecon-day-2.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/03/29/kubecon-day-2.html</loc>
       
         <lastmod>2017-03-29T00:00:00-07:00</lastmod>
       
@@ -213,7 +213,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/03/28/kubecon-day-1.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/03/28/kubecon-day-1.html</loc>
       
         <lastmod>2017-03-28T00:00:00-07:00</lastmod>
       
@@ -228,7 +228,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/03/12/kubernetes-flexvolumes.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/03/12/kubernetes-flexvolumes.html</loc>
       
         <lastmod>2017-03-12T00:00:00-08:00</lastmod>
       
@@ -243,7 +243,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/02/18/kubernetes-networking-calico.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/02/18/kubernetes-networking-calico.html</loc>
       
         <lastmod>2017-02-18T00:00:00-08:00</lastmod>
       
@@ -258,7 +258,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/02/15/kubernetes-networking-part1.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/02/15/kubernetes-networking-part1.html</loc>
       
         <lastmod>2017-02-15T00:00:00-08:00</lastmod>
       
@@ -273,7 +273,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2017/01/25/introducing-graphping.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2017/01/25/introducing-graphping.html</loc>
       
         <lastmod>2017-01-25T00:00:00-08:00</lastmod>
       
@@ -288,7 +288,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2016/11/15/using-hiera-eyaml-gpg.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2016/11/15/using-hiera-eyaml-gpg.html</loc>
       
         <lastmod>2016-11-15T00:00:00-08:00</lastmod>
       
@@ -303,7 +303,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2016/08/22/gitlab-ci-yaml-magic.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2016/08/22/gitlab-ci-yaml-magic.html</loc>
       
         <lastmod>2016-08-22T00:00:00-07:00</lastmod>
       
@@ -318,7 +318,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/puppet/2016/08/21/puppet-certs-with-kubernetes.html</loc>
+      <loc>https://leebriggs.co.uk/puppet/2016/08/21/puppet-certs-with-kubernetes.html</loc>
       
         <lastmod>2016-08-21T00:00:00-07:00</lastmod>
       
@@ -333,7 +333,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/puppet/2016/06/09/puppet-infrastructure-part-1.html</loc>
+      <loc>https://leebriggs.co.uk/puppet/2016/06/09/puppet-infrastructure-part-1.html</loc>
       
         <lastmod>2016-06-09T00:00:00-07:00</lastmod>
       
@@ -348,7 +348,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/puppet/2016/02/17/a-better-puppetmaster-healthcheck.html</loc>
+      <loc>https://leebriggs.co.uk/puppet/2016/02/17/a-better-puppetmaster-healthcheck.html</loc>
       
         <lastmod>2016-02-17T00:00:00-08:00</lastmod>
       
@@ -363,7 +363,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/consul/2016/02/08/infrastructure-service-discovery.html</loc>
+      <loc>https://leebriggs.co.uk/consul/2016/02/08/infrastructure-service-discovery.html</loc>
       
         <lastmod>2016-02-08T00:00:00-08:00</lastmod>
       
@@ -378,7 +378,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/sensu/2016/01/31/roundrobin-sensu-checks.html</loc>
+      <loc>https://leebriggs.co.uk/sensu/2016/01/31/roundrobin-sensu-checks.html</loc>
       
         <lastmod>2016-01-31T00:00:00-08:00</lastmod>
       
@@ -393,7 +393,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/sensu/2016/01/29/sensu-aggregates.html</loc>
+      <loc>https://leebriggs.co.uk/sensu/2016/01/29/sensu-aggregates.html</loc>
       
         <lastmod>2016-01-29T00:00:00-08:00</lastmod>
       
@@ -408,7 +408,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/sensu/2016/01/27/using-sensu-redaction.html</loc>
+      <loc>https://leebriggs.co.uk/sensu/2016/01/27/using-sensu-redaction.html</loc>
       
         <lastmod>2016-01-27T00:00:00-08:00</lastmod>
       
@@ -423,7 +423,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/infrastructure/2014/12/20/gotcha-mrepo-puppetlabs.html</loc>
+      <loc>https://leebriggs.co.uk/infrastructure/2014/12/20/gotcha-mrepo-puppetlabs.html</loc>
       
         <lastmod>2014-12-20T00:00:00-08:00</lastmod>
       
@@ -438,7 +438,7 @@
   
     
     <url>
-      <loc>http://localhost:4000/blog/2014/12/19/embracing-the-cloud.html</loc>
+      <loc>https://leebriggs.co.uk/blog/2014/12/19/embracing-the-cloud.html</loc>
       
         <lastmod>2014-12-19T00:00:00-08:00</lastmod>
       
@@ -456,24 +456,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/</loc>
+      <loc>https://leebriggs.co.uk/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://localhost:4000/about/</loc>
-      
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -486,24 +471,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/archives/</loc>
+      <loc>https://leebriggs.co.uk/about/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://localhost:4000/cp/</loc>
-      
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -516,24 +486,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/categories/</loc>
+      <loc>https://leebriggs.co.uk/archives/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://localhost:4000/tags/</loc>
-      
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -546,24 +501,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/feed.xml</loc>
+      <loc>https://leebriggs.co.uk/cp/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://localhost:4000/</loc>
-      
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -576,9 +516,69 @@
   
     
     <url>
-      <loc>http://localhost:4000/</loc>
+      <loc>https://leebriggs.co.uk/categories/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://leebriggs.co.uk/tags/</loc>
+      
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://leebriggs.co.uk/feed.xml</loc>
+      
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://leebriggs.co.uk/</loc>
+      
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>https://leebriggs.co.uk/</loc>
+      
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -591,24 +591,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/pf/</loc>
+      <loc>https://leebriggs.co.uk/pf/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://localhost:4000/blog/</loc>
-      
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -621,24 +606,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/projects/</loc>
+      <loc>https://leebriggs.co.uk/blog/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
-      
-      
-        <changefreq>monthly</changefreq>
-      
-      
-        <priority>0.5</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://localhost:4000/r/</loc>
-      
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -651,9 +621,9 @@
   
     
     <url>
-      <loc>http://localhost:4000/resume/</loc>
+      <loc>https://leebriggs.co.uk/projects/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -665,12 +635,25 @@
     
   
     
+    <url>
+      <loc>https://leebriggs.co.uk/r/</loc>
+      
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
   
     
     <url>
-      <loc>http://localhost:4000/roll/</loc>
+      <loc>https://leebriggs.co.uk/resume/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -684,12 +667,29 @@
     
   
     
+    <url>
+      <loc>https://leebriggs.co.uk/roll/</loc>
+      
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+  
+    
   
     
     <url>
-      <loc>http://localhost:4000/wp/</loc>
+      <loc>https://leebriggs.co.uk/wp/</loc>
       
-        <lastmod>2021-01-25T09:57:36-08:00</lastmod>
+        <lastmod>2021-01-25T10:31:17-08:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
