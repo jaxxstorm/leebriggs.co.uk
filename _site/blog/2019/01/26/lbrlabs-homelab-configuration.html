@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>lbrlabs - A Github Org for my Homelab | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="kubernetes, configuration mgmt, homelab, kr8">
+<link rel="canonical" href="/blog/2019/01/26/lbrlabs-homelab-configuration.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">lbrlabs - A Github Org for my Homelab</div>
+</h1>
+<p class="post-title__subtitle">Published Jan 26, 2019  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#kubernetes</span>
+
+    <span class="badge badge-info">#configuration mgmt</span>
+
+    <span class="badge badge-info">#homelab</span>
+
+    <span class="badge badge-info">#kr8</span>
+
+<hr>
+<br>
+<p><em>TL;DR: - go <a href="https://github.com/lbrlabs">here</a></em></p>
+
+<p>I often spend time in my day job wishing I could implement $newtech. I’m lucky enough to be working on projects right now that many people would find exciting, interesting and challenging, however it’s often the case that I see something I’d like to try, but deploying it at $dayjob requires me to design for large scale and with security and compliance in mind.</p>
+
+<p>When this happens, I generally try it out in my “homelab”. This might mean trying it in a cloud account (I’m particularly fond of <a href="https://www.digitalocean.com/">DigitalOcean</a> for this) but I also recently reinvested (I moved to another country last year, and had to sell my previous homelab equipment) in a very small homelab consisting of 3 mini PCs and a Dell T30 server, along with some <a href="https://www.ui.com/products/#unifi">UniFi</a>.</p>
+
+<p>My original intention was to blog about the journey, but I realised this might end up being more time consuming than I’d like, so with that in mind I decided that perhaps the best way to contribute knowledge back to the community was via Github.</p>
+
+<p>I’ve created a new Github Org, <a href="https://github.com/lbrlabs">lbrlabs</a> to hold all this configuration. Alongside this, I’ve created <a href="https://github.com/orgs/lbrlabs/projects">project boards</a> which will detail my journey as I build out the software in my homelab.</p>
+
+<p>Currently, the Org consists of 3 repos:</p>
+
+<ul>
+  <li>tf-kubernetes-clusters - a repo containing simple terraform code for Kubernetes clusters for a wide variety of cloud providers. The intention here is to make launching a cluster easy and straightforward for testing purposes</li>
+  <li>puppet-homelab - a Puppet control repo containing roles and profiles for my homelab. This could be used as a starting point for anyone wishing to build out a homelab, I’d encourage forking this and tailoring to your needs</li>
+  <li>kr8-cluster-config - a repo containing configuration for <a href="https://github.com/apptio/kr8">kr8</a> which allows me to quickly and easily install components inside the Kubernetes clusters I build. As an example I have components like <a href="https://metallb.universe.tf/">metallb</a> which allow me to have Kubernetes LoadBalancers.</li>
+</ul>
+
+<p>Some of the other tooling I’ve implemented includes:</p>
+
+<ul>
+  <li><a href="https://coredns.io">CoreDNS</a> via a <a href="https://github.com/jaxxstorm/puppet-coredns">Puppet module</a> which allows me to control my DNS infra</li>
+  <li><a href="https://choria.io">Choria</a> so I can quickly run tasks across the whole homelab</li>
+  <li><a href="https://github.com/kubernetes-incubator/external-dns">external-dns</a> via a <a href="https://github.com/lbrlabs/kr8-cluster-config/tree/master/components/external_dns">kr8 component</a> so I can automatically update DNS when deploying webapps on my homelab cluster</li>
+  <li><a href="https://github.com/jetstack/cert-manager">cert-manager</a> via a <a href="https://github.com/lbrlabs/kr8-cluster-config/tree/master/components/cert_manager">kr8-component</a> for automated TLS on my homelab cluster</li>
+  <li><a href="https://consul.io">consul</a> via the <a href="https://github.com/solarkennedy/puppet-consul">Puppet module</a></li>
+</ul>
+
+<p>In the near future, I plan on implementing other tech like:</p>
+
+<ul>
+  <li>Vault for secret management</li>
+  <li>Prometheus</li>
+  <li>eyaml encryption in Puppet</li>
+</ul>
+
+<p>My hope is that doing this in the open can help other homelabbers learn about enterprise software, specifically DevOps related projects.</p>
+
+<p>I encourage people to open issues in the repos, asking questions about how to implement things. Hopefully this can be my way to give back to the community.</p>
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2019/01/26/lbrlabs-homelab-configuration.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

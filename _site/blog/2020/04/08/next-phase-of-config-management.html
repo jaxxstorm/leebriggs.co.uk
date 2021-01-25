@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The next phase of configuration management | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="pulumi, kubernetes, AWS">
+<link rel="canonical" href="/blog/2020/04/08/next-phase-of-config-management.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">The next phase of configuration management</div>
+</h1>
+<p class="post-title__subtitle">Published Apr  8, 2020  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#pulumi</span>
+
+    <span class="badge badge-info">#kubernetes</span>
+
+    <span class="badge badge-info">#AWS</span>
+
+<hr>
+<br>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> An advanced warning: I recently changed companies and now work for <a href="https://pulumi.com">Pulumi</a>, which I’ll be discussing here. If you don’t want to hear about that, look away now.</div>
+
+<h2 id="configuration-complexity-chases-you">Configuration complexity chases you</h2>
+
+<p>This year marks my 10th anniversary as a (full time) system administrator. When I look back over that journey, remembering my first role for a large bank as a Lotus Notes administrator to now, I can safely say that one part of the job has been frustrating for me and has been ever-present in every role I’ve taken on. It’s something that has followed me throughout every interpretation of “system administration” (and the job role has had many names, which is a thread I don’t want to pull at). It’s something that has I’ve seen declared “solved” multiple times by different tools and products, but always manages to evolve as the industry changes.</p>
+
+<p>Configuration complexity.</p>
+
+<p>When I started my career, the problem of the day was the configuration of operating systems. Workloads were beginning to scale beyond the scope of single machines, and we needed a set of solutions to ensure all those machines <em>looked</em> the way we wanted them to. Tooling like Puppet, Chef, and then Ansible became incredibly popular very quickly because they were declarative. You defined your desired state in code (or something like code, which I’ll get to in a moment), and the tool took care of converging on that state. This pattern worked, and we all got a lot better at managing massive numbers of machines.
+At this point, someone at Amazon realised that companies were spending thousands of person-hours wasting their time doing stupid things like managing servers and buying hard drives. AWS changed the way we managed our systems, and the tooling we had adapted to suit those systems. When AWS was starting to gain momentum, it was still a widespread practice to boot your EC2 instance and configure the operating system on it.
+Unfortunately, this introduced another layer of complexity. Your cloud provider’s API layer now needs configuration, and we had all gotten used to the idea we wanted to declare our state and have something converge on it. The existing tools in this space weren’t cutting it, and then all of a sudden, Terraform emerged out of Hashicorp to solve <em>most</em> of our problems.</p>
+
+<h2 id="dsls-a-necessary-evil">DSLs: A necessary evil</h2>
+
+<p>The most successful tools of this era had something in common, even if they differed in the way they solved the problem. I attribute the success of the two tools I’ve used the most until this point (Puppet and Terraform) to the fact that they both have very readable and powerful DSLs. The decision to use DSLs made them extremely approachable to people, even with rudimentary software engineering backgrounds. Generally, you can take a simple block of Puppet code and very quickly get an idea of what it’s going to do:</p>
+
+<figure class="highlight"><pre><code class="language-puppet" data-lang="puppet">  <span class="n">file</span> <span class="p">{</span> <span class="s1">'/tmp/my-file'</span><span class="p">:</span>
+    <span class="py">ensure</span>  <span class="p">=&gt;</span> <span class="n">present</span><span class="p">,</span>
+    <span class="py">content</span> <span class="p">=&gt;</span> <span class="s1">'foo'</span><span class="p">,</span>
+    <span class="py">user</span>    <span class="p">=&gt;</span> <span class="s1">'jaxxstorm'</span><span class="p">,</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p>HCL has a similar approach - its simplicity allows you to look at (basic) HCL and get a decent idea of what’s going to happen when you execute it. Here’s a similar operation as our Puppet example in HCL:</p>
+
+<figure class="highlight"><pre><code class="language-hcl" data-lang="hcl"><span class="nx">resource</span> <span class="s2">"local_file"</span> <span class="s2">"my-file"</span> <span class="p">{</span>
+    <span class="nx">content</span>     <span class="p">=</span> <span class="s2">"foo"</span>
+    <span class="nx">filename</span> <span class="p">=</span> <span class="s2">"/tmp/my-file"</span><span class="err">,</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Simplicity is fantastic when you get started. However, in my experience with DSLs over the past 10 years is that you will, unfortunately, reach a tipping point in which you’re going to look at what you’ve created in horror. 
+Ultimately, there’s a universal truth of configuration complexity. No matter how you approach it, you’re dealing with 2 distinct users:
+People who want to twiddle all the different knobs, so they want all the configuration options available to them.
+People who only want the defaults, and might make a few changes later.<br />
+Catering to both those users with a DSL is <em>hard</em>. Both of the tools I’m most familiar with, Puppet and Terraform tried to approach this using a concept of “modules.” At their core, the idea is reasonable - abstract away the configuration complexity into a set of sane defaults, and expose the knobs for people to twiddle as parameters to the module. Unfortunately, this - in my admittedly humble opinion, hasn’t solved the problem.</p>
+
+<p>To get an idea of where we are here, let’s take a look at the <a href="https://github.com/terraform-aws-modules/terraform-aws-eks">terraform-eks module</a>. In particular, take a look at the <a href="https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/workers_launch_template.tf">workers_launch_template.tf file</a>.</p>
+
+<p>You’ll probably notice it’s over 450 lines of HCL. I find it very difficult to understand what this file is doing at first glance. Launch templates are incredibly complex mechanisms in AWS, with lots of different options depending on your needs. Supporting all of these different cases for both of the users mentioned above in a terraform module is <em>creating new configuration complexity</em>. The terraform-eks module has so many possible inputs I genuinely couldn’t be bothered to go through and count them all. In addition to this, if I want to make a configuration change to the module that for a parameter that doesn’t exist, my options are:
+Fork the module
+Don’t use the module, and write everything from scratch again.</p>
+
+<h2 id="okay-we-get-it-whats-the-answer">Okay, we get it, what’s the answer?</h2>
+
+<p>Recently I changed companies, and this problem was consistently in my mind when deciding on what to do next. I’ve written before about the <a href="https://leebriggs.co.uk/blog/2018/05/08/kubernetes-config-mgmt.html">need for configuration management for Kubernetes</a> clusters, however as time has gone on, I’ve realised what we need is configuration management for <em>any</em> abstraction layer. I even helped in trying to solve this problem at my former employer with Kr8.
+Ultimately, I believe that the only way to solve this configuration complexity is with language that is expressive and flexible. I’ve concluded that DSLs will only ever get you part of the way there.
+The only solution currently on the market is something I excitedly wrote about in September 2018 - <a href="https://www.pulumi.com/">Pulumi</a>.
+Pulumi allows you to take control of your configuration in your choice of programming language. With the decision to use a fully-featured language instead of a DSL, a whole world of opportunity opens up.</p>
+
+<p>Pulumi provides you direct access to the configuration options you might be familiar with in Terraform (in fact, you can convert terraform <em>providers</em> to Pulumi providers in a relatively straightforward manner). However, by providing access to these resources using a programming language, you can be extremely creative in how they get used.</p>
+
+<h3 id="pulumi-x-libraries">Pulumi x libraries</h3>
+
+<p>Examples of how this flexibility looks like in practice can be when you take a look at the <a href="https://github.com/pulumi/pulumi-awsx">awsx library</a>, which is maintained by the Pulumi team.</p>
+
+<p>This library uses the standard <a href="https://github.com/pulumi/pulumi-aws">aws library</a> under the hood, but wraps it up in sane configuration defaults using standard packaging methods. I previously wrote a very <a href="https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html">ranty and frustrated post</a> about how hard it was to stand up a service on fargate using terraform. Here’s what it looks like in awsx (using typescript):</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">aws</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@pulumi/aws</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">awsx</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@pulumi/awsx</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">listener</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">awsx</span><span class="p">.</span><span class="nx">lb</span><span class="p">.</span><span class="nx">NetworkListener</span><span class="p">(</span><span class="dl">"</span><span class="s2">nginx</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">port</span><span class="p">:</span> <span class="mi">80</span> <span class="p">});</span>
+<span class="kd">const</span> <span class="nx">nginx</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">awsx</span><span class="p">.</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">FargateService</span><span class="p">(</span><span class="dl">"</span><span class="s2">nginx</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">taskDefinitionArgs</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">containers</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">nginx</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">image</span><span class="p">:</span> <span class="dl">"</span><span class="s2">nginx</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">memory</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+                <span class="na">portMappings</span><span class="p">:</span> <span class="p">[</span><span class="nx">listener</span><span class="p">],</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="na">desiredCount</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>Seeing code like this makes sense to me. If I want simple, off the shelf defaults, I can write a module/library, but if I want to get into the nuts and bolts of the configuration, I can use the <code class="language-plaintext highlighter-rouge">@pulumi/aws</code> library and talk to the API directly.</p>
+
+<h3 id="whats-next">What’s next?</h3>
+
+<p>I joined Pulumi at the end of March, and I’m incredibly excited about being on the frontlines of battling configuration complexity. Going forward, I expect this blog to contain updates (sporadically, of course) about my journey. Already in my short time at Pulumi, I’ve dived into new programming languages (I wrote my first ever dotnet code this week!), heard from users, and been more involved than ever before in an open-source community. Most importantly, I can see a time where I don’t have to write a single line of YAML!</p>
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2020/04/08/next-phase-of-config-management.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

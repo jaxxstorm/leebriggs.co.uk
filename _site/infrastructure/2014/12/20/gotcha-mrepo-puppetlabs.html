@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>GOTCHA: Syncing PuppetLabs Repos with MRepo | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="mrepo, puppetlabs">
+<link rel="canonical" href="/infrastructure/2014/12/20/gotcha-mrepo-puppetlabs.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">GOTCHA: Syncing PuppetLabs Repos with MRepo</div>
+</h1>
+<p class="post-title__subtitle">Published Dec 20, 2014  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#mrepo</span>
+
+    <span class="badge badge-info">#puppetlabs</span>
+
+<hr>
+<br>
+<p>At {place of work}, in order to reduce our outband bandwidth, we do the sensible thing and mirror the CentOS repos locally in order to not, y’know, pull down a couple gig of RPM’s every time we do a server build. Obviously, a lot of people do this, and there’s various methods of achieveing the same thing. We use a nice python tool called <a href="http://dag.wiee.rs/home-made/mrepo/">mrepo</a> to do the bulk of the work, with the added nicety that PuppetLabs already wrote a <a href="https://github.com/puppetlabs/puppetlabs-mrepo">module</a> to do a lot of the heavy lifting.</p>
+
+<p>As well as mirroring the CentOS repos, we also mirror the <a href="https://docs.puppetlabs.com/guides/puppetlabs_package_repositories.html">PuppetLabs CentOS Repos</a> and I came across an annoying little quirk of MRepo today which was nice to fix.</p>
+
+<p>I did a manual mrepo sync of the repo, and noticed it was defaulting to the IPv6 Address that PuppetLabs uses:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># mrepo -ugvvvvvvv -r puppetlabs_products</span>
+Verbosity <span class="nb">set </span>to level 7
+&lt; ...snip.... <span class="o">&gt;</span>
+CentOS-EL6-x86_64: Updating CentOS EL6 x86_64
+CentOS-EL6-x86_64: Setting lock /var/cache/mrepo/CentOS-EL6-x86_64/update-puppetlabs_products.lock
+CentOS-EL6-x86_64: Mirror packages from http://yum.puppetlabs.com/el/6/products/x86_64/ to /var/mrepo/CentOS-EL6-x86_64/puppetlabs_products
+Execute: <span class="nb">exec</span> /usr/bin/lftp  <span class="nt">-d</span> <span class="nt">-c</span> <span class="s1">'; mirror -c -P -v -v -v -v -v -v -e -I *.rpm -X "/headers/" -X "/repodata/" -X "*.src.rpm" -X "/SRPMS/" -X "*-debuginfo-*.rpm" -X "/debug/" http://yum.puppetlabs.com/el/6/products/x86_64/ /var/mrepo/CentOS-EL6-x86_64/puppetlabs_products'</span>
+<span class="nt">----</span> Resolving host address...
+<span class="nt">----</span> 2 addresses found: 2600:3c00::f03c:91ff:fe69:6bf0, 198.58.114.168
+<span class="nt">----</span> Connecting to yum.puppetlabs.com <span class="o">(</span>2600:3c00::f03c:91ff:fe69:6bf0<span class="o">)</span> port 80</code></pre></figure>
+
+<p>Obviously, this wasn’t much good to me, and it can already see the IPv4 address, so why isn’t it using it?</p>
+
+<p>The answer, it turns out, is due to mrepo’s sync tool <a href="http://lftp.yar.ru/">lftp</a>. In order to fix this, you need to configure lftp to use IPv4 first. To do this, it’s as simple as adding the following to the lftp config like so:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">echo</span> <span class="s1">'set dns:order "inet inet6"'</span> <span class="o">&gt;&gt;</span> /etc/lftp.conf</code></pre></figure>
+
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/infrastructure/2014/12/20/gotcha-mrepo-puppetlabs.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

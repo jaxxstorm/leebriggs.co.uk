@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Multi-Cluster Parameterized Continuous Deployment for Kubernetes | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="argocd, jkcfg, kubernetes, AWS">
+<link rel="canonical" href="/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">Multi-Cluster Parameterized Continuous Deployment for Kubernetes</div>
+</h1>
+<p class="post-title__subtitle">Published Dec  9, 2019  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#argocd</span>
+
+    <span class="badge badge-info">#jkcfg</span>
+
+    <span class="badge badge-info">#kubernetes</span>
+
+    <span class="badge badge-info">#AWS</span>
+
+<hr>
+<br>
+<p>At <code class="language-plaintext highlighter-rouge">$work</code>, we have several Kubernetes clusters across different geographical and AWS regions. The reasons range from customer requirements, to our own desire to reduce operational “blast radius” issues that might come up. Our team has experience large outages before, and we try and build the smallest unit of deployment we possibly can for out platform.</p>
+
+<p>Unfortunately, this brings with it new challenges, especially when it comes to running Kubernetes clusters. I’ve spoke extensively about this on this blog before, particularly regarding <a href="https://leebriggs.co.uk/blog/2018/05/08/kubernetes-config-mgmt.html">configuration management needs</a> and the overhead that scaling out to multiple clusters brings.</p>
+
+<p>As these clusters have become more utilized by application teams, a new consideration has arisen. Deploying regional applications has the same configuration complexity problems I’ve spoken about when it comes to the infrastructure management, and essentially the needs boil down to the same words we’re familiar with: configuration management.</p>
+
+<p>I set out to try and make the task of deploying applications to regional clusters as easy as possible for our teams following the same philosophy frustrations I had before. The requirements were a bit like this:</p>
+
+<ul>
+  <li><a href="https://leebriggs.co.uk/blog/2019/02/07/why-are-we-templating-yaml.html">no templating languages</a> (no helm!)</li>
+  <li>continuous deployment made easy</li>
+  <li>easy for developers to grasp - low barrier to entry</li>
+  <li>abstract as much of configuration complexity away as possible</li>
+</ul>
+
+<p>What I came up with works very nicely, and uses largely off the shelf tooling that you can replicate very easily.</p>
+
+<p>This post is the first in what I hope will be a 2 part series of posts which covers the following topics:</p>
+
+<ol>
+  <li>Generating regional/parameterised manifests using jkcfg</li>
+  <li>Using Gitlab, Gitlab-CI, ArgoCD and GitOps to deploy to multiple clusters</li>
+</ol>
+
+<h2 id="part-1-generate-your-config">Part 1: Generate your config</h2>
+
+<p>It’s the first step, but it’s also the hardest. How do you generate your YAML configuration for the different clusters?</p>
+
+<p>I looked at a few options here, like the now defunct <a href="https://ksonnet.io/">ksonnet</a> as well as <a href="https://helm.sh/">Helm</a> but they didn’t really seem like optimal solutions.</p>
+
+<p>Ksonnet uses jsonnet, which for us infrastructure people didn’t seem so bad (we used it in <a href="https://github.com/apptio/kr8">kr8</a>) but there was very little desire for developers to actually learn this new and strange language for their application development needs. Luckily for me, it was deprecated just as I was trying to convince my developers otherwise, which meant I kept search for other solutions.</p>
+
+<p>Helm is the defacto standard for this kind of thing but again, there were some confused questions when it came to the templating of YAML. I could sympathise with this, and at the time, Helm had some serious security problems with Tiller. Helm3 has largely addresses this, but I still can’t bring myself to template yaml.</p>
+
+<h3 id="jkcfg">jkcfg</h3>
+
+<p>It was around this time I became familiar with <a href="https://jkcfg.github.io/#/">jkcfg</a> which caught my eye. I’ve used <a href="http://pulumi.io/">Pulumi</a> before, so I was quite familiar with the idea of configuring my instrastructure using an actual programming language, and really liked the idea. What I didn’t like about Pulumi was the way it directly interacted with clusters to do deployments. 
+Jkcfg on the other hand keeps it simpler. It takes JavaScript (or typescript) and generates YAML documents for you. That’s it. The YAML files it generates are idempotent and will regenerate the same each time. It can take parameters very easily, which fit in with my desire to have configuration values per cluster, and most importantly in its favour (as opposed to Helm and Jsonnet) it was a language native to most developers.</p>
+
+<h3 id="lets-generate-some-manifests">Let’s generate some manifests</h3>
+
+<p>Before I begin, I’d like to point out something important: <em>This was my first ever use of JavaScript</em>. If this sucks, please let me know!</p>
+
+<p>The jkcfg repo has some excellent <a href="https://github.com/jkcfg/kubernetes/tree/master/examples">examples</a> you can use, and getting started was generally pretty straightforward.</p>
+
+<p>Download the jk binary</p>
+
+<p>Init a repo using your favourite javascript dependency tool (yarn, for example)</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">yarn init
+yarn init v1.15.2
+question name <span class="o">(</span>jkcfg-example<span class="o">)</span>:
+question version <span class="o">(</span>1.0.0<span class="o">)</span>:
+question description: An example jkcfg deployment
+question entry point <span class="o">(</span>index.js<span class="o">)</span>:
+question repository url: https://github.com/jaxxstorm/jkcfg-example
+question author: Lee Briggs
+question license <span class="o">(</span>MIT<span class="o">)</span>: MIT
+question private: no
+success Saved package.json
+✨  Done <span class="k">in </span>43.32s.</code></pre></figure>
+
+<p>Add the <code class="language-plaintext highlighter-rouge">@jkcfg/kubernetes</code> package:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">yarn add @jkcfg/kubernetes
+yarn add v1.15.2
+info No lockfile found.
+<span class="o">[</span>1/4] 🔍  Resolving packages...
+<span class="o">[</span>2/4] 🚚  Fetching packages...
+<span class="o">[</span>3/4] 🔗  Linking dependencies...
+<span class="o">[</span>4/4] 🔨  Building fresh packages...
+success Saved lockfile.
+success Saved 2 new dependencies.
+info Direct dependencies
+└─ @jkcfg/kubernetes@0.5.1
+info All dependencies
+├─ @jkcfg/kubernetes@0.5.1
+└─ @jkcfg/std@0.3.2
+✨  Done <span class="k">in </span>3.31s.</code></pre></figure>
+
+<p>Okay, so we’re ready to generate some manifests. A simple deployment might look like this:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">k8s</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/kubernetes/api</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">std</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">deployment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">k8s</span><span class="p">.</span><span class="nx">apps</span><span class="p">.</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Deployment</span><span class="p">(</span><span class="s2">`myapp`</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">metadata</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">namespace</span><span class="p">:</span> <span class="dl">'</span><span class="s1">myapp</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">spec</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">replicas</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="na">template</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">spec</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">containers</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="na">image</span><span class="p">:</span> <span class="dl">'</span><span class="s1">jaxxstorm/myapp:v0.1</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">imagePullPolicy</span><span class="p">:</span> <span class="dl">'</span><span class="s1">IfNotPresent</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">myapp</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">resources</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">requests</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">cpu</span><span class="p">:</span> <span class="dl">"</span><span class="s2">500m</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">memory</span><span class="p">:</span> <span class="dl">"</span><span class="s2">500Mi</span><span class="dl">"</span>
+              <span class="p">},</span>
+              <span class="na">limits</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">cpu</span><span class="p">:</span> <span class="dl">"</span><span class="s2">2000m</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">memory</span><span class="p">:</span> <span class="dl">"</span><span class="s2">2000Mi</span><span class="dl">"</span>
+              <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="na">ports</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="na">containerPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span>
+              <span class="na">protocol</span><span class="p">:</span> <span class="dl">'</span><span class="s1">TCP</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">}],</span>
+          <span class="p">}],</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="kd">const</span> <span class="nx">myapp</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nx">deployment</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="nx">std</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">myapp</span><span class="p">,</span> <span class="s2">`manifests/myapp.yaml`</span><span class="p">,</span> <span class="p">{</span> <span class="na">format</span><span class="p">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">YAMLStream</span> <span class="p">});</span></code></pre></figure>
+
+<p>Once you have your deployment javascript file, you can generate a YAML document by running the <code class="language-plaintext highlighter-rouge">jk</code> command:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">jk run index.js</code></pre></figure>
+
+<h3 id="parameters">Parameters</h3>
+
+<p>Okay, we have a nice deployment manifest now, but how does this help me with different regions?</p>
+
+<p>jkcfg supports “parameters” which can be passed either via a command line argument, or a file. This is similar to Helm’s <a href="https://helm.sh/docs/topics/chart_template_guide/values_files/">values</a> files which are evaluated at compile time. Using values in jkcfg is very straightforward.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Import the param package</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">param</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std/param</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// declare a constant, replica which is set to the value of "replicas"</span>
+<span class="c1">// and has a default of "1"</span>
+<span class="kd">const</span> <span class="nx">replicas</span> <span class="o">=</span> <span class="nx">param</span><span class="p">.</span><span class="nb">Number</span><span class="p">(</span><span class="dl">'</span><span class="s1">replicas</span><span class="dl">'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></code></pre></figure>
+
+<p>You can then use this value inside your deployment manifest. Here’s the end result:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">k8s</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/kubernetes/api</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">std</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">param</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std/param</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">replicas</span> <span class="o">=</span> <span class="nx">param</span><span class="p">.</span><span class="nb">Number</span><span class="p">(</span><span class="dl">'</span><span class="s1">replicas</span><span class="dl">'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="kd">const</span> <span class="nx">deployment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">k8s</span><span class="p">.</span><span class="nx">apps</span><span class="p">.</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Deployment</span><span class="p">(</span><span class="s2">`myapp`</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">metadata</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">namespace</span><span class="p">:</span> <span class="dl">'</span><span class="s1">myapp</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">spec</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">replicas</span><span class="p">:</span> <span class="nx">replicas</span><span class="p">,</span> <span class="c1">// use the value from the param</span>
+      <span class="na">template</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">spec</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">containers</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="na">image</span><span class="p">:</span> <span class="dl">'</span><span class="s1">jaxxstorm/myapp:v0.1</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">imagePullPolicy</span><span class="p">:</span> <span class="dl">'</span><span class="s1">IfNotPresent</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">myapp</span><span class="dl">'</span><span class="p">,</span>
+            <span class="na">resources</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">requests</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">cpu</span><span class="p">:</span> <span class="dl">"</span><span class="s2">500m</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">memory</span><span class="p">:</span> <span class="dl">"</span><span class="s2">500Mi</span><span class="dl">"</span>
+              <span class="p">},</span>
+              <span class="na">limits</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">cpu</span><span class="p">:</span> <span class="dl">"</span><span class="s2">2000m</span><span class="dl">"</span><span class="p">,</span>
+                <span class="na">memory</span><span class="p">:</span> <span class="dl">"</span><span class="s2">2000Mi</span><span class="dl">"</span>
+              <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="na">ports</span><span class="p">:</span> <span class="p">[{</span>
+              <span class="na">containerPort</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span>
+              <span class="na">protocol</span><span class="p">:</span> <span class="dl">'</span><span class="s1">TCP</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">}],</span>
+          <span class="p">}],</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="kd">const</span> <span class="nx">myapp</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nx">deployment</span><span class="p">,</span>
+  <span class="p">]</span>
+
+<span class="nx">std</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">myapp</span><span class="p">,</span> <span class="s2">`manifests/myapp.yaml`</span><span class="p">,</span> <span class="p">{</span> <span class="na">format</span><span class="p">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">YAMLStream</span> <span class="p">});</span></code></pre></figure>
+
+<p>Once you’ve started using parameters, you probably don’t always want to use the same number of replicas. You can invoke the parameters in two ways. The first, and easiest, is on the command line:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">jk run index.js <span class="nt">-p</span> <span class="nv">replicas</span><span class="o">=</span>5</code></pre></figure>
+
+<p>Check the manifest now in <code class="language-plaintext highlighter-rouge">manifests/myapp.yaml</code>: you’ll see we’ve set the replicas to 5!</p>
+
+<p>The other way of overriding the parameters is using a parameters file. This can be YAML or JSON. Create a file called <code class="language-plaintext highlighter-rouge">params/myapp.yaml</code> and populate it like so:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">replicas: 100</code></pre></figure>
+
+<p>Then use it with jk like so:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">jk run <span class="nt">-f</span> params/myapp.yaml index.js</code></pre></figure>
+
+<p>Easy!</p>
+
+<h3 id="abstract-abstract-abstract">Abstract, abstract, abstract</h3>
+
+<p>As I went through this journey, it became apparent there was a lot of code reuse across different services. Most of the services we build are using the same frameworks, and need a lot of similar configuration.</p>
+
+<p>For example, every service we deploy to Kubernetes needs 4 basic things:</p>
+
+<ul>
+  <li>A deployment spec
+    <ul>
+      <li>With KIAM annotations</li>
+      <li>With security contexts</li>
+      <li>etc etc</li>
+    </ul>
+  </li>
+  <li>A service spec</li>
+  <li>An ingress</li>
+  <li>A configmap</li>
+</ul>
+
+<p>As we went through this journey, I found myself writing a lot of repeatable javascript, and I wasn’t getting a whole lot of value out of it.</p>
+
+<p>Of course, because this configuration is written in JavaScript, we can take advantage of JavaScript packages to simplify the whole process. At this point, I built a (private) NPM package to abstract most of the code away from the end user. You can see an example of this kind of pattern in the <a href="https://jkcfg.github.io/#/documentation/quick-start/a-more-realistic-example">jkcfg documentation</a></p>
+
+<p>Here’s the repo contents:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">.</span>
+├── README.md
+├── index.js
+├── kube.js
+├── labels.js
+├── package.json
+└── yarn.lock</code></pre></figure>
+
+<p>I’ll break down the <code class="language-plaintext highlighter-rouge">js</code> files so we can get an idea of what this entails.</p>
+
+<h4 id="kubejs">kube.js</h4>
+
+<p>The main meat of the package is in <code class="language-plaintext highlighter-rouge">kube.js</code>. Let’s take a look at this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">import <span class="k">*</span> as api from <span class="s1">'@jkcfg/kubernetes/api'</span><span class="p">;</span>
+import <span class="o">{</span> Labels <span class="o">}</span> from <span class="s1">'./labels'</span><span class="p">;</span>
+
+<span class="k">function </span>Deployment<span class="o">(</span>service<span class="o">)</span> <span class="o">{</span>
+  <span class="k">return </span>new api.apps.v1.Deployment<span class="o">(</span>service.name, <span class="o">{</span>
+    metadata: <span class="o">{</span>
+      namespace: service.namespace,
+      labels: Labels<span class="o">(</span>service<span class="o">)</span>,
+      annotations: service.deployment.annotations,
+    <span class="o">}</span>,
+    spec: <span class="o">{</span>
+      selector: <span class="o">{</span>
+        matchLabels: Labels<span class="o">(</span>service<span class="o">)</span>,
+      <span class="o">}</span>,
+      replicas: service.replicas,
+      template: <span class="o">{</span>
+        metadata: <span class="o">{</span>
+          labels: Labels<span class="o">(</span>service<span class="o">)</span>,
+          annotations: service.deployment.annotations,
+        <span class="o">}</span>,
+        spec: <span class="o">{</span>
+          containers: <span class="o">[{</span>
+            name: service.name,
+            image: <span class="sb">`</span><span class="k">${</span><span class="nv">service</span><span class="p">.deployment.image</span><span class="k">}</span>:<span class="k">${</span><span class="nv">service</span><span class="p">.version</span><span class="k">}</span><span class="sb">`</span>,
+            imagePullPolicy: <span class="s1">'IfNotPresent'</span>,
+            readinessProbe: <span class="o">{</span>
+              httpGet: <span class="o">{</span>
+                  path: <span class="s1">'/healthcheck'</span>,
+                  port: service.ports.health,
+              <span class="o">}</span>,
+              initialDelaySeconds: 10,
+              timeoutSeconds: 10,
+            <span class="o">}</span>,
+            envFrom: <span class="o">[{</span>
+              configMapRef: <span class="o">{</span>
+                name: service.name,
+              <span class="o">}</span>,
+            <span class="o">}]</span>,
+            ports: <span class="o">[{</span>
+              containerPort: service.ports.web,
+            <span class="o">}</span>, <span class="o">{</span>
+              containerPort: service.ports.health,
+            <span class="o">}]</span>,
+            resources: service.resources,
+          <span class="o">}]</span>,
+        <span class="o">}</span>,
+      <span class="o">}</span>,
+      securityContext: <span class="o">{</span>
+        runAsNonRoot: <span class="nb">true</span>,
+        runAsUser: 65534,
+      <span class="o">}</span>,
+    <span class="o">}</span>,
+  <span class="o">})</span><span class="p">;</span>
+<span class="o">}</span>
+
+<span class="k">function </span>Service<span class="o">(</span>service<span class="o">)</span> <span class="o">{</span>
+  <span class="k">return </span>new api.core.v1.Service<span class="o">(</span>service.name, <span class="o">{</span>
+    metadata: <span class="o">{</span>
+      namespace: service.namespace,
+      labels: Labels<span class="o">(</span>service<span class="o">)</span>,
+    <span class="o">}</span>,
+    spec: <span class="o">{</span>
+      selector: Labels<span class="o">(</span>service<span class="o">)</span>,
+      ports: <span class="o">[{</span>
+        name: <span class="s1">'web'</span>,
+        port: service.ports.web,
+        protocol: <span class="s1">'TCP'</span>,
+        targetPort: service.ports.web,
+      <span class="o">}</span>, <span class="o">{</span>
+        name: <span class="s1">'health'</span>,
+        port: service.ports.health,
+        protocol: <span class="s1">'TCP'</span>,
+        targetPort: service.ports.health,
+      <span class="o">}]</span>,
+    <span class="o">}</span>,
+  <span class="o">})</span><span class="p">;</span>
+<span class="o">}</span>
+
+<span class="k">function </span>Ingress<span class="o">(</span>service<span class="o">)</span> <span class="o">{</span>
+  <span class="k">return </span>new api.extensions.v1beta1.Ingress<span class="o">(</span>service.name, <span class="o">{</span>
+    metadata: <span class="o">{</span>
+      namespace: service.namespace,
+      labels: Labels<span class="o">(</span>service<span class="o">)</span>,
+      annotations: <span class="o">{</span>
+        <span class="s1">'ingress.kubernetes.io/ssl-redirect'</span>: <span class="s1">'true'</span>,
+        <span class="s1">'kubernetes.io/ingress.class'</span>: service.ingress.class,
+      <span class="o">}</span>,
+    <span class="o">}</span>,
+    spec: <span class="o">{</span>
+      rules: <span class="o">[{</span>
+            host: service.ingress.host,
+            http: <span class="o">{</span>
+                paths: <span class="o">[{</span>
+                        path: <span class="s1">'/'</span>,
+                        backend: <span class="o">{</span>
+                            serviceName: service.name,
+                            servicePort: service.ports.web,
+                        <span class="o">}</span>,
+                    <span class="o">}</span>,
+                    <span class="o">{</span>
+                        path: <span class="s1">'/health'</span>,
+                        backend: <span class="o">{</span>
+                            serviceName: service.name,
+                            servicePort: service.ports.health,
+                        <span class="o">}</span>,
+                <span class="o">}]</span>,
+            <span class="o">}</span>,
+      <span class="o">}]</span>,
+    <span class="o">}</span>,
+  <span class="o">})</span><span class="p">;</span>
+<span class="o">}</span>
+
+<span class="nb">export</span> <span class="o">{</span>
+  Deployment,
+  Ingress,
+  Service,
+<span class="o">}</span><span class="p">;</span></code></pre></figure>
+
+<p>Obviously this is a lot more involved than our previous, very simple deployment from earlier. What’s worth noting though is that this is completely configurable by a <code class="language-plaintext highlighter-rouge">service</code> object in our jkcfg configuration parameter. I’ve gone for an approach here as well where we load the configuration variable from a configmap, which is <em>not</em> managed by this module. That way, we can use a basic boilerplate module for <em>most</em> of the stuff we want to deploy, and we can have a pretty high degree of confidence that the deployments meet our standards.</p>
+
+<h4 id="labelsjs">labels.js</h4>
+
+<p>This labels file is simply a way of ensuring we have the correct labels defined for all our resources. Here’s what it looks like:</p>
+
+<figure class="highlight"><pre><code class="language-javscript" data-lang="javscript">export function Labels(service) {
+    return {
+        app: service.name,
+        stage: service.tier,
+        environment: service.environment,
+        region: service.region,
+    };
+}</code></pre></figure>
+
+<p>Notice, we’re exporting this as a function. The “why” will become apparent later…</p>
+
+<h4 id="indexjs">index.js</h4>
+
+<p>Finally, our <code class="language-plaintext highlighter-rouge">index.js</code> where we export all this to be used:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="p">{</span> <span class="nx">Labels</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./labels</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">k</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./kube</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">KubeService</span><span class="p">(</span><span class="nx">service</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span>
+    <span class="nx">k</span><span class="p">.</span><span class="nx">Deployment</span><span class="p">(</span><span class="nx">service</span><span class="p">),</span>
+    <span class="nx">k</span><span class="p">.</span><span class="nx">Service</span><span class="p">(</span><span class="nx">service</span><span class="p">),</span>
+    <span class="nx">k</span><span class="p">.</span><span class="nx">Ingress</span><span class="p">(</span><span class="nx">service</span><span class="p">),</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="p">{</span> <span class="nx">Labels</span> <span class="p">};</span></code></pre></figure>
+
+<p>We now have a very basic NPM package. We can push this to git or to the NPM registry and let people use. So how do we actually use it?</p>
+
+<h3 id="using-the-package">Using the package</h3>
+
+<p>Using this is pretty straightforward. First, add it as a dependency:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">yarn add <span class="s2">"git+https://github.com/jaxxstorm/jkcfg-example#master"</span> <span class="c"># Pull the dep from git on the master branch</span></code></pre></figure>
+
+<p>Then import it to be used in your jkcfg <code class="language-plaintext highlighter-rouge">index.js</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">param</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std/param</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">api</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/kubernetes/api</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">std</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std</span><span class="dl">'</span><span class="p">;</span>
+<span class="c1">// Import the akp packages</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">ks</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jaxxstorm/jkcfg-example</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// This is my package name</span></code></pre></figure>
+
+<p>Now we’ve imported it, the fun stuff starts. For your average person, you can generate the deployment, service and ingress with two files. First, pad out your <code class="language-plaintext highlighter-rouge">index.js</code> like so:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This reads the params file specified on the command line</span>
+<span class="kd">const</span> <span class="nx">service</span> <span class="o">=</span> <span class="nx">param</span><span class="p">.</span><span class="nb">Object</span><span class="p">(</span><span class="dl">'</span><span class="s1">service</span><span class="dl">'</span><span class="p">);</span>
+<span class="c1">// Set the value of manifest (written to a file later) to the exported function</span>
+<span class="kd">const</span> <span class="nx">manifest</span> <span class="o">=</span> <span class="nx">ks</span><span class="p">.</span><span class="nx">KubeServiceService</span><span class="p">(</span><span class="nx">service</span><span class="p">);</span>
+
+<span class="c1">// Write the contents of manifest to a manifest file</span>
+<span class="nx">std</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">manifest</span><span class="p">,</span> <span class="s2">`manifests/</span><span class="p">${</span><span class="nx">service</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.yaml`</span><span class="p">,</span> <span class="p">{</span> <span class="na">format</span><span class="p">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">YAMLStream</span> <span class="p">});</span></code></pre></figure>
+
+<p>That’s it! 10 lines of JavaScript to generate our Kubernetes manifest!</p>
+
+<p>Before we get too excited, we need to populate our params file:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">service</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">myapp</span> <span class="c1"># the name of your service</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">myapp</span> <span class="c1"># the namespace you want to deploy to</span>
+  <span class="c1"># deployment specific config</span>
+  <span class="na">deployment</span><span class="pi">:</span>
+    <span class="na">annotations</span><span class="pi">:</span> <span class="c1"># a key value mapping, below is an example</span>
+      <span class="c1"># 'iam.amazonaws.com/role': 'kiam-role</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">jaxxstorm/myapp</span>
+  <span class="na">ingress</span><span class="pi">:</span>
+    <span class="na">class</span><span class="pi">:</span> <span class="s1">'</span><span class="s">default'</span>
+    <span class="na">host</span><span class="pi">:</span> <span class="s1">'</span><span class="s">myapp.example.com'</span> <span class="c1"># the url you want to access you app on</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="na">web</span><span class="pi">:</span> <span class="m">8080</span>
+    <span class="na">health</span><span class="pi">:</span> <span class="m">8081</span>
+  <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">requests</span><span class="pi">:</span>
+      <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">500m"</span>
+      <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">500Mi"</span>
+    <span class="na">limits</span><span class="pi">:</span>
+      <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2000m"</span>
+      <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2000Mi"</span>
+  <span class="na">environment</span><span class="pi">:</span> <span class="s">dev</span>
+  <span class="na">tier</span><span class="pi">:</span> <span class="s">standard</span> <span class="c1"># only used for some config options, added as a label</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">us-west-2</span></code></pre></figure>
+
+<p>As you can see, the service object does most of the work for us, and we can tailor it per region or per environment as needed.</p>
+
+<p>At this stage, we’re ready to generate our manifests again. Let’s use the command from before:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">jk run deployment/kube/jk/index.js <span class="nt">-o</span> complex/manifests <span class="nt">-f</span> complex/params/dev/us-west-2.yaml <span class="nt">-p</span> <span class="nv">version</span><span class="o">=</span>0.0.1</code></pre></figure>
+
+<p>Notice how we specify the version as a parameter outside the params file, simply because we expect this to be a dynamic value. I’ll talk more about this in my next post.</p>
+
+<p>This should have generated manifests for you in <code class="language-plaintext highlighter-rouge">complex/manifests</code> and now you’re ready to do some deployments!</p>
+
+<h2 id="add-a-configmap">Add a ConfigMap</h2>
+
+<p>The final part of this is the configuration. We’ve so far tried to build a jkcfg package that is as agnostic as possible, and can be reused across many different services and deployments.</p>
+
+<p>The reality is though, you’re still going to need to add configuration data for the service. We can utilise what we’ve got here and add a configmap to the equation which can be customised per-deployment very easily.</p>
+
+<p>In your <code class="language-plaintext highlighter-rouge">index.js</code> add the following:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Read the params file for the config object</span>
+<span class="kd">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">param</span><span class="p">.</span><span class="nb">Object</span><span class="p">(</span><span class="dl">'</span><span class="s1">config</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// ConfigMaps are generally unique to each service</span>
+<span class="kd">function</span> <span class="nx">ConfigMap</span><span class="p">(</span><span class="nx">service</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">api</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">v1</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">metadata</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">namespace</span><span class="p">:</span> <span class="nx">service</span><span class="p">.</span><span class="nx">namespace</span><span class="p">,</span>
+            <span class="na">labels</span><span class="p">:</span> <span class="nx">ks</span><span class="p">.</span><span class="nx">Labels</span><span class="p">(</span><span class="nx">service</span><span class="p">),</span>
+        <span class="p">},</span>
+        <span class="na">data</span><span class="p">:</span> <span class="nx">config</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="c1">// Add the ConfigMap function output to the manifest that is written</span>
+<span class="nx">manifest</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="nx">service</span><span class="p">))</span></code></pre></figure>
+
+<p>Your end result should be this:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">param</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std/param</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">api</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/kubernetes/api</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">std</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jkcfg/std</span><span class="dl">'</span><span class="p">;</span>
+<span class="c1">// Import the akp packages</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">ks</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@jaxxstorm/jkcfg-example</span><span class="dl">'</span><span class="p">;</span> <span class="c1">// This is my package name</span>
+
+<span class="c1">// This reads the params file specified on the command line</span>
+<span class="kd">const</span> <span class="nx">service</span> <span class="o">=</span> <span class="nx">param</span><span class="p">.</span><span class="nb">Object</span><span class="p">(</span><span class="dl">'</span><span class="s1">service</span><span class="dl">'</span><span class="p">);</span>
+<span class="c1">// Set the value of manifest (written to a file later) to the exported function</span>
+<span class="kd">const</span> <span class="nx">manifest</span> <span class="o">=</span> <span class="nx">ks</span><span class="p">.</span><span class="nx">KubeServiceService</span><span class="p">(</span><span class="nx">service</span><span class="p">);</span>
+
+<span class="c1">// Read the params file for the config object</span>
+<span class="kd">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">param</span><span class="p">.</span><span class="nb">Object</span><span class="p">(</span><span class="dl">'</span><span class="s1">config</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="c1">// ConfigMaps are generally unique to each service</span>
+<span class="kd">function</span> <span class="nx">ConfigMap</span><span class="p">(</span><span class="nx">service</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">api</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">v1</span><span class="p">.</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">metadata</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">namespace</span><span class="p">:</span> <span class="nx">service</span><span class="p">.</span><span class="nx">namespace</span><span class="p">,</span>
+            <span class="na">labels</span><span class="p">:</span> <span class="nx">ks</span><span class="p">.</span><span class="nx">Labels</span><span class="p">(</span><span class="nx">service</span><span class="p">),</span>
+        <span class="p">},</span>
+        <span class="na">data</span><span class="p">:</span> <span class="nx">config</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="c1">// Add the ConfigMap function output to the manifest that is written</span>
+<span class="nx">manifest</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ConfigMap</span><span class="p">(</span><span class="nx">service</span><span class="p">))</span>
+
+<span class="c1">// Write the contents of manifest to a manifest file</span>
+<span class="nx">std</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">manifest</span><span class="p">,</span> <span class="s2">`manifests/</span><span class="p">${</span><span class="nx">service</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.yaml`</span><span class="p">,</span> <span class="p">{</span> <span class="na">format</span><span class="p">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">YAMLStream</span> <span class="p">});</span></code></pre></figure>
+
+<p>This will now generate a ConfigMap, but it’ll be empty. You need to add a <code class="language-plaintext highlighter-rouge">config</code> object to your params file. It’ll end up looking like this:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">service</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">myapp</span> <span class="c1"># the name of your service</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">myapp</span> <span class="c1"># the namespace you want to deploy to</span>
+  <span class="c1"># deployment specific config</span>
+  <span class="na">deployment</span><span class="pi">:</span>
+    <span class="na">annotations</span><span class="pi">:</span> <span class="c1"># a key value mapping, below is an example</span>
+      <span class="c1"># 'iam.amazonaws.com/role': 'kiam-role</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">jaxxstorm/myapp</span>
+  <span class="na">ingress</span><span class="pi">:</span>
+    <span class="na">class</span><span class="pi">:</span> <span class="s1">'</span><span class="s">default'</span>
+    <span class="na">host</span><span class="pi">:</span> <span class="s1">'</span><span class="s">myapp.example.com'</span> <span class="c1"># the url you want to access you app on</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="na">web</span><span class="pi">:</span> <span class="m">8080</span>
+    <span class="na">health</span><span class="pi">:</span> <span class="m">8081</span>
+  <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">requests</span><span class="pi">:</span>
+      <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">500m"</span>
+      <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">500Mi"</span>
+    <span class="na">limits</span><span class="pi">:</span>
+      <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2000m"</span>
+      <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2000Mi"</span>
+  <span class="na">environment</span><span class="pi">:</span> <span class="s">dev</span>
+  <span class="na">tier</span><span class="pi">:</span> <span class="s">standard</span> <span class="c1"># only used for some config options, added as a label</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">us-west-2</span>
+<span class="na">config</span><span class="pi">:</span>
+  <span class="na">FOO</span><span class="pi">:</span> <span class="s">bar</span> <span class="c1"># Environment variables you want in your configmap</span></code></pre></figure>
+
+<p>And now we have a working deployment, with all the resources we might need to run a service.</p>
+
+<h2 id="benefits">Benefits</h2>
+
+<p>You might be wondering at this point, this a lot of work! Why not just use a Helm chart? My personal thoughts about why I prefer this way are:</p>
+
+<ul>
+  <li>Helm charts are rarely agnostic. This pattern can be repeated for a lot of deployments, and because it’s JavaScript you can also just pick and choose the parts you need and overload some exported functions if needed</li>
+  <li>Using Helm charts mean developers have to learn a new pattern, specifically Go templates. With this method, they can use a programming language which they will undoubtedly feel more familiar with</li>
+</ul>
+
+<h2 id="next-steps">Next steps</h2>
+
+<p>This concludes part 1 of my series. In part 2, I’ll talk a little bit about using the CI pipeline to generate these configs and push them to a deploy repo (specifically with Gitlab-CI) and then talk a little bit about using Argo do deployments.</p>
+
+<p>All the code from this post can be found in the <a href="https://github.com/jaxxstorm/jkcfg-example">github repo</a> if you want to take a look!</p>
+
+<p>Stay tuned for the next post!</p>
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2019/12/09/parameterized-continuous-deployment-kubernetes.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

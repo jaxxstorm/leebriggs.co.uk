@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>A Better Puppetmaster Healthcheck | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="">
+<link rel="canonical" href="/puppet/2016/02/17/a-better-puppetmaster-healthcheck.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">A Better Puppetmaster Healthcheck</div>
+</h1>
+<p class="post-title__subtitle">Published Feb 17, 2016  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+<hr>
+<br>
+<p>In my <a href="/consul/2016/02/08/infrastructure-service-discovery.html">last post</a> I wrote about service discover with my Puppetmasters using <a href="https://consul.io">consul</a></p>
+
+<p>As part of this deployment, I deployed a healthcheck using Consul’s <a href="https://www.consul.io/docs/agent/checks.html">TCP Checks</a> to check the puppetmasters was responding in its default port (8140). In Puppet, it looked like this:</p>
+
+<figure class="highlight"><pre><code class="language-puppet" data-lang="puppet"><span class="p">::</span><span class="n">consul::check</span> <span class="p">{</span> <span class="s1">'puppetmaster_tcp'</span><span class="p">:</span>
+    <span class="py">interval</span>   <span class="p">=&gt;</span> <span class="s1">'60'</span><span class="p">,</span>
+    <span class="py">tcp</span>        <span class="p">=&gt;</span> <span class="s1">'localhost:8140'</span><span class="p">,</span>
+    <span class="py">notes</span>      <span class="p">=&gt;</span> <span class="s1">'Puppetmasters listen on port 8140'</span><span class="p">,</span>
+    <span class="py">service_id</span> <span class="p">=&gt;</span> <span class="s1">'puppetmaster'</span><span class="p">,</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>The problem with this approach is that it’s a dumb check - the puppetmaster runs in a webserver and while the port might be open, what happens if the application is returning a 500 internal server error, for example?</p>
+
+<p>In order to rectify this, I decided to make use of a Puppet <a href="https://docs.puppetlabs.com/guides/rest_api.html">HTTP API</a> endpoint to query the status.</p>
+
+<p>I must admit, I didn’t even <em>know</em> that Puppet had a HTTP API until recently. Looking through the docs brought up some gems, but the problem is that by default it’s pretty locked down - and rightly so. It’s a powerful API and a compromised Puppetmaster via API is a dangerous prospect.</p>
+
+<p>Managing this is done via <a href="https://docs.puppetlabs.com/puppet/latest/reference/config_file_auth.html">auth.conf</a> and you use the <a href="https://docs.puppetlabs.com/puppet/latest/reference/config_file_auth.html#allow">allow</a> directive.</p>
+
+<p>While digging through the API docs, I found a nice <a href="http://docs.puppetlabs.com/puppet/latest/reference/http_api/http_status.html">status</a> endpoint. However, while querying it, I got a 404 access denied:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">--cert</span> /var/lib/puppet/ssl/certs/puppetmaster.example.com <span class="nt">--key</span> /var/lib/puppet/ssl/private_keys/puppetmaster.example.com.pem <span class="nt">--cacert</span> /var/lib/puppet/ssl/ca/ca_crt.pem <span class="nt">-H</span> <span class="s1">'Accept: pson'</span> https://puppetmaster.example.com:8140/production/status/test?environment<span class="o">=</span>production
+Forbidden request: puppetmaster.example.com<span class="o">(</span>192.168.4.21<span class="o">)</span> access to /status/test <span class="o">[</span>find] authenticated  at :119</code></pre></figure>
+
+<p>This seems easily fixable and extremely useful. In order to make this work, I made a quick change to the auth.conf:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># allow access to the status API call to test if the master is alive</span>
+path /status
+auth any
+method find
+allow_ip 192.168.4.21,127.0.0.1</code></pre></figure>
+
+<p>This needs go to <em>above</em> the default policy in auth.conf, which looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># deny everything else; this ACL is not strictly necessary, but</span>
+<span class="c"># illustrates the default policy.</span>
+path /
+auth any</code></pre></figure>
+
+<p>Now, when I try the curl command again, it works!</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">--cert</span> /var/lib/puppet/ssl/certs/puppetmaster.example.com <span class="nt">--key</span> /var/lib/puppet/ssl/private_keys/puppetmaster.example.com.pem <span class="nt">--cacert</span> /var/lib/puppet/ssl/ca/ca_crt.pem <span class="nt">-H</span> <span class="s1">'Accept: pson'</span> https://puppetmaster.example.com:8140/production/status/test?environment<span class="o">=</span>production
+<span class="o">{</span><span class="s2">"is_alive"</span>:true,<span class="s2">"version"</span>:<span class="s2">"3.8.4"</span><span class="o">}</span></code></pre></figure>
+
+<p>Sweet, now we can make a proper healthcheck!</p>
+
+<p>Because we set the auth.conf entry to be auth any, it’s straightforward to make a query to the API endpoint. I used the nagios <a href="https://www.monitoring-plugins.org/doc/man/check_http.html">check_http</a> check to get this looking nice. The command looks a bit like this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">/usr/lib64/nagios/plugins/check_http <span class="nt">-H</span> localhost <span class="nt">-p</span> 8140 <span class="nt">-u</span> /production/status/test?environment<span class="o">=</span>production <span class="nt">-S</span> <span class="nt">-k</span> <span class="s1">'Accept: pson'</span> <span class="nt">-s</span> <span class="s1">'"is_alive":true'</span></code></pre></figure>
+
+<p>Simply, we’re querying localhost on port 8140 and then providing an environment (production is my default environment). The Puppetmaster wants pson, so we send a PSON header, and then we check for the string is_alive. The output looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">HTTP OK: HTTP/1.1 200 OK - 312 bytes <span class="k">in </span>0.127 second response <span class="nb">time</span> |time<span class="o">=</span>0.127082s<span class="p">;;;</span>0.000000 <span class="nv">size</span><span class="o">=</span>312B<span class="p">;;;</span>0</code></pre></figure>
+
+<p>This is much, much better than our port check. If we get something other than a 200 OK HTTP code, we’re in trouble.</p>
+
+<h3 id="consul">Consul</h3>
+
+<p>The original point of this post was replacing the consul check of TCP. In Puppet code, that looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-puppet" data-lang="puppet">  <span class="p">::</span><span class="n">consul::check</span> <span class="p">{</span> <span class="s1">'puppetmaster_healthcheck'</span><span class="p">:</span>
+    <span class="py">interval</span>   <span class="p">=&gt;</span> <span class="s1">'60'</span><span class="p">,</span>
+    <span class="py">script</span>     <span class="p">=&gt;</span> <span class="s2">"/usr/lib64/nagios/plugins/check_http -H </span><span class="nv">${::fqdn}</span><span class="s2"> -p 8140 -u /production/status/test?environment=production -S -k 'Accept: pson' -s '</span><span class="se">\"</span><span class="s2">is_alive</span><span class="se">\"</span><span class="s2">:true'"</span><span class="p">,</span>
+    <span class="py">notes</span>      <span class="p">=&gt;</span> <span class="s1">'Checks the puppetmaster\'s status API to determine if the service is healthy'</span><span class="p">,</span>
+    <span class="py">service_id</span> <span class="p">=&gt;</span> <span class="s1">'puppetmaster'</span><span class="p">,</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p>We’ll now get an accurate an reliable healthcheck from our consul check!</p>
+
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/puppet/2016/02/17/a-better-puppetmaster-healthcheck.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

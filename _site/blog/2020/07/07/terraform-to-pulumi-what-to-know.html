@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Terraform to Pulumi - What you need to know | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="pulumi, terraform, cloud">
+<link rel="canonical" href="/blog/2020/07/07/terraform-to-pulumi-what-to-know.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">Terraform to Pulumi - What you need to know</div>
+</h1>
+<p class="post-title__subtitle">Published Jul  7, 2020  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#pulumi</span>
+
+    <span class="badge badge-info">#terraform</span>
+
+    <span class="badge badge-info">#cloud</span>
+
+<hr>
+<br>
+<p>If you’ve used Terraform before, migrating to Pulumi is often an exhilarating experience. Since I started working at Pulumi back in March, I’ve heard countless stories from users about how adopting Pulumi has changed the way their organizations work and allowed them to be more expressive and productive with their cloud infrastructure.</p>
+
+<p>When switching between similar software products, it’s often an instinctive reaction to try and reach for familiar concepts from the thing you know. One of the most common types of questions I’ve answered in the Pulumi community slack is “In Terraform, I can do X. How do I do that in Pulumi?”</p>
+
+<p>So, in this post, I’d like to try and detail a few concepts I’ve learned and mapped them back to Terraform concepts. If you’re picking up Pulumi for the first time, this is a great place to start - let’s take a look!</p>
+
+<h1 id="managing-state">Managing State</h1>
+
+<p>The very first thing you’ll come across when you fire up Pulumi is that state management gets handled differently. In Terraform, you set up your state inside a provider block within your code, like so:</p>
+
+<figure class="highlight"><pre><code class="language-hcl" data-lang="hcl"><span class="nx">terraform</span> <span class="p">{</span>
+  <span class="nx">backend</span> <span class="s2">"s3"</span> <span class="p">{</span>
+    <span class="nx">bucket</span> <span class="p">=</span> <span class="s2">"state-bucket"</span>
+    <span class="nx">key</span>    <span class="p">=</span> <span class="s2">"/repo"</span>
+    <span class="nx">region</span> <span class="p">=</span> <span class="s2">"us-west-2"</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Every time this is changed, you need to run <code class="language-plaintext highlighter-rouge">terraform init</code> before running <code class="language-plaintext highlighter-rouge">terraform apply</code>. 
+Depending on how you organize your terraform code, you need to provide this configuration for each repo you’re managing. You might choose to use different state buckets or use different keys within that state.</p>
+
+<p>Pulumi handles this very differently. You manage the state using the <code class="language-plaintext highlighter-rouge">pulumi login</code> command.</p>
+
+<p>By default, pulumi will log you into its SaaS managed backend (which is free for individual use). To use an object store/bucket, you login by providing the bucket name prefixed with the type of bucket, like so:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># AWS S3</span>
+pulumi login s3://my-state-bucket
+<span class="c"># Azure Blob Storage</span>
+pulumi login azblob://my-state-bucket
+<span class="c"># GCloud Cloud Storage</span>
+pulumi login gcs://my-state-bucket</code></pre></figure>
+
+<p>You can read more information on how to use this <a href="https://www.pulumi.com/docs/intro/concepts/state/#self-managed-backend">here</a>.</p>
+
+<p>Managing state this way has quite a few implications on how you might organize your code (which I’ll get to shortly) but mainly means you no longer need to worry about specifying the keys when things up. When you initialize a project and a stack (don’t worry, I’ll discuss stacks shortly!), pulumi will automatically create a path in the bucket for the project, and each stack will have a unique path.</p>
+
+<p>My personal opinion is that this dramatically reduces the complexity when managing the state. Still, for those familiar with Terraform’s way of handling this, it might be a departure from the norm, so it’s worth knowing.</p>
+
+<p>You may be asking yourself at this point “should I use the same state for all my environments?”. The answer to that depends on your security posture and your chosen backend. As an example, you probably don’t want the same state bucket for your prodiction and development workflows because you might want to give less access to production than development.</p>
+
+<p>With the SaaS backend, you can <a href="https://www.pulumi.com/docs/intro/console/collaboration/stack-permissions/">define permissions</a> easily in your organization use the console. If you’re using the cloud storage backends, you might want to consider using different state for each environment. To do that, you need to make sure you login to the correct backend before running pulumi up:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># set the AWS creds you want to use with AWS profiles</span>
+<span class="nb">export </span><span class="nv">AWS_PROFILE</span><span class="o">=</span>production
+<span class="c"># Login to the dev backend</span>
+pulumi login s3://pulumi-prod-state
+<span class="c"># run pulumi</span>
+pulumi up <span class="nt">--stack</span> vpc.production</code></pre></figure>
+
+<h2 id="a-quick-note-on-sensitive-data">A quick note on sensitive data</h2>
+
+<p>Terraform is <a href="https://www.terraform.io/docs/state/sensitive-data.html">very explicit</a> about how important the state file is and the security considerations around values like passwords in the state file:</p>
+
+<blockquote>
+  <p>For resources such as databases, this may contain initial passwords</p>
+</blockquote>
+
+<p>With Terraform, you need to be very careful with values like passwords and providing access to state files. Pulumi doesn’t have this problem, as it supports encrypting sensitive values in the state with keys from your cloud provider or using a password/unique key. You can read more about this <a href="https://www.pulumi.com/docs/intro/concepts/config/#secrets">here</a> and <a href="https://www.pulumi.com/blog/peace-of-mind-with-cloud-secret-providers/">here</a></p>
+
+<h1 id="stacks--projects">Stacks &amp; Projects</h1>
+
+<p>Stacks are a unique feature to Pulumi that might seem familiar if you’ve ever used <a href="https://www.terraform.io/docs/state/workspaces.html">Terraform Workspaces</a></p>
+
+<p>Stacks are incredibly flexible and powerful and create lots of excellent scenarios around making Pulumi programs configurable and reusable. Using them is very easy, you create a stack when you initialize a new pulumi project:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pulumi new typescript
+This <span class="nb">command </span>will walk you through creating a new Pulumi project.
+
+Enter a value or leave blank to accept the <span class="o">(</span>default<span class="o">)</span>, and press &lt;ENTER&gt;.
+Press ^C at any <span class="nb">time </span>to quit.
+
+project name: <span class="o">(</span>test-project<span class="o">)</span> my-first-project
+Sorry, <span class="s1">'my-first-project'</span> is not a valid project name. A project with this name already exists.
+project name: <span class="o">(</span>test-project<span class="o">)</span> test-project
+project description: <span class="o">(</span>A minimal TypeScript Pulumi program<span class="o">)</span> A project <span class="k">for </span>Pulumi
+Created project <span class="s1">'test-project'</span>
+
+Please enter your desired stack name.
+To create a stack <span class="k">in </span>an organization, use the format &lt;org-name&gt;/&lt;stack-name&gt; <span class="o">(</span>e.g. <span class="sb">`</span>acmecorp/dev<span class="sb">`</span><span class="o">)</span><span class="nb">.</span>
+stack name: <span class="o">(</span>dev<span class="o">)</span> dev
+</code></pre></div></div>
+<p>Once you’ve done this, you’ll find a Pulumi.<stack-name>.yaml file in your directory which can contain things like per stack configuration values.</stack-name></p>
+
+<p>You can create stacks very easily by using the <code class="language-plaintext highlighter-rouge">stack init</code> command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> pulumi stack init production
+Created stack 'production'
+</code></pre></div></div>
+
+<p>This stack init process adds a new YAML file which can be updated. You can switch between them or remove them if necessary.</p>
+
+<p>Stacks work regardless of your chosen backend, but depending on which backend you’re using, you might want to consider how you name things. With the Pulumi SaaS  you can specify your stack name using the slash, for example, <code class="language-plaintext highlighter-rouge">my-company/test-stack</code> The part before the slash is an organizational namespace, and within the SaaS it’ll places the stack in the right place and permissions will be applied (note: organization support is a paid feature!)</p>
+
+<p>If you’re using a cloud backend, you’ll need to take an additional step. Naming your stack, you’ll want to set the project name and the environment or region somehow. A commonly developed pattern is to use periods or dashes in the stack name. For example, if we have a project that manages our VPCs, we might do this for two different stacks:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pulumi stack init vpc.production
+pulumi stack init vpc.development
+</code></pre></div></div>
+<h2 id="a-quick-note-about-locking">A quick note about locking</h2>
+<p>Terraform locking is supported differently depending on which backend you’re using. With Pulumi, locking is not currently supported for Cloud Backends. You can achieve methods of locking by wrapping the Pulumi CLI with a wrapper script, and <a href="https://twitter.com/JakeGinnivan/status/1278521541504888832">some users</a> are doing just this. If you’re using the Pulumi SaaS backend, it handles locking for you.</p>
+
+<h2 id="modules--component-resources">Modules &amp; Component Resources</h2>
+
+<p>Creating reusable code in Terraform often involves creating a module. Modules can be nested (for example, it’s often the case <a href="https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/modules/node_groups">that a public module will have more modules within it</a>) and they take inputs and define outputs (more on that later).</p>
+
+<p>Modules are an implementation detail of Terraform that allows you to define groups of resources that live together. For example, if you want to create an EKS cluster in AWS, you’ll need a create a bunch of worker nodes and the control plane, which are distinct resources. Modules allow you to define these together, and make them configurable via inputs.</p>
+
+<p>Pulumi, however, doesn’t have a module system of its own. Pulumi’s use of standard programming languages (rather than HCL) mean you can leverage the package manager for your language of choice (e.g. NPM, NuGet, Pip or Go Modules) to share code.</p>
+
+<p>Pulumi uses <a href="https://www.pulumi.com/docs/intro/concepts/programming-model/#resources">Component Resources</a> to group resources together and allows you to define and register resources in Pulumi with their unique name. This method of group resources is an <em>incredibly</em> powerful tool. Depending on your chosen programming language, the way you specify inputs varies, and outputs are handled slightly different (more on that in a second).</p>
+
+<p>There are some great ComponentResource examples available, but my favourite is <a href="https://github.com/jen20/pulumi-aws-vpc">this one</a> written by James Nugent that defines a VPC that adheres to AWS best practices. It’s available for NodeJS and Python and is a great example of the powerful ways you can reuse code with Pulumi.</p>
+
+<h1 id="outputs--stack-references">Outputs &amp; Stack References</h1>
+
+<p>With Terraform, if you need to pass data between different projects or modules, you’d define an output:</p>
+
+<figure class="highlight"><pre><code class="language-hcl" data-lang="hcl"><span class="nx">output</span> <span class="s2">"instance_ip_addr"</span> <span class="p">{</span>
+  <span class="nx">value</span> <span class="p">=</span> <span class="nx">aws_instance</span><span class="err">.</span><span class="nx">server</span><span class="err">.</span><span class="nx">private_ip</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>The “output” then gets stored in the terraform state in a way that makes it accessible either when a module reads the state or when the module is instantiated within your terraform code.</p>
+
+<p>With Pulumi, you just need to export the resource or parameter, which varies depending on the programming languages. As an example, you might create a VPC and export it in typescript like so:</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">pulumi</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@pulumi/pulumi</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">aws</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@pulumi/aws</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="c1">// Create an AWS resource (S3 Bucket)</span>
+<span class="kd">const</span> <span class="nx">bucket</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">aws</span><span class="p">.</span><span class="nx">s3</span><span class="p">.</span><span class="nx">Bucket</span><span class="p">(</span><span class="dl">"</span><span class="s2">my-bucket</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="c1">// Export the name of the bucket</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">bucketName</span> <span class="o">=</span> <span class="nx">bucket</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span></code></pre></figure>
+
+<p>Here, we export the bucket id from the created bucket, which makes it available across stacks. You can then use a <a href="https://www.pulumi.com/docs/intro/concepts/organizing-stacks-projects/#inter-stack-dependencies">Stack Reference</a> to use it elsewhere.</p>
+
+<p>In addition to this, it’s common to have different states for different components in Terraform,  you might also need to use the <a href="https://www.terraform.io/docs/providers/terraform/d/remote_state.html">remote state data source</a> to reference outputs in other terraform states:</p>
+
+<figure class="highlight"><pre><code class="language-hcl" data-lang="hcl"><span class="nx">data</span> <span class="s2">"terraform_remote_state"</span> <span class="s2">"vpc"</span> <span class="p">{</span>
+  <span class="nx">count</span>   <span class="p">=</span> <span class="err">(</span><span class="nx">var</span><span class="err">.</span><span class="nx">vpc_id</span> <span class="p">==</span> <span class="s2">""</span> <span class="err">&amp;&amp;</span> <span class="nx">var</span><span class="err">.</span><span class="nx">vpc_id</span> <span class="p">==</span> <span class="s2">""</span><span class="err">)</span> <span class="err">?</span> <span class="mi">1</span> <span class="err">:</span> <span class="mi">0</span>
+  <span class="nx">backend</span> <span class="p">=</span> <span class="s2">"s3"</span>
+  <span class="nx">config</span> <span class="p">=</span> <span class="p">{</span>
+    <span class="nx">bucket</span> <span class="p">=</span> <span class="s2">"${var.tfstate_global_bucket}"</span>
+    <span class="nx">key</span>    <span class="p">=</span> <span class="s2">"${var.aws_region}/${var.vpc_name}/vpc/terraform.tfstate"</span>
+    <span class="nx">region</span> <span class="p">=</span> <span class="s2">"${var.tfstate_global_bucket_region}"</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>In Pulumi, this isn’t supported because it’s very rarely needed. I’m hoping to write a more detailed post on this soon.</p>
+
+<h1 id="organizing-your-code">Organizing your Code</h1>
+
+<p>Terraform’s method of managing backends, workspaces and the implementation of modules can often mean that very quickly, your terraform code might begin to get out of control. Some interesting solutions have materialized for this, like <a href="https://github.com/gruntwork-io/terragrunt">Terragrunt</a> and <a href="https://github.com/uber/astro">Astro</a> and if you’re familiar with them, you might wonder how to approach this with Pulumi.</p>
+
+<p>Pulumi has a <a href="https://www.pulumi.com/docs/intro/concepts/organizing-stacks-projects/">page dedicated</a> to this very question, but I’d like to add a bit of personal opinion to this.</p>
+
+<h2 id="blast-radius--rate-of-change">Blast radius &amp; rate of change</h2>
+
+<p>Because of how powerful pulumi is, you might be tempted to create a monolithic repository with all your logic in a single stack/project. As an example of this, with Pulumi it’s very easy to write a program that creates a VPC, Subnets, a Kubernetes cluster and installs several applications on that cluster. You can create a very useful piece of automation here, which allows users of your program to quickly deploy their entire stack.
+Generally, this isn’t considered a good idea. The VPC in your infrastructure is unlikely to be changing at the same rate as the applications in your EKS cluster, and you don’t want to be in a situation whereby you can accidentally nuke all your infrastructure with a bad command.</p>
+
+<p>Generally, before I start writing some code, I start by considering the rate of change of a project, and what the impact of making a mistake in it would be.</p>
+
+<h3 id="a-quick-example">A quick example</h3>
+
+<p>If you look at a simple hierarchy of some infrastructure I recently provisioned with Pulumi, it looks like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree <span class="nt">-L</span> 1
+├── README.md
+├── alb
+├── ecs-cluster
+├── grafana
+└── vpc
+</code></pre></div></div>
+
+<p>To break this down a little:</p>
+<ul>
+  <li>the ALB project is shared between multiple applications. It exports the listeners and the name of the load balancer as an output, which can then be used as a stack reference later</li>
+  <li>the ECS cluster project defines a component resource which bootstraps an ECS cluster with an autoscaling group, a launch template, autoscaling policies, cloudwatch log groups etc. This is completely reusable, and could easily be packaged as an NPM packages (It’s on my todo list, honest!)</li>
+  <li>the grafana project defines an ECS task definition, an ECS service, an IAM role etc. to run as and a database for grafana to connect to. You can see here, the important project decision that’s being made is grouping things together (similarly to Terraform modules, but not quite the same!) so that you can destroy and iterate as needed. In order to use the ALB and ECS cluster we created in the other projects, stackreferences are used:</li>
+  <li>the VPC project defines a VPC, subnets and other lower-level components live here
+I could (and hopefully will!) write a whole blog post on this, but essentially what I’m trying to get across is that you shouldn’t just bundle all your code into a single project unless you’re really happy about the implications. Use <a href="https://www.pulumi.com/docs/intro/concepts/organizing-stacks-projects/#inter-stack-dependencies">Stack References</a> liberally where you can, and separate things into projects that make sense.</li>
+</ul>
+
+<p>If you follow this approach, whether you use a mono-repo or a git repository for each project is entirely up to you. <a href="https://www.pulumi.com/docs/intro/concepts/organizing-stacks-projects/#organizing-projects-and-stacks">This page</a> talks more about the trade-offs, but the choice is yours.</p>
+
+<h1 id="wrap-up">Wrap up</h1>
+
+<p>There are other aspects of picking up Pulumi which might catch you out, and I may write a second post along the way, but hopefully, this will give you a nice idea of how to continue down your Pulumi journey. If you’re interested in Pulumi and want to give it a try, reach out to me via twitter! Regardless of the technology you choose, enjoy building your infrastructure!</p>
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2020/07/07/terraform-to-pulumi-what-to-know.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Why the fuck are we templating yaml? | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="kubernetes, configuration mgmt, jsonnet, helm, kr8">
+<link rel="canonical" href="/blog/2019/02/07/why-are-we-templating-yaml.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">Why the fuck are we templating yaml?</div>
+</h1>
+<p class="post-title__subtitle">Published Feb  7, 2019  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#kubernetes</span>
+
+    <span class="badge badge-info">#configuration mgmt</span>
+
+    <span class="badge badge-info">#jsonnet</span>
+
+    <span class="badge badge-info">#helm</span>
+
+    <span class="badge badge-info">#kr8</span>
+
+<hr>
+<br>
+<p>I was at <a href="https://cfgmgmtcamp.eu">cfgmgmtcamp 2019</a> in Ghent, and <a href="https://www.youtube.com/watch?v=eBm3oyUmoAo&amp;feature=youtu.be&amp;t=18586">did a talk</a> which I think was well received about the need for some Kubernetes configuration management as well as the solution we built for it at $work, <a href="https://kr8.rocks">kr8</a>.</p>
+
+<p>I made a statement during the talk which ignited some fairly fierce discussion both online, and at the conference:</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">&quot;If you&#39;re starting to template yaml, ask yourself the question: why am I not *generating* json?&quot; - <a href="https://twitter.com/briggsl?ref_src=twsrc%5Etfw">@briggsl</a> spitting straight fire at <a href="https://twitter.com/hashtag/cfgmgmtcamp?src=hash&amp;ref_src=twsrc%5Etfw">#cfgmgmtcamp</a></p>&mdash; 🌈eric sorenson 🌊 (@ahpook) <a href="https://twitter.com/ahpook/status/1092810831216197643?ref_src=twsrc%5Etfw">February 5, 2019</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>To put this into my own words:</p>
+
+<blockquote>
+  <p>At some point, we decided it was okay for us to template yaml. When did this happen? How is this acceptable?</p>
+</blockquote>
+
+<p>After some conversation, I figured it was probably best to back up my claims in some way. This blog post is going to try to do that.</p>
+
+<h2 id="the-configuration-problem">The configuration problem</h2>
+
+<p>Once the applications and infrastructure you’re going to manage grows past a certain size, you inevitably end up in some form of configuration complexity hell. If you’re only deploying 1 or maybe 2 things, you can write a yaml configuration file and be done with it. However once you grow beyond that, you need to figure out how to manage this complexity. It’s incredibly likely that the reason you have multiple configuration files is because the $thing that uses that config is slightly different from its companions. Examples of this include:</p>
+
+<ul>
+  <li>Applications deployed in different environments, like dev, stg and prod</li>
+  <li>Applications deployed in different regions, like Europe or North American</li>
+</ul>
+
+<p>Obviously, not <em>all</em> the configuration is different here, but it’s likely the configuration differs enough that you want to be able to differentiate between the two.</p>
+
+<p>This configuration complexity has been well known for Operators (System Administrators, DevOps engineers, whatever you want to call them) for some years now. An entire discpline grew up around this in Configuration Management, and each tool solved this problem in their own way, but ultimately, they used YAML to get the job done.</p>
+
+<p>My favourite method has always been <a href="https://puppet.com/docs/puppet/6.2/hiera_intro.html">hiera</a> which comes bundled with Puppet. Having the ability to hierarchically look up the variables of specific config needs is incredibly powerful and flexible, and has generally meant you don’t actually need to do any templating of yaml at all, except perhaps for embedding Puppet facts into the yaml.</p>
+
+<h2 id="did-we-go-backwards">Did we go backwards?</h2>
+
+<p>Then, as our industries’ needs moved above the operating system and into cloud computing, we had a whole new data plane to configure. The tooling to configure this changed, and tools like <a href="https://aws.amazon.com/cloudformation/">CloudFormation</a> and <a href="https://helm.sh/">Helm</a> appeared. These tools are excellent configuration tools, but I firmly believe we (as an industry) got something really, really wrong when we designed them. To examine that, let’s take a look at example of a helm chart taking a custom parameter</p>
+
+<h3 id="helm-charts">Helm Charts</h3>
+
+<p>Helm charts can take external parameters defined by an <code class="language-plaintext highlighter-rouge">values.yaml</code> file which you specify when rendering the chart. A simple example might look like this:</p>
+
+<p>Let’s say my external parameter is simple - it’s a string. It’d look a bit like this:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="n">image</span><span class="o">:</span> <span class="s">"{{ .Values.image }}"</span></code></pre></figure>
+
+<p>That’s not so bad right? You just specify a value for <code class="language-plaintext highlighter-rouge">image</code> in your values.yaml and you’re on your way.</p>
+
+<p>The real problem starts to get highlighted when you want to do more complicated and complex things. In this particular example, you’re doing okay because you <em>know</em> you have to specify an image for a Kubernetes deployment. However, what if you’re working with something like an optional field? Well, then it gets a little more unwieldy:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="p">{{</span><span class="o">-</span> <span class="n">with</span> <span class="o">.</span><span class="n">resourceGroup</span>  <span class="p">}}</span>
+    <span class="n">resourceGroup</span><span class="o">:</span> <span class="p">{{</span> <span class="o">.</span>  <span class="p">}}</span>
+<span class="p">{{</span><span class="o">-</span> <span class="n">end</span> <span class="p">}}</span></code></pre></figure>
+
+<p>Optional values just make things ugly in templating languages, and you can’t just leave the value blank, so you have to resort to ugly loops and conditionals that are probably going to bite you later.</p>
+
+<p>Let’s say you need to go a step further, and you need to push an array or map into the config. With helm, you’d do something like this.</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="p">{{</span><span class="o">-</span> <span class="n">with</span> <span class="o">.</span><span class="n">Values</span><span class="o">.</span><span class="n">podAnnotations</span>  <span class="p">}}</span>
+      <span class="n">annotations</span><span class="o">:</span>
+<span class="p">{{</span> <span class="n">toYaml</span> <span class="o">.</span> <span class="o">|</span> <span class="n">indent</span> <span class="m">8</span>  <span class="p">}}</span>
+<span class="p">{{</span><span class="o">-</span> <span class="n">end</span>  <span class="p">}}</span></code></pre></figure>
+
+<p>Firstly, let’s ignore the madness of having a templating function <code class="language-plaintext highlighter-rouge">toYaml</code> to convert yaml to yaml and focus more on the whitespace issue here.</p>
+
+<p>YAML has strict requirements and whitespace implementation rules. The following, for example, is not valid or complete yaml:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">something</span><span class="pi">:</span> <span class="s">nothing</span>
+  <span class="s">hello</span><span class="pi">:</span> <span class="s">goodbye</span></code></pre></figure>
+
+<p>Generally, if you’re handwriting something, this isn’t necessarily a problem because you just hit backspace twice and it’s fixed. However, if you’re generating YAML using a templating system, you can’t do that - and if you’re operating above 5 or 10 configuration files, you probably want to be <em>generating</em> your config rather than writing it.</p>
+
+<p>So, in the above example, you want to embed the values of <code class="language-plaintext highlighter-rouge">.Values.podAnnotations</code> under the annotations field, which is indented already. So you’re having to not only indent your values, but indent them correctly.</p>
+
+<p>What makes this <em>even more confusing</em> is that the go parser doesn’t actually know anything about YAML at all, so if you try to keep the syntax clean and indent the templates like this:</p>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="p">{{</span><span class="o">-</span> <span class="n">with</span> <span class="o">.</span><span class="n">Values</span><span class="o">.</span><span class="n">podAnnotations</span> <span class="p">}}</span>
+      <span class="n">annotations</span><span class="o">:</span>
+      <span class="p">{{</span> <span class="n">toYaml</span> <span class="o">.</span> <span class="o">|</span> <span class="n">indent</span> <span class="m">6</span> <span class="p">}}</span>
+<span class="p">{{</span><span class="o">-</span> <span class="n">end</span>  <span class="p">}}</span></code></pre></figure>
+
+<p>You actually can’t do that, because the templating system gets confused. This is a singular example of the complexity and difficulty you end up facing when generating config data in YAML, but when you really start to do more complex work, it really starts to become obvious that this isn’t the way to go.</p>
+
+<p>Needless to say, this isn’t what I want to spend <em>my</em> time doing. If fiddling around with whitespace requirements in a templating system doing something it’s not really designed for is what suits you, then I’m not going to stop you. I also don’t want to spend my time writing configuration in JSON without comments and accidentally missing commas all over the shop. We (as an industry) decided a long time ago that shit wasn’t going to work and that’s why YAML exists.</p>
+
+<p>So what should we do instead? That’s where <a href="https://jsonnet.org">jsonnet</a> comes in.</p>
+
+<h2 id="json-jsonnet--yaml">JSON, Jsonnet &amp; YAML</h2>
+
+<p>Before we actually talk about Jsonnet, it’s worth reminding people of a very important (but oft forgotten point). <a href="https://yaml.org/spec/1.2/spec.html#id2759572">YAML is a superset of JSON</a> and converting between the two is trivial. Many applications and programming languages will parse JSON and YAML natively, and many can convert between the two very simple. For example, in Python:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s">'import json, sys, yaml ; y=yaml.safe_load(sys.stdin.read()) ; print(json.dumps(y))'</span></code></pre></figure>
+
+<p>So with that in mind, let’s talk about Jsonnet.</p>
+
+<h3 id="welcome-to-the-church-of-jsonnet">Welcome to the church of Jsonnet</h3>
+
+<p>Jsonnet is a relatively new, little known (outside the Kubernetes community?) language that calls itself a <em>data templating language</em>. It’s definitely a good exercise to read and consume the Jsonnet <a href="https://jsonnet.org/articles/design.html">design rationale</a> page to get an idea why it exists, but if I was going to define in a nutshell what its purpose is - it’s to generate JSON config.</p>
+
+<p>So, how does it help, exactly?</p>
+
+<p>Well, let’s take our earlier example - we want to generate some JSON config specifying a parameter (ie, the image string). We can do that very very easily with Jsonnet using external variables.</p>
+
+<p>Firstly, let’s define some Jsonnet:</p>
+
+<figure class="highlight"><pre><code class="language-jsonnet" data-lang="jsonnet"><span class="p">{</span>
+
+  <span class="nx">image</span><span class="p">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">extVar</span><span class="p">(</span><span class="s">'image'</span><span class="p">),</span>
+
+<span class="p">}</span></code></pre></figure>
+
+<p>Then, we can generate it using the Jsonnet command line tool, passing in the external variable as we need to:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">jsonnet image.jsonnet <span class="nt">-V</span> <span class="nv">image</span><span class="o">=</span><span class="s2">"my-image"</span>
+<span class="o">{</span>
+   <span class="s2">"image"</span>: <span class="s2">"my-image"</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Easy!</p>
+
+<h3 id="optional-fields">Optional fields</h3>
+
+<p>Before, I noted that if you wanted to define an optional field, with YAML templating you had to define if statements for everything. With Jsonnet, you’re just defining code!</p>
+
+<figure class="highlight"><pre><code class="language-jsonnet" data-lang="jsonnet"><span class="c1">// define a variable - yes, jsonnet also has comments</span>
+<span class="k">local</span> <span class="nx">rg</span> <span class="p">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">{</span>
+
+
+  <span class="nx">image</span><span class="p">:</span> <span class="nx">std</span><span class="p">.</span><span class="nx">extVar</span><span class="p">(</span><span class="s">'image'</span><span class="p">),</span>
+  <span class="c1">// if the variable is null, this will be blank</span>
+  <span class="p">[</span><span class="k">if</span> <span class="nx">rg</span> <span class="err">!</span><span class="p">=</span> <span class="kc">null</span> <span class="k">then</span> <span class="s">'resourceGroup'</span><span class="p">]:</span> <span class="nx">rg</span><span class="p">,</span>
+
+<span class="p">}</span></code></pre></figure>
+
+<p>The output here, because our variable is null, means that we never actually populate resourceGroup. If you specify a value, it will appear:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">jsonnet image.jsonnet <span class="nt">-V</span> <span class="nv">image</span><span class="o">=</span><span class="s2">"my-image"</span> 
+<span class="o">{</span>
+   <span class="s2">"image"</span>: <span class="s2">"my-image"</span>
+<span class="o">}</span></code></pre></figure>
+
+<h3 id="maps-and-parameters">Maps and parameters</h3>
+
+<p>Okay, now let’s look at our previous annotation example. We want to define some pod annotations, which takes a YAML map as its input. You want this map to be configurable by specifying external data, and obviously doing that on the command line sucks (you’d be very unlikely to specify this with Helm on the command line, for example) so generally you’d use Jsonnet imports to this. I’m going to specify this config as a variable and then load that variable into the annotation:</p>
+
+<figure class="highlight"><pre><code class="language-jsonnet" data-lang="jsonnet"><span class="k">local</span> <span class="nx">annotations</span> <span class="p">=</span> <span class="p">{</span>
+  <span class="s">'nginx.ingress.kubernetes.io/app-root'</span><span class="p">:</span> <span class="s">'/'</span><span class="p">,</span>
+  <span class="s">'nginx.ingress.kubernetes.io/enable-cors'</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="p">{</span>
+  <span class="nx">metadata</span><span class="p">:</span> <span class="p">{</span> <span class="c1">// annotations are nested under the metadata of a pod</span>
+    <span class="nx">annotations</span><span class="p">:</span> <span class="nx">annotations</span><span class="p">,</span>
+  <span class="p">},</span>
+
+<span class="p">}</span></code></pre></figure>
+
+<p>This might just be my bias towards Jsonnet talking, but this is so dramatically easier than faffing about with indentation that I can’t even begin to describe it.</p>
+
+<h3 id="additional-goodies">Additional goodies</h3>
+
+<p>The final thing I wanted to quickly explore, which is something that I feel can’t really be done with Helm and other yaml templating tools, is the concept of manipulating existing objects in config.</p>
+
+<p>Let’s take our example above with the annotations, and look at the result file:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+   </span><span class="nl">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"annotations"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"nginx.ingress.kubernetes.io/app-root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"nginx.ingress.kubernetes.io/enable-cors"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>Now, let’s say for example I wanted to append a set of annotations to this annotations map. In any templating system, I’d probably have to rewrite the whole map.</p>
+
+<p>Jsonnet makes this <em>trivial</em>. I can simply use the <code class="language-plaintext highlighter-rouge">+</code> operator to add something to this. Here’s a (poor) example:</p>
+
+<figure class="highlight"><pre><code class="language-jsonnet" data-lang="jsonnet"><span class="k">local</span> <span class="nx">annotations</span> <span class="p">=</span> <span class="p">{</span>
+  <span class="s">'nginx.ingress.kubernetes.io/app-root'</span><span class="p">:</span> <span class="s">'/'</span><span class="p">,</span>
+  <span class="s">'nginx.ingress.kubernetes.io/enable-cors'</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="p">{</span>
+  <span class="nx">metadata</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nx">annotations</span><span class="p">:</span> <span class="nx">annotations</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">}</span> <span class="p">+</span> <span class="p">{</span> <span class="c1">// this adds another JSON object</span>
+  <span class="nx">metadata</span><span class="p">+:</span> <span class="p">{</span> <span class="c1">// I'm using the + operator, so we'll append to the existing metadata</span>
+    <span class="nx">annotations</span><span class="p">+:</span> <span class="p">{</span> <span class="c1">// same as above</span>
+      <span class="nx">something</span><span class="p">:</span> <span class="s">'nothing'</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>The end result is this:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+   </span><span class="nl">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"annotations"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"nginx.ingress.kubernetes.io/app-root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"nginx.ingress.kubernetes.io/enable-cors"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"something"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nothing"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>Obviously, in this case, it’s more code to this, but as your example get more complex, it becomes extremely useful to be able to manipulate objects this way.</p>
+
+<h2 id="kr8">Kr8</h2>
+
+<p>We use all of these methods in <a href="https://kr8.rocks">kr8</a> to make creating and manipulating configuration for multiple Kubernetes clusters easy and simple. I highly recommend you check it out if any of the concepts you’ve found here have found you nodding your head.</p>
+
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2019/02/07/why-are-we-templating-yaml.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

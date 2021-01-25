@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>VB.NET - The Future of Infrastructure as Code | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="tech, pulumi">
+<link rel="canonical" href="/blog/2020/12/16/vb-net-cloud.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">VB.NET - The Future of Infrastructure as Code</div>
+</h1>
+<p class="post-title__subtitle">Published Dec 16, 2020  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#tech</span>
+
+    <span class="badge badge-info">#pulumi</span>
+
+<hr>
+<br>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> This post is about  <a href="https://pulumi.com">Pulumi</a> who is now my employer. If you don’t want to hear about that, look away now.</div>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Some images have been redacted to protect the innocent</div>
+
+<p>I can remember the exact moment I first realized I <em>didn’t</em> want to be a software developer. It was May 2009, and I was desperately trying to finish my final University project for the module “object-orientated Programming.”</p>
+
+<p>My module tutor had tasked us with creating an application of our choosing in VB.NET. I can unapologetically say I didn’t enjoy the process. I preferred focusing on systems, understanding how things fit together. I was spending my days getting stuck in the minutiae of fixing bugs in my code.</p>
+
+<p>My career progression from there followed a fairly traditional “System Administrator” path. I managed some Linux servers, the number grew, and I went headfirst into configuration management. As the DevOps movement came around, I embraced Kubernetes early and spent several years using cutting edge technologies in exciting ways. Despite telling myself in 2009 I didn’t want to be a software engineer, in 2020 I got my first “software engineer” title here at Pulumi, and now I’m lucky enough to spend my time writing code to program the cloud.</p>
+
+<h1 id="revisiting-the-past">Revisiting the Past</h1>
+
+<p><a href="https://pulumi.com">Pulumi</a> is an exciting product, but what’s incredible to see working here is how the platform scales. All of the <a href="https://www.pulumi.com/docs/intro/cloud-providers/">Pulumi provider</a> SDKs get programmatically generated, which means that once support for a language gets added, all of the available providers will get that SDK generated. Adding a new language has significant engineering work up front, of course, but ongoing maintenance burden drops over time rather than increases.</p>
+
+<p>In November 2019, Pulumi added support for the <a href="https://www.pulumi.com/blog/pulumi-dotnet-core/">.NET core languages</a>. We’ve seen significant adoption from the .NET community, and if you take a look at our <a href="https://github.com/pulumi/examples">examples repo</a>, you’ll see dozens of examples of creating cloud infrastructure with <a href="https://en.wikipedia.org/wiki/C_Sharp_(programming_language)">C#</a> and <a href="https://en.wikipedia.org/wiki/F_Sharp_(programming_language)">F#</a>, the flagship languages of the .NET framework.</p>
+
+<p>Of course, .NET core languages also include my trusty old friend VB.NET. I haven’t written a single line of VB.Net since I handed in my university project in 2009, and I have a vague recollection that I told myself that I never would again.</p>
+
+<p>However, this is 2020. So I asked myself, what is the very last thing I would want to create with Pulumi in VB.NET. The answer is obvious, of course - Kubernetes resources.</p>
+
+<h1 id="the-old-and-the-new">The old and the new</h1>
+
+<p>In many ways, VB.NET and Kubernetes couldn’t be further apart. VB.NET, of old Microsoft - a language of “<a href="https://en.wiktionary.org/wiki/code-behind">code-behind</a>”, written for the era of monolithic desktop apps and windows forms and <a href="https://kubernetes.io/">Kubernetes</a>, a complex distributed system written to be <a href="https://www.cncf.io/">cloud-native</a>.</p>
+
+<p>With nostalgia in mind, I asked in our internal slack just how good our VB.NET support was. I quickly got a helpful answer from one of our <a href="https://twitter.com/mikhailshilkov">resident .NET experts</a> which can when summarized is along the lines of:</p>
+
+<blockquote>
+  <p>It should work, but…why?</p>
+</blockquote>
+
+<p>The answer to that question in my mind was of course, because it’s 2020.
+Our <a href="https://github.com/pulumi/templates/">Pulumi templates</a> (used to bootstrap new Pulumi projects) helpfully already had <a href="https://github.com/pulumi/templates/tree/master/aws-visualbasic">VisualBasic examples</a>. I imagine they’re lonely, because I couldn’t find a single record of them ever getting used.</p>
+
+<p>Bootstrapping my new cloud VB.NET project, I could feel the old familiarity of hating being a software developer return to me. Shaking off the innate feeling, I set about doing the Pulumi equivalent of “Hello, world” - creating an S3 bucket in AWS.</p>
+
+<div class="language-vb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">Imports</span> <span class="nn">Pulumi</span>
+<span class="k">Imports</span> <span class="nn">Pulumi.Aws.S3</span>
+
+<span class="k">Class</span> <span class="nc">MyStack</span>
+    <span class="k">Inherits</span> <span class="n">Stack</span>
+
+    <span class="k">Public</span> <span class="k">Sub</span> <span class="nf">New</span><span class="p">()</span>
+        <span class="c1">' Create an AWS resource (S3 Bucket)</span>
+        <span class="k">Dim</span> <span class="nv">bucket</span> <span class="o">=</span> <span class="k">New</span> <span class="n">Bucket</span><span class="p">(</span><span class="s">"my-bucket"</span><span class="p">)</span>
+
+        <span class="c1">' Export the name of the bucket</span>
+        <span class="k">Me</span><span class="p">.</span><span class="n">BucketName</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">.</span><span class="n">Id</span>
+    <span class="k">End</span> <span class="k">Sub</span>
+
+    <span class="o">&lt;</span><span class="n">Output</span><span class="o">&gt;</span>
+    <span class="k">Public</span> <span class="k">Property</span> <span class="nf">BucketName</span> <span class="ow">As</span> <span class="n">Output</span><span class="p">(</span><span class="k">Of</span> <span class="kt">String</span><span class="p">)</span>
+<span class="k">End</span> <span class="k">Class</span>
+</code></pre></div></div>
+
+<p>I sort of hoped it would fail. VB.Net is 19 years old. Surely it has no place provisioning AWS resources?</p>
+
+<p>I had some difficulty familiarizing myself with the syntax, but after yelling at my IDE a couple times, I finally managed to get my S3 bucket created.</p>
+
+<p>At this point, I decided to antagonize the internet and rehash a meme from earlier in the year:</p>
+
+<p><img src="/img/vb-net-tweet-1.png" alt="Meme" /></p>
+
+<p>The responses I received weren’t surprising:</p>
+
+<p><img src="/img/vb-net-tweet-2.png" alt="Twitter" /></p>
+
+<p>Undeterred, I went for broke. Adding the Kubernetes provider and building out the required resources to deploy to an already provisioned EKS cluster was easier than I expected. I actually started to feel like the syntax of VB.net felt oddly suited to the task. It looks…. good?</p>
+
+<div class="language-vb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">Imports</span> <span class="nn">Pulumi.Kubernetes.Apps.V1</span>
+<span class="k">Imports</span> <span class="nn">Pulumi.Kubernetes.Core.V1</span>
+<span class="k">Imports</span> <span class="nn">Pulumi.Kubernetes.Types.Inputs.Apps.V1</span>
+<span class="k">Imports</span> <span class="nn">Pulumi.Kubernetes.Types.Inputs.Core.V1</span>
+<span class="k">Imports</span> <span class="nn">Pulumi</span>
+<span class="k">Imports</span> <span class="nn">Pulumi.Kubernetes.Types.Inputs.Meta.V1</span>
+
+<span class="k">Class</span> <span class="nc">NginxStack</span> 
+  <span class="k">Inherits</span> <span class="n">Stack</span>
+
+  <span class="k">Public</span> <span class="k">Sub</span> <span class="nf">New</span><span class="p">()</span>    
+    
+    <span class="c1">' an input map of labels</span>
+    <span class="k">Dim</span> <span class="nv">labels</span> <span class="o">=</span> <span class="k">New</span> <span class="n">InputMap</span><span class="p">(</span><span class="k">Of</span> <span class="kt">String</span><span class="p">)</span> <span class="n">From</span> <span class="n">app</span>
+    
+    <span class="c1">' define the deployment spec</span>
+    <span class="k">Dim</span> <span class="nv">containerPortArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">ContainerPortArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">ContainerPortValue</span> <span class="o">=</span> <span class="mi">80</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">containerArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">ContainerArgs</span> <span class="k">With</span> <span class="p">{</span> 
+          <span class="p">.</span><span class="n">Image</span> <span class="o">=</span> <span class="s">"nginx"</span><span class="p">,</span>
+          <span class="p">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s">"nginx"</span><span class="p">,</span>
+          <span class="p">.</span><span class="n">Ports</span> <span class="o">=</span> <span class="n">containerPortArgs</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">podSpecArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">PodSpecArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Containers</span> <span class="o">=</span> <span class="n">containerArgs</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">template</span> <span class="o">=</span> <span class="k">New</span> <span class="n">PodTemplateSpecArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Spec</span> <span class="o">=</span> <span class="n">podSpecArgs</span><span class="p">,</span> <span class="p">.</span><span class="n">Metadata</span> <span class="o">=</span> <span class="k">New</span> <span class="n">ObjectMetaArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">labelSelectorArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">LabelSelectorArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">MatchLabels</span> <span class="o">=</span> <span class="n">labels</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">deploymentSpecArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">DeploymentSpecArgs</span> <span class="k">With</span> <span class="p">{</span> 
+          <span class="p">.</span><span class="n">Template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">,</span>
+          <span class="p">.</span><span class="n">Replicas</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+          <span class="p">.</span><span class="n">Selector</span> <span class="o">=</span> <span class="n">labelSelectorArgs</span><span class="p">}</span>
+    
+    <span class="c1">' create the actual deployment</span>
+    <span class="k">Dim</span> <span class="nv">deployment</span> <span class="o">=</span> <span class="k">New</span> <span class="n">Pulumi</span><span class="p">.</span><span class="n">Kubernetes</span><span class="p">.</span><span class="n">Apps</span><span class="p">.</span><span class="n">V1</span><span class="p">.</span><span class="n">Deployment</span><span class="p">(</span><span class="s">"nginx"</span><span class="p">,</span> <span class="k">New</span> <span class="n">DeploymentArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Spec</span> <span class="o">=</span> <span class="n">deploymentSpecArgs</span> <span class="p">})</span>
+    
+    <span class="c1">' define the service spec</span>
+    <span class="k">Dim</span> <span class="nv">servicePortArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">ServicePortArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Port</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="p">.</span><span class="n">TargetPort</span> <span class="o">=</span> <span class="mi">80</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">serviceSpecArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">ServiceSpecArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Ports</span> <span class="o">=</span> <span class="n">servicePortArgs</span><span class="p">,</span> <span class="p">.</span><span class="n">Type</span> <span class="o">=</span> <span class="s">"LoadBalancer"</span><span class="p">,</span> <span class="p">.</span><span class="n">Selector</span> <span class="o">=</span> <span class="n">labels</span> <span class="p">}</span>
+    <span class="k">Dim</span> <span class="nv">objectMetaArgs</span> <span class="o">=</span> <span class="k">New</span> <span class="n">ObjectMetaArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s">"nginx"</span><span class="p">,</span> <span class="p">.</span><span class="n">Labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="p">}</span>
+    
+    <span class="c1">' create a service</span>
+    <span class="k">Dim</span> <span class="nv">svc</span> <span class="o">=</span> <span class="k">New</span> <span class="n">Pulumi</span><span class="p">.</span><span class="n">Kubernetes</span><span class="p">.</span><span class="n">Core</span><span class="p">.</span><span class="n">V1</span><span class="p">.</span><span class="n">Service</span><span class="p">(</span><span class="s">"nginx"</span><span class="p">,</span> <span class="k">New</span> <span class="n">ServiceArgs</span> <span class="k">With</span> <span class="p">{</span> <span class="p">.</span><span class="n">Metadata</span> <span class="o">=</span> <span class="n">objectMetaArgs</span><span class="p">,</span> <span class="p">.</span><span class="n">Spec</span> <span class="o">=</span> <span class="n">serviceSpecArgs</span> <span class="p">}</span> <span class="p">)</span>
+    
+    <span class="n">Address</span> <span class="o">=</span> <span class="n">svc</span><span class="p">.</span><span class="n">Status</span><span class="p">.</span><span class="n">Apply</span><span class="p">(</span><span class="k">Function</span><span class="err">(</span><span class="nf">status</span><span class="p">)</span> <span class="k">If</span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">LoadBalancer</span><span class="p">.</span><span class="n">Ingress</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">Ip</span><span class="p">,</span> <span class="n">status</span><span class="p">.</span><span class="n">LoadBalancer</span><span class="p">.</span><span class="n">Ingress</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">Hostname</span><span class="p">))</span>
+        
+  <span class="k">End</span> <span class="k">Sub</span>
+  
+  <span class="o">&lt;</span><span class="n">Output</span><span class="o">&gt;</span>
+  <span class="k">Public</span> <span class="k">Property</span> <span class="nf">Address</span> <span class="ow">As</span> <span class="n">Output</span><span class="p">(</span><span class="k">Of</span> <span class="kt">String</span><span class="p">)</span>
+<span class="k">End</span> <span class="k">Class</span>
+</code></pre></div></div>
+
+<p>I shared what I’d done with some of the Slack communities I frequent:</p>
+
+<p><img src="/img/vb-net-slack-1.png" alt="Slack" /></p>
+
+<p>I knew what I was doing was a little controversial, but I wasn’t ready for this:</p>
+
+<p><img src="/img/vb-net-slack-2.png" alt="Slack" /></p>
+
+<p>I felt defensive all of a sudden. Was I starting to feel defensive of VB.NET?</p>
+
+<p>Luckily, <a href="https://twitter.com/funcOfJoe/">the CEO of Pulumi</a>, a man who knows a thing or two about programming languages saw my example code and saw the beauty of what I’d done:</p>
+
+<p><img src="/img/vb-net-twitter-3.png" alt="Joe" /></p>
+
+<p>Not everyone saw the inner-beauty:</p>
+
+<p><img src="/img/vb-net-email-1.png" alt="Email" /></p>
+
+<p>You can see this incredible collaboration of old and new here:</p>
+
+<p><a href="https://asciinema.org/a/Uq17k64ym5x4tl2aLmTFRg3i0"><img src="https://asciinema.org/a/Uq17k64ym5x4tl2aLmTFRg3i0.svg" alt="asciicast" /></a></p>
+
+<p>The full code, if you’d like to see it, is <a href="https://github.com/jaxxstorm/eks-vb-net">here</a></p>
+
+<p>If you’d ask me what I learned from this experience, I’d be honest and say - nothing. Do I really believe VB.NET is the future of cloud engineering? No. It’s not. I’m unlikely to recommend to Pulumi customers that they break out Visual Studio and write some VB.NET, but we know the options is there if they ever want to use it.</p>
+
+<p>I’ve gone on record before to talk about how much I <a href="2019-02-07-why-are-we-templating-yaml.md">loathe templating YAML</a> and I love the expressibility Pulumi gives me with familiar programming languages. Even though I hated VB.NET in university, I would still prefer to express my cloud resources with a 19-year-old programming language over a configuration language with template replacement.</p>
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2020/12/16/vb-net-cloud.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>

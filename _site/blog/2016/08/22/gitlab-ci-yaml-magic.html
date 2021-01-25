@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Magic with Gitlab CI | lbr.</title>
+
+<meta name="description" content="Engineering, DevOps & Cloud Computing
+">
+<meta name="keywords" content="gitlab">
+<link rel="canonical" href="/blog/2016/08/22/gitlab-ci-yaml-magic.html">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-34865189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-34865189-1');
+</script>
+
+
+<!--Feature assets-->
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<!--Font Awesome-->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+<!--Highlight.js-->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--Main assets-->
+<link rel="icon" type="image/jpeg" href="/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+
+<a href="/" class="logo">lbr.</a>
+
+<ul class="menu">
+<li class="menu__entry"><a href="/">about</a></li>
+<li class="menu__entry"><a href="/projects">projects</a></li>
+<li class="menu__entry"><a href="/blog">blog</a></li>
+</ul>
+</div>
+<ul class="social-links">
+
+<a href="mailto:/contact@leebriggs.co.uk" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+
+
+<a href="https://github.com//jaxxstorm" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+
+<a href="https://linkedin.com/in//briggsl" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+
+</ul>
+</header>
+
+<br>
+<br>
+<h1 class="post-title">
+    <div class="post-title__text">Magic with Gitlab CI</div>
+</h1>
+<p class="post-title__subtitle">Published Aug 22, 2016  by <a href="https://leebriggs.co.uk/">Lee Briggs<a><br />
+
+
+    <span class="badge badge-info">#gitlab</span>
+
+<hr>
+<br>
+<p>I love <a href="https://gitlab.com">Gitlab</a>. With every release they announce some amazing new features and it’s one of the few software suites I consider to be a joy to use. Since we adopted it at $job we’ve seen our release cycle within the OPS team improve dramatically and pushing new software seems to be a breeze.</p>
+
+<p>My favourite part of Gitlab is the flexibility and robustness of the <a href="http://docs.gitlab.com/ce/ci/yaml/README.html">gitlab-ci.yml</a> file. Simply by adding a file to your repository, you can now have complex pipeline running tasks which can test, build and deploy your software. I remember doing things like this with Jenkins and being incredibly frustrated - with gitlab I seem to be able to do everything I need to without all the fuss.</p>
+
+<p>I also make heavy use of <a href="https://travis-ci.org">travis-ci</a> in my public and open source projects, and I really like the <a href="https://docs.travis-ci.com/user/customizing-the-build#Build-Matrix">matrix feature</a> that Travis offers. Fortunately, there’s a similar (but not quite the same) feature available in Gitlab CI but I feel like the <a href="http://docs.gitlab.com/ce/ci/yaml/README.html#special-yaml-features">documentation</a> is lacking a little bit, so I figured I’d write up a step by step guide to how I’ve started to use these features for our pipelines.</p>
+
+<h2 id="a-starting-example">A starting example</h2>
+
+<p>Let’s say you have a starting .gitlab-ci.yml like so:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="nn">---</span>
+<span class="na">stages</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">test</span>
+  <span class="pi">-</span> <span class="s">build</span>
+  <span class="pi">-</span> <span class="s">deploy</span>
+
+<span class="na">build_rpm_centos6</span><span class="pi">:</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">centos:6</span>
+  <span class="na">script</span><span class="pi">:</span> 
+    <span class="pi">-</span> <span class="s">rpmbuild -ba</span>
+  <span class="na">except</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">tags</span>
+    <span class="pi">-</span> <span class="s">master</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">build</span>
+  <span class="na">tags</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">docker</span>
+
+<span class="na">build_rpm_centos7</span><span class="pi">:</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">centos:7</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">rpmbuild</span>
+  <span class="na">except</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">tags</span>
+    <span class="pi">-</span> <span class="s">master</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">build</span>
+  <span class="na">tags</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">docker</span></code></pre></figure>
+
+<p>This is a totally valid file, but there’s a whole load of repetition in here which really shouldn’t need to be here. We can use some features of <a href="https://en.wikipedia.org/wiki/YAML">yaml</a> called <a href="https://en.wikipedia.org/wiki/YAML#Advanced_components_of_YAML">anchors and aliases</a> which allow us to reduce the amount of code here. This is documented <a href="http://docs.gitlab.com/ce/ci/yaml/README.html#special-yaml-features">here</a> in the Gitlab CI Readme, but I want to break it down into sections.</p>
+
+<h2 id="define-a-hidden-job">Define a hidden job</h2>
+
+<p>Firstly, we need to define a <a href="http://docs.gitlab.com/ce/ci/yaml/README.html#hidden-jobs">“hidden job”</a> - this is essentially of course a job gitlab-ci is aware of but doesn’t actually run. It defines a yaml hash which we can merge into another hash later. We’ll take all of the hash values from the above two jobs that are the same, and place it in that hidden job:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># here we define a hidden job called "build" (prefixed with a dot)</span>
+<span class="c1"># and then we assign it to an alias &amp;build_definition</span>
+<span class="s">.build</span><span class="pi">:</span> <span class="nl">&amp;build_definition</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">rpmbuild -ba</span>
+  <span class="na">except</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">tags</span>
+    <span class="pi">-</span> <span class="s">master</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">build</span>
+  <span class="na">tags</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">docker</span></code></pre></figure>
+
+<p>What this has done is essentially created something <em>like</em> a function. When we <em>call</em> &amp;build_definition, it’ll spit out the following yaml hash:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="nn">---</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">rpmbuild -ba</span>
+  <span class="na">except</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">tags</span>
+    <span class="pi">-</span> <span class="s">master</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">build</span>
+  <span class="na">tags</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">docker</span></code></pre></figure>
+
+<p>As you can see, the above yaml hash is only missing 2 things: A parent hash key and the value for “image”.</p>
+
+<h2 id="reduce-the-code">Reduce the code</h2>
+
+<p>In order to make use of this alias, we first need to actually define our build jobs. Remember, the above job is <em>hidden</em> so if we pushed to our git repo right now, nothing would happen. Let’s define our two build jobs.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">build_centos6</span><span class="pi">:</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">centos:6</span>
+
+<span class="na">build_centos7</span><span class="pi">:</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">centos:7</span></code></pre></figure>
+
+<p>Obviously, this isn’t enough to actually run a build. What we now need to do is merge to two hashes from the hidden job/alias and with our build definition.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">build_centos6</span><span class="pi">:</span>
+  <span class="s">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*build_definition</span> <span class="c1"># this essentially says insert the hash values from &amp;build_definition hash</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">centos:6</span>
+
+<span class="na">build_centos7</span><span class="pi">:</span>
+  <span class="s">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*build_definition</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">centos:7</span></code></pre></figure>
+
+<p>That’s a lot less code duplication, and if you know what you’re looking at, it’s much easier to read.</p>
+
+<h2 id="visualising-your-gitlab-ciyml-file">Visualising your gitlab-ci.yml file</h2>
+
+<p>This all might seem a little confusing at first because it’s hard to visualise. The best way to get your head around what the output of your CI file is, is to remember that all Gitlab CI does when you push the file is load it into a hash and read the values. With that in mind, try this little 1 line script on your file:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">ruby <span class="nt">-e</span> <span class="s2">"require 'yaml'; require 'pp'; hash = YAML.load_file('.gitlab-ci.yml'); pp hash"</span></code></pre></figure>
+
+<p>This is what the original yaml file hash looks like:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">{</span><span class="s2">"stages"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"test"</span><span class="p">,</span> <span class="s2">"build"</span><span class="p">,</span> <span class="s2">"deploy"</span><span class="p">],</span>
+ <span class="s2">"build_rpm_centos6"</span><span class="o">=&gt;</span>
+  <span class="p">{</span><span class="s2">"image"</span><span class="o">=&gt;</span><span class="s2">"centos:6"</span><span class="p">,</span>
+   <span class="s2">"script"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"rpmbuild -ba"</span><span class="p">],</span>
+   <span class="s2">"except"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">,</span> <span class="s2">"master"</span><span class="p">],</span>
+   <span class="s2">"stage"</span><span class="o">=&gt;</span><span class="s2">"build"</span><span class="p">,</span>
+   <span class="s2">"tags"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"docker"</span><span class="p">]},</span>
+ <span class="s2">"build_rpm_centos7"</span><span class="o">=&gt;</span>
+  <span class="p">{</span><span class="s2">"image"</span><span class="o">=&gt;</span><span class="s2">"centos:7"</span><span class="p">,</span>
+   <span class="s2">"script"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"rpmbuild"</span><span class="p">],</span>
+   <span class="s2">"except"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">,</span> <span class="s2">"master"</span><span class="p">],</span>
+   <span class="s2">"stage"</span><span class="o">=&gt;</span><span class="s2">"build"</span><span class="p">,</span>
+   <span class="s2">"tags"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"docker"</span><span class="p">]}}</span></code></pre></figure>
+
+<p>And this is what the hash from the file with the anchors and such like contains:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">{</span><span class="s2">"stages"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"test"</span><span class="p">,</span> <span class="s2">"build"</span><span class="p">,</span> <span class="s2">"deploy"</span><span class="p">],</span>
+ <span class="s2">".build"</span><span class="o">=&gt;</span>
+  <span class="p">{</span><span class="s2">"script"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"rpmbuild -ba"</span><span class="p">],</span>
+   <span class="s2">"except"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">,</span> <span class="s2">"master"</span><span class="p">],</span>
+   <span class="s2">"stage"</span><span class="o">=&gt;</span><span class="s2">"build"</span><span class="p">,</span>
+   <span class="s2">"tags"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"docker"</span><span class="p">]},</span>
+ <span class="s2">"build_centos6"</span><span class="o">=&gt;</span>
+  <span class="p">{</span><span class="s2">"script"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"rpmbuild -ba"</span><span class="p">],</span>
+   <span class="s2">"except"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">,</span> <span class="s2">"master"</span><span class="p">],</span>
+   <span class="s2">"stage"</span><span class="o">=&gt;</span><span class="s2">"build"</span><span class="p">,</span>
+   <span class="s2">"tags"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"docker"</span><span class="p">],</span>
+   <span class="s2">"image"</span><span class="o">=&gt;</span><span class="s2">"centos:6"</span><span class="p">},</span>
+ <span class="s2">"build_centos7"</span><span class="o">=&gt;</span>
+  <span class="p">{</span><span class="s2">"script"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"rpmbuild -ba"</span><span class="p">],</span>
+   <span class="s2">"except"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">,</span> <span class="s2">"master"</span><span class="p">],</span>
+   <span class="s2">"stage"</span><span class="o">=&gt;</span><span class="s2">"build"</span><span class="p">,</span>
+   <span class="s2">"tags"</span><span class="o">=&gt;</span><span class="p">[</span><span class="s2">"docker"</span><span class="p">],</span>
+   <span class="s2">"image"</span><span class="o">=&gt;</span><span class="s2">"centos:7"</span><span class="p">}}</span></code></pre></figure>
+
+<p>Hopefully that makes it easier to understand! As mentioned earlier, this isn’t as powerful (yet?) as Travis’s matrix feature, which can quickly expand your jobs multiple times over, but with nested aliases you can easily have quite a complex matrix.</p>
+
+<br>
+
+<div id="disqus_thread"></div>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/assets/style.css';
+this.page.identifier = '/blog/2016/08/22/gitlab-ci-yaml-magic.html'; 
+};
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+<br>
+<div class="about">
+<div class="about__devider">*****</div>
+<div class="about__text">
+<br>
+&#169 2021, Lee Briggs | <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+
+</div>
+</body>
+</html>
