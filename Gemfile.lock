@@ -9,7 +9,7 @@ GEM
       zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    backports (3.20.1)
+    backports (3.20.2)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -35,7 +35,7 @@ GEM
     ffi (1.14.2)
     forwardable-extended (2.6.0)
     gemoji (3.0.1)
-    github-pages (210)
+    github-pages (211)
       github-pages-health-check (= 1.16.1)
       jekyll (= 3.9.0)
       jekyll-avatar (= 0.7.0)
@@ -77,7 +77,7 @@ GEM
       mercenary (~> 0.3)
       minima (= 2.5.1)
       nokogiri (>= 1.10.4, < 2.0)
-      rouge (= 3.23.0)
+      rouge (= 3.26.0)
       terminal-table (~> 1.4)
     github-pages-health-check (1.16.1)
       addressable (~> 2.3)
@@ -229,8 +229,6 @@ GEM
     nokogiri (1.11.1)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    nokogiri (1.11.1-arm64-darwin)
-      racc (~> 1.4)
     nokogumbo (2.0.4)
       nokogiri (~> 1.8, >= 1.8.4)
     octokit (4.20.0)
@@ -253,7 +251,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rexml (3.2.4)
-    rouge (3.23.0)
+    rouge (3.26.0)
     ruby-enum (0.8.0)
       i18n
     ruby2_keywords (0.0.4)
@@ -297,10 +295,9 @@ GEM
 
 PLATFORMS
   ruby
-  universal-darwin-19
 
 DEPENDENCIES
-  github-pages (= 210)
+  github-pages (= 211)
   html-proofer
   jekyll-admin
   jekyll-paginate
@@ -308,4 +305,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   2.2.1
+   2.1.4
