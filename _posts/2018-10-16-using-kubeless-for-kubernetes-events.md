@@ -64,7 +64,7 @@ The problem with this is that it's just spitting information to stdout to test l
 
 Now, your script has gotten much more complicated:
 
-{% highlight python %}
+```python
 import asyncio
 import json
 import os
@@ -128,19 +128,18 @@ if __name__ == '__main__':
     finally:
         print('closing event loop')
         loop.close()
+```
 
-{% endhighlight %}
 
 Okay, so now we have events being pushed to NATS. We need to fancy this up a bit, to allow for running in and out of cluster, as well as building a Docker image. The final script can be found [here](https://github.com/jaxxstorm/kubeless-events-example/blob/master/events/main.py). The changes are to include a logger module, as well as argparse to allow for running in and out of the cluster, as well as make some options configurable.
 
 You should now deploy this to your cluster using the provided [deployment manifests](https://github.com/jaxxstorm/kubeless-events-example/blob/master/manifests/events.yaml), which also include the (rather permissive!) RBAC configuration needed for the deployment to be able to read pod information from the API.
 
 
-{% highlight bash %}
-
+```bash
 kubectl apply -f https://raw.githubusercontent.com/jaxxstorm/kubeless-events-example/master/manifests/events.yaml
+```
 
-{% endhighlight %}
 
 This will install the built docker container to publish events to the NATS cluster configured earlier. If you need to, modify the environment variable `NATS_CLUSTER` if you deployed your NATS cluster to another address.
 
@@ -150,17 +149,17 @@ So now the events are being published, we need to actually _do_ something with t
 
 You should have the kubeless cli downloaded by now, so let's create a quick example function to make sure the events are being posted.
 
-{% highlight python %}
+```python
 def dump(event, context):
     print(event)
     return(event)
-{% endhighlight %}
+```
 
 As you can probably tell, this function just dumps any event sent to it and returns. So let's try it out. With kubeless, let's deploy it:
 
-{% highlight bash %}
+```bash
 kubeless function deploy test --runtime python3.6 --handler test.dump --from-file functions/test.py -n kubeless
-{% endhighlight %}
+```
 
 What's happening here, exactly?
 
@@ -171,19 +170,18 @@ What's happening here, exactly?
 
 So you should now have a function deployed:
 
-{% highlight python %}
-
+```bash
 kubeless function ls -n kubeless
 NAME	NAMESPACE	HANDLER  	RUNTIME  	DEPENDENCIES	STATUS
 test	kubeless 	test.dump	python3.6	            	1/1 READY
+```
 
-{% endhighlight %}
 
 So now, we need to have this function be triggered by the NATS messages. To do that, we add a trigger:
 
-{% highlight python %}
+```bash
 kubeless trigger nats create test --function-selector created-by=kubeless,function=test --trigger-topic k8s_events -n kubeless
-{% endhighlight %}
+```
 
 What's going on here?
 
@@ -194,23 +192,20 @@ What's going on here?
 
 Okay, so now, let's cycle the event publisher and test things out!
 
-{% highlight python %}
+```bash
 # delete the current nats event pods
 # this will readd all the pods and republish them
 kubectl delete po -l app=kubeless-nats-events -n kubeless
 
 # read the pod logs from the kubeless function we created
 k logs -l function=test -n kubeless
-{% endhighlight %}
+```
 
 You should see something like this as an output log:
 
-{% highlight bash %}
-
+```json
 {'data': {'type': 'MODIFIED', 'object': {'kind': 'Pod', 'apiVersion': 'v1', 'metadata': {'name': 'nats-trigger-controller-66df75894b-mxppc', 'generateName': 'nats-trigger-controller-66df75894b-', 'namespace': 'kubeless', 'selfLink': '/api/v1/namespaces/kubeless/pods/nats-trigger-controller-66df75894b-mxppc', 'uid': '01ead80a-d0ef-11e8-8e5f-42010aa80fc2', 'resourceVersion': '16046597', 'creationTimestamp': '2018-10-16T02:55:58Z', 'labels': {'kubeless': 'nats-trigger-controller', 'pod-template-hash': '2289314506'}, 'ownerReferences': [{'apiVersion': 'extensions/v1beta1', 'kind': 'ReplicaSet', 'name': 'nats-trigger-controller-66df75894b', 'uid': '01e65ec2-d0ef-11e8-8e5f-42010aa80fc2', 'controller': True, 'blockOwnerDeletion': True}]}, 'spec': {'volumes': [{'name': 'controller-acct-token-dwfj5', 'secret': {'secretName': 'controller-acct-token-dwfj5', 'defaultMode': 420}}], 'containers': [{'name': 'nats-trigger-controller', 'image': 'bitnami/nats-trigger-controller:v1.0.0-alpha.9', 'env': [{'name': 'KUBELESS_NAMESPACE', 'valueFrom': {'fieldRef': {'apiVersion': 'v1', 'fieldPath': 'metadata.namespace'}}}, {'name': 'KUBELESS_CONFIG', 'value': 'kubeless-config'}, {'name': 'NATS_URL', 'value': 'nats://nats-cluster.nats-io.svc.cluster.local:4222'}], 'resources': {}, 'volumeMounts': [{'name': 'controller-acct-token-dwfj5', 'readOnly': True, 'mountPath': '/var/run/secrets/kubernetes.io/serviceaccount'}], 'terminationMessagePath': '/dev/termination-log', 'terminationMessagePolicy': 'File', 'imagePullPolicy': 'IfNotPresent'}], 'restartPolicy': 'Always', 'terminationGracePeriodSeconds': 30, 'dnsPolicy': 'ClusterFirst', 'serviceAccountName': 'controller-acct', 'serviceAccount': 'controller-acct', 'nodeName': 'gke-lbr-default-pool-3071fe55-kfm6', 'securityContext': {}, 'schedulerName': 'default-scheduler', 'tolerations': [{'key': 'node.kubernetes.io/not-ready', 'operator': 'Exists', 'effect': 'NoExecute', 'tolerationSeconds': 300}, {'key': 'node.kubernetes.io/unreachable', 'operator': 'Exists', 'effect': 'NoExecute', 'tolerationSeconds': 300}]}, 'status': {'phase': 'Running', 'conditions': [{'type': 'Initialized', 'status': 'True', 'lastProbeTime': None, 'lastTransitionTime': '2018-10-16T02:55:58Z'}, {'type': 'Ready', 'status': 'True', 'lastProbeTime': None, 'lastTransitionTime': '2018-10-16T02:56:00Z'}, {'type': 'PodScheduled', 'status': 'True', 'lastProbeTime': None, 'lastTransitionTime': '2018-10-16T02:55:58Z'}], 'hostIP': '10.168.0.5', 'podIP': '10.36.14.29', 'startTime': '2018-10-16T02:55:58Z', 'containerStatuses': [{'name': 'nats-trigger-controller', 'state': {'running': {'startedAt': '2018-10-16T02:55:59Z'}}, 'lastState': {}, 'ready': True, 'restartCount': 0, 'image': 'bitnami/nats-trigger-controller:v1.0.0-alpha.9', 'imageID': 'docker-pullable://bitnami/nats-trigger-controller@sha256:d04c8141d12838732bdb33b2890eb00e5639c243e33d4ebdad34d2e065c54357', 'containerID': 'docker://d9ff52fa7e5d821c12fd910e85776e2a422098cde37a7f2c8054e7457f41aa1e'}], 'qosClass': 'BestEffort'}}}, 'event-id': 'YMAok3se6ZQyMTM', 'event-type': 'application/json', 'event-time': '2018-10-16 02:56:00.738120124 +0000 UTC', 'event-namespace': 'natstriggers.kubeless.io', 'extensions': {'request': <LocalRequest: POST http://test.kubeless.svc.cluster.local:8080/>}}
-
-{% endhighlight %}
-
+```
 
 This is the modification event for the pod you just cycled. Awesome!
 
@@ -221,8 +216,7 @@ Okay, so now you've got some events being shipped, it's time to get a little bit
 
 You can create a `slack.py` with your function in, like so:
 
-{% highlight python %}
-
+```python
 #!/usr/bin/env python
 from slackclient import SlackClient
 import os
@@ -253,17 +247,17 @@ def slack_message(event, context):
         print(event.keys())
         print(type(event))
         print(str(event))
+```
 
-{% endhighlight %}
 
 You'll need to deploy your function using the kubeless binary:
 
-{% highlight bash %}
+```bash
 export SLACK_TOKEN=<my_slack_token>
 export SLACK_CHANNEL=<my_slack_channel>
 
 kubeless function deploy slack --runtime python3.6 --handler slack.slack_message --from-file slack.py -n kubeless --env SLACK_TOKEN=$SLACK_TOKEN --env SLACK_CHANNEL=$SLACK_CHANNEL --dependencies requirements.txt
-{% endhighlight %}
+```
 
 
 The only thing you might be confused about here is the `--dependencies` file. Kubeless uses this to determine which dependencies you need to install for the function runtime. In the python case, it's a requirements.txt. You can find a working one in the related [github repo](https://github.com/jaxxstorm/kubeless-events-example/blob/master/functions/slack.py) linked to this post. This example better formats the slack responses into nice slack output, so it's worth taking a look at.
