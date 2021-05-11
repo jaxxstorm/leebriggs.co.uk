@@ -8,9 +8,9 @@ tags:
 - getting-started
 ---
 
-If you've never written in-depth, production ready software in your programming language of choice,  you might never have come across asynchronous programming. I managed to spend several years as an infrastructure type person and hadn't ever really written any tool or software that took advantage of asynchronous concepts. This created a learning curve for me when trying out Pulumi, and meant I had to bend my mind around some new concepts when I started working at Pulumi.
+If you've never written in-depth, production ready software in your programming language of choice, you might never have come across asynchronous programming. I managed to spend several years as an infrastructure type person and hadn't ever really written any tool or software that took advantage of asynchronous concepts. This created a learning curve for me when trying out Pulumi, and meant I had to bend my mind around some new concepts when I started working at Pulumi.
 
-Pulumi uses asynchronous mechanisms in each of its languages in order to ensure it can process data correctly. This can often confuses new users, and leads to the question we see most in our community:
+Pulumi uses asynchronous mechanisms in each of its supported languages in order to ensure it can process data correctly. This can often confuses new users, and leads to the question we see most in our community:
 
 > How do I get the value of this Output and use it as a string?
 
@@ -26,19 +26,19 @@ You may have heard the term "Output" already in your Pulumi journey. Pulumi has 
 
 Let's take a single EC2 instance as an example.
 
-When you create an EC2 instance, you define it using some properties. Values like the instance size and the AMI you want to use are decided by you. In Pulumi parlance, we call these `Inputs` - more on these later.
+When you create an EC2 instance, you define it using some properties. Values like the instance size and the AMI are decided by you. In Pulumi parlance, we call these `Inputs` - more on these later.
 
-When you create the instance itself, whether it's with the API or via the console, the AWS API will populate with properties that define what this instance looks like. The canonical example of this is the Instance ID (which itself is a [resource ID](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resource-ids.html)). If you've ever created an EC2 instance before, you'll know that you can _only_ get this value once the instance has been created. Some other examples of values that are only known after the instance creation are:
+When you create the instance itself, whether it's with the API or via the console, the AWS API will populate with values that define what this instance looks like. The canonical example of this is the Instance ID (which itself is a [resource ID](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/resource-ids.html)). If you've ever created an EC2 instance before, you'll know that you can _only_ get this value once the instance has been created. Some other examples of values that are only known after the instance creation are:
 
   - The [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the instance
   - The instance state (as defined by the [instance lifecycle](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html))
   - The ID of the primary network interface attached to the instance.
 
-The fact that these values are not known until after the resource has been presents a challenge for Pulumi programs, which are generally written in imperative programming languages. What if you want to use this value somewhere in your program, but the actual resource itself hasn't yet finished provisioning? How do you handle the `nil` or empty values?
+The fact that these values are not known until after the resource has been created presents a challenge for Pulumi programs, which are generally written in imperative programming languages. What if you want to use this value somewhere in your program, but the actual resource itself hasn't yet finished provisioning? How do you handle the `nil` or empty values?
 
 Pulumi handles these cases by assigning the values of these API responses a special value type. In Pulumi, we call this an `Output<T>`
 
-## What the fuck is that `<T>` all about?
+## What the hell is that `<T>` all about?
 
 A quick aside here, for those not familiar with what `<T>` is.
 
@@ -66,11 +66,11 @@ This is the magic secret sauce that allows you to use imperative programming lan
 
 # Okay I get it, tell me how to get the string value
 
-This has been a lengthy explanation of all the different parts of how Pulumi's type system works, but if you're reading this because you want to understand how to use a string with an `Output` you're probably thinking "just give me the recipe". So let's get to it.
+So far we've focused this post on describing how Pulumi's type system works, but if you're reading this because you want to understand how to use a string with an `Output` you're probably thinking "just give me the recipe". So let's get to it.
 
 Using our instance as an example, one thing you might want to specify for your instance is [user data](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html).
 
-User data as a property on the instance, does _not_ accept an `Input<string>`. It will ONLY allow you to specify a standard string. This presents a challenge for Pulumi, because - what if you want to put the value of another resource into that user data?
+User data accepts a value of `Input<string>`, but often with user data, you actually want to pass other values, generally in the form of a shell script, or perhaps (god forbid) YAML for [cloud-init](https://cloudinit.readthedocs.io/en/latest/). In these situations where you need to mix properties which aren't known at runtime and standard text date, it presents a challenge for Pulumi.
 
 Other common resource patterns where this comes up in AWS is specifying IAM policy data. IAM roles and policies only accept JSON strings as valid inputs, but it's very common to want to pass the value of other resources into IAM policies.
 
@@ -82,7 +82,7 @@ The best way I can think of to describe what `apply()` does in Pulumi is this:
 
 "Wait for the value you're applying to be known, then do something"
 
-Let's look at some code. I'm going to define two resources, an S3 bucket, and than our trust EC2 instance. All I want to do here is interpolate the ARN of the S3 bucket into the EC2 Instances user data.
+Let's look at some code. I'm going to define two resources, an S3 bucket, and than our trusty EC2 instance. All I want to do here is interpolate the ARN of the S3 bucket into the EC2 Instances' user data.
 
 ```typescript
 // define a bucket
@@ -99,7 +99,7 @@ const instance = new aws.ec2.Instance("test", {
 
 To break this down a little bit, you'll see I'm selecting one of the `Output` values from the S3 bucket (in this case the `arn`) and then I'm adding the `apply()` to the end of it. In simpler terms, I'm saying "once the value of `arn` is populated, run everything inside the `()`.
 
-You can pretty much anything you want inside the `apply()` at this point, because once you're inside the `apply()` - the value of the raw string value is now available to you natively as a `string`. Pulumi will handle all the asynchronous logic for you. 
+You can pretty much do anything you want inside the `apply()` at this point, because once you're inside the `apply()` - the value of the raw string value is now available to you as a `string`. Pulumi will handle all the asynchronous logic for you. 
 
 ## Getting cute with `apply()`
 
