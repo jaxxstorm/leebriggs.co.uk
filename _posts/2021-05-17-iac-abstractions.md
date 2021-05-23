@@ -252,11 +252,11 @@ The next part is to build your Pulumi component. It's possible to do this in eac
   - [TypeScript](https://github.com/pulumi/pulumi-component-provider-ts-boilerplate)
   - DotNet (Coming Soon)
 
-  The language you create your multi language component in is ultimately up to you, but my intention is to build the components I author in the Go programming language. The main reason for this is that it'll mean my downstream users don't require additional dependencies for my components. If you author a component in TypeScript, for example, your users _must_ have the `node` binary installed. Go's ability to build sealed binaries for each OS is a powerful complement which I intend to make use of.
+The language you create your multi language component in is ultimately up to you, but my intention is to build the components I author in the Go programming language. The main reason for this is that it'll mean my downstream users don't require additional dependencies for my components. If you author a component in TypeScript, for example, your users _must_ have the `node` binary installed. Go's ability to build sealed binaries for each OS is a powerful complement which I intend to make use of.
 
-  # Wrapping up
+# Wrapping up
 
-  Pulumi Packages are an exciting new feature which I can't wait for users to find. The ability to share code across all of our supported ecosystems is a powerful force multiplier for our community, and is only the first step in a long journey of growing our community. Give them a try!
+Pulumi Packages are an exciting new feature which I can't wait for users to find. The ability to share code across all of our supported ecosystems is a powerful force multiplier for our community, and is only the first step in a long journey of growing our community. Give them a try!
 
 
 
