@@ -24,7 +24,7 @@ This misconception is pretty easy to understand, and it's because Pulumi "bridge
 
 Well, yes and no. 
 
-When we say Pulumi "bridges" Terraform providers, what we mean is that Pulumi _some_ Pulumi providers use the Terraform schema in order to be able to map the cloud provider API.
+When we say Pulumi "bridges" Terraform providers, what we mean is that _some_ Pulumi providers use the Terraform schema in order to be able to map the cloud provider API.
 
 In order for Pulumi to be able to create resources in your cloud of choice, Pulumi needs to know what resources are available, what parameters are available on that resources API and what the return and response attributes are. If you've taken a look at one of the major cloud providers recently, you'll notice that there's at _least_ 1 trillion different resources and parameters for those APIs. Mapping the entire surface of the cloud provider itself is going to take a very long time.
 
@@ -40,7 +40,7 @@ The actual execution logic, the engine, the CLI and state management are all uni
 
 ### Summary
 
-Pulumi doesn't "use" Terraform under the hood at all, it uses Terraform _providers_ in order to map the cloud provider API surface. 
+Pulumi doesn't "use" Terraform under the hood at all, it uses Terraform _providers_ in order to map the cloud provider API surface.
 
 ## Isn't Pulumi imperative?
 
@@ -50,7 +50,7 @@ If you've provisioned infrastructure with other infrastructure as code tooling, 
 
 When you see Pulumi, with its scary application language workflow, it's easy to panic. 
 
- -"Hang on a minute, do I have to check if my provisioning operation is successful?" 
+ - "Hang on a minute, do I have to check if my provisioning operation is successful?" 
  - "Am I going to have to _check errors_?" 
  - I swear to god if I have to use a `try` or `catch` I'm going to quit.
 
