@@ -12,3 +12,41 @@
     <span class="badge badge-success">#infrastructure-as-code</span>
 
     <span class="badge badge-success">#open-source</span>
+
+- name: Download GitHub Release Action
+  id: action-install-gh-release
+  main_link: https://github.com/jaxxstorm/action-install-gh-release
+  img_src: /assets/img/action_gh_release.png
+  description_less: >
+    <p>Easily install GitHub releases in your GitHub Action Workflows</p>
+  description_more: >
+    <p></p>
+  tags: >
+    <span class="badge badge-info">#ci/cd</span>
+    <span class="badge badge-success">#open-source</span>
+
+- name: AWS SSO Creds
+  id: aws-sso-creds
+  main_link: https://github.com/jaxxstorm/aws-sso-creds
+  img_src: /assets/img/aws-sso-creds.png
+  description_less: >
+    <p>Quickly retrieve credentials from an AWS SSO profile</p>
+  description_more: >
+    <p></p>
+  tags: >
+    <span class="badge badge-info">#aws</span>
+    <span class="badge badge-success">#open-source</span>
+
+- name: Pulumi Scaleway Provider
+  id: pulumi-scaleway
+  main_link: github.com/jaxxstorm/pulumi-scaleway
+  img_src: /assets/img/pulumi_scaleway.png
+  description_less: >
+    <p>Create Scaleway resources using application development langages</p>
+  description_more: >
+    <p></p>
+  tags: >
+    <span class="badge badge-info">#cloud</span>
+    <span class="badge badge-info">#scaleway</span>
+    <span class="badge badge-success">#infrastructure-as-code</span>
+    <span class="badge badge-success">#open-source</span>
