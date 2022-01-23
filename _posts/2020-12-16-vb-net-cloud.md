@@ -87,7 +87,7 @@ Class NginxStack
   Public Sub New()    
     
     ' an input map of labels
-    Dim labels = New InputMap(Of String) From {{"app", "nginx"}}
+    Dim labels = New InputMap(Of String) From {"app", "nginx"}
     
     ' define the deployment spec
     Dim containerPortArgs = New ContainerPortArgs With { .ContainerPortValue = 80 }
