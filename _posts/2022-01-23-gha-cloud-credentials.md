@@ -1,5 +1,5 @@
 ---
-title: Never use cloud credentials in your GitHub Actions again!
+title: Stop using static cloud credentials in GitHub Actions
 layout: post
 category: blog
 tags:
