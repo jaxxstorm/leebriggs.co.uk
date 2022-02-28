@@ -5,7 +5,8 @@ description: >
   Engineering, DevOps & Cloud Computing
 baseurl: "" 
 url: "https://leebriggs.co.uk" 
-
+plugins:
+  - jekyll-feed
 author:
   fullname: Lee Briggs
   github: /jaxxstorm

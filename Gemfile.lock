@@ -321,6 +321,7 @@ DEPENDENCIES
   github-pages (= 223)
   html-proofer
   jekyll-admin
+  jekyll-feed
   jekyll-paginate
   pygments.rb
   rake
