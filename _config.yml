@@ -8,12 +8,24 @@ url: "https://leebriggs.co.uk"
 plugins:
   - jekyll-feed
 author:
-  fullname: Lee Briggs
-  github: /jaxxstorm
-  linkedin: /briggsl
-  email: /contact@leebriggs.co.uk
+  name: Lee Briggs
+  github: jaxxstorm
+  linkedin: briggsl
+  email: contact@leebriggs.co.uk
+  twitter: briggsl
+  homepage: https://leebriggs.co.uk
 g_track_id: UA-34865189-1
+disqus_name: leebriggs
 markdown: kramdown
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  ignore:
+    envs: [local]
+  blanklines: true
+  profile: false
+  startings: [html, head, body]
 defaults:
   -
     scope:
