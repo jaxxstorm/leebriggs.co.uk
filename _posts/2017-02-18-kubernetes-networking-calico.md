@@ -26,12 +26,12 @@ Etcd is the backend data store for all the information Calico needs. If you've d
 
 You can examine the information that calico provides by using etcdctl. The default location for the calico keys is `/calico`
 
-{% highlight bash %}
+```bash
 $ etcdctl ls /calico
 /calico/ipam
 /calico/v1
 /calico/bgp
-{% endhighlight %}
+```
 
 ## BIRD
 The next key component in the calico stack is [BIRD](http://bird.network.cz/). BIRD is a BGP routing daemon which runs on every host. Calico makes uses of BGP to propagate routes between hosts. BGP (if you're not aware) is widely used to propagate routes over the internet. It's suggested you make yourself familiar with some of the concepts if you're using Calico.
@@ -41,7 +41,7 @@ Bird runs on every host in the Kubernetes cluster, usually as a [DaemonSet](http
 ## Confd
 [Confd](https://github.com/kelseyhightower/confd) is a simple configuration management tool. It reads values from etcd and writes them to files on disk. If you take a look inside the calico/node container (where it usually runs) you can get an idea of what's it doing:
 
-{% highlight bash %}
+```bash
 # ps
 PID   USER     TIME   COMMAND
     1 root       0:00 /sbin/runsvdir -P /etc/service/enabled
@@ -57,7 +57,7 @@ PID   USER     TIME   COMMAND
   257 root       2:17 calico-iptables-plugin
 11710 root       0:00 /bin/sh
 11786 root       0:00 ps
-{% endhighlight %}
+```
 
 As you can see, it's connecting to the etcd nodes and reading from there, and it has a confd directory passed to it. The source of that confd directory can be found in the [calicoctl github repository](https://github.com/projectcalico/calico/tree/master/calico_node/filesystem/etc/calico/confd).
 
@@ -65,7 +65,7 @@ If you examine the repo, you'll notice three directories.
 
 Firstly, there's a `conf.d` directory. This directory contains a bunch of toml configuration files. Let's examine one of them:
 
-{% highlight go %}
+```go
 [template]
 src = "bird_ipam.cfg.template"
 dest = "/etc/calico/confd/config/bird_ipam.cfg"
@@ -74,14 +74,14 @@ keys = [
     "/pool",
 ]
 reload_cmd = "pkill -HUP bird || true"
-{% endhighlight %}
+```
 
 This is pretty simple in reality. It has a source file, and then where the file should be written to. Then, there's some etcd keys that you should read information from. Essentially, confd is what writes the BIRD configuration for Calico. If you examine the keys there, you'll see the kind of thing it reads:
 
-{% highlight bash %}
+```bash
 $  etcdctl ls /calico/v1/ipam/v4/pool/
 /calico/v1/ipam/v4/pool/192.168.0.0-16
-{% endhighlight %}
+```
 
 So in this case, it's getting the pod cidr we've assigned. I'll cover this in more detail later.
 
@@ -97,18 +97,18 @@ This is essentially:
 
 This makes more sense if you look at the values in the etcd key:
 
-{% highlight bash %}
+```bash
 etcdctl get /calico/v1/ipam/v4/pool/192.168.0.0-16
 {"cidr":"192.168.0.0/16","ipip":"tunl0","masquerade":true,"ipam":true,"disabled":false}
-{% endhighlight %}
+```
 
 So it's grabbed the cidr value and written it to the file. The end result of the file in the calico/node container brings this all together:
 
-{% highlight bash %}
+```bash
 if ( net ~ 192.168.0.0/16 ) then {
     accept;
   }
-{% endhighlight %}
+```
 
 Pretty simple really!
 
@@ -131,7 +131,7 @@ At this stage, you'll want to deploy something so that Calico can work it's magi
 ## Routing Table
 Once you've deployed Calico and your guestbook, get the pod IP of the guestbook using `kubectl`:
 
-{% highlight bash %}
+```bash
 kubectl get po -o wide
 NAME                           READY     STATUS    RESTARTS   AGE       IP                NODE
 frontend-88237173-f3sz4        1/1       Running   0          2m        192.168.15.195    node1
@@ -140,11 +140,11 @@ frontend-88237173-pwqfx        1/1       Running   0          2m        192.168.
 redis-master-343230949-zr5xg   1/1       Running   0          2m        192.168.0.130    node4
 redis-slave-132015689-475lt    1/1       Running   0          2m        192.168.71.1      node5
 redis-slave-132015689-dzpks    1/1       Running   0          2m        192.168.105.65   node6
-{% endhighlight %}
+```
 
 If everything has worked correctly, you should be able to ping every pod from any host. Test this now:
 
-{% highlight bash %}
+```bash
 ping -c 1 192.168.15.195
 PING 192.168.15.195 (192.168.15.195) 56(84) bytes of data.
 64 bytes from 192.168.15.195: icmp_seq=1 ttl=63 time=0.318 ms
@@ -152,11 +152,11 @@ PING 192.168.15.195 (192.168.15.195) 56(84) bytes of data.
 --- 192.168.15.195 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.318/0.318/0.318/0.000 ms
-{% endhighlight %}
+```
 
 If you have [fping](http://fping.org/) and  installed, you can verify all pods in one go:
 
-{% highlight bash %}
+```bash
 kubectl get po -o json | jq .items[].status.podIP -r | fping
 192.168.15.195 is alive
 192.168.228.195 is alive
@@ -164,11 +164,11 @@ kubectl get po -o json | jq .items[].status.podIP -r | fping
 192.168.0.130 is alive
 192.168.71.1 is alive
 192.168.105.65 is alive
-{% endhighlight %}
+```
 
 The real question is, how did this actually work? How come I can ping these endpoints? The answer becomes obvious if you print the routing table:
 
-{% highlight bash %}
+```bash
 ip route
 default via 172.29.132.1 dev eth0
 169.254.0.0/16 dev eth0  scope link  metric 1002
@@ -182,7 +182,7 @@ blackhole 192.168.33.0/26  proto bird
 192.168.105.64/26 via 172.29.141.97 dev tunl0  proto bird onlink
 192.168.175.192/26 via 172.29.141.102 dev tunl0  proto bird onlink
 192.168.228.192/26 via 172.29.141.96 dev tunl0  proto bird onlink
-{% endhighlight %}
+```
 
 A lot has happened here, so let's break it down in sections.
 
@@ -190,18 +190,18 @@ A lot has happened here, so let's break it down in sections.
 
 Each host that has calico/node running on it has its own `/26` subnet. You can verify this by looking in etcd:
 
-{% highlight bash %}
+```bash
 etcdctl ls /calico/ipam/v2/host/node1/ipv4/block/
 /calico/ipam/v2/host/node1/ipv4/block/192.168.228.192-26
-{% endhighlight %}
+```
 
 So in this case, the host node1 has been allocated the subnet `192.168.228.192-26`. Any new host that starts up, connects to kubernetes and has a calico/node container running on it, will get one of those subnets. This is a fairly standard model in Kubernetes networking.
 
 What differs here is how Calico handles it. Let's go back to our routing table and look at the entry for that subnet:
 
-{% highlight bash %}
+```bash
 192.168.228.192/26 via 172.29.141.96 dev tunl0  proto bird onlink
-{% endhighlight %}
+```
 
 What's happened here is that calico-felix has read etcd, and determined that the ip address of node1 is `172.29.141.96`. Calico now knows the IP address of the host, and also the pod subnet assigned to it. With this information, it programs routes on _every node_ in the kubernetes cluster. It says "if you want to hit something in this subnet, go via the ip address `x` over the tunl0 interface.
 
@@ -213,7 +213,7 @@ Now, the packets know their destination. They have a route defined and they know
 
 The answer again, is in the routing table. On the host the pod has been scheduled on, print the routing table again:
 
-{% highlight bash %}
+```bash
 ip route
 default via 172.29.132.1 dev eth0
 169.254.0.0/16 dev eth0  scope link  metric 1002
@@ -228,13 +228,13 @@ blackhole 192.168.33.0/26  proto bird
 192.168.175.192/26 via 172.29.141.102 dev tunl0  proto bird onlink
 192.168.228.192/26 via 172.29.141.96 dev tunl0  proto bird onlink
 192.168.228.195 dev cali7b262072819  scope link
-{% endhighlight %}
+```
 
 There's an extra route! You can see, there's the pod IP has the destination and it's telling the OS to route it via a device, `cali7b262072819`.
 
 Let's have a look at the interfaces:
 
-{% highlight bash %}
+```bash
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 3: eth1: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc mq master bond0 state UP mode DEFAULT qlen 1000
@@ -243,7 +243,7 @@ Let's have a look at the interfaces:
     link/ether 00:25:90:62:ed:c6 brd ff:ff:ff:ff:ff:ff
 5: cali7b262072819@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT
     link/ether 32:e9:d2:f3:17:0f brd ff:ff:ff:ff:ff:ff link-netnsid 4
-{% endhighlight %}
+```
 
 There's an interface for our pod! When the container spun up, calico (via [CNI](https://github.com/containernetworking/cni)) created an interface for us and assigned it to the pod. How did it do that?
 
@@ -251,7 +251,7 @@ There's an interface for our pod! When the container spun up, calico (via [CNI](
 
 The answer lies in the setup of Calico. If you examine the yaml you installed when you installed Calico, you'll see a setup task which runs on every container. That uses a configmap, which looks like this
 
-{% highlight yaml %}
+```yaml
 # This ConfigMap is used to configure a self-hosted Calico installation.
 kind: ConfigMap
 apiVersion: v1
@@ -298,13 +298,13 @@ data:
         ipip:
           enabled: true
         nat-outgoing: true
-{% endhighlight %}
+```
 
 This manifests itself in the `/etc/cni/net.d` directory on every host:
-{% highlight bash %}
+```bash
 ls /etc/cni/net.d/
 10-calico.conf  calico-kubeconfig  calico-tls
-{% endhighlight %}
+```
 
 So essentially, when a new pod starts up, Calico will:
 
@@ -319,7 +319,7 @@ Magic!
 
 The final piece of the puzzle here is some IPTables magic. As mentioned earlier, Calico has support for network policy. Even if you're not actively _using_ the policy components, it still exists, and you need some default policy for connectivity is work. If you look at the output of `iptables -L` you'll see a familiar string:
 
-{% highlight bash %}
+```bash
 **Chain felix-to-7b262072819 (1 references)
 target     prot opt source               destination
 MARK       all  --  anywhere             anywhere             MARK and 0xfeffffff
@@ -330,7 +330,7 @@ DROP       all  --  anywhere             anywhere             mark match 0x0/0x2
 felix-p-k8s_ns.default-i  all  --  anywhere             anywhere
 RETURN     all  --  anywhere             anywhere             mark match 0x1000000/0x1000000 /* Profile accepted packet */
 DROP       all  --  anywhere             anywhere             /* Packet did not match any profile (endpoint eth0) */
-{% endhighlight %}
+```
 
 The IPtables chain here has the same string at the calico interface. This iptables rule is vital for calico to pass the packets onto the container. It grabs the packet destined for the container, determines if it should be allowed and sends it on its way if it is.
 

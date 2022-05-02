@@ -25,22 +25,22 @@ Unfortunately, this introduced another layer of complexity. Your cloud provider'
 
 The most successful tools of this era had something in common, even if they differed in the way they solved the problem. I attribute the success of the two tools I've used the most until this point (Puppet and Terraform) to the fact that they both have very readable and powerful DSLs. The decision to use DSLs made them extremely approachable to people, even with rudimentary software engineering backgrounds. Generally, you can take a simple block of Puppet code and very quickly get an idea of what it's going to do:
 
-{% highlight puppet %}
+```puppet
   file { '/tmp/my-file':
     ensure  => present,
     content => 'foo',
     user    => 'jaxxstorm',
   }
-{% endhighlight %}
+```
 
 HCL has a similar approach - its simplicity allows you to look at (basic) HCL and get a decent idea of what's going to happen when you execute it. Here's a similar operation as our Puppet example in HCL:
 
-{% highlight hcl %}
+```hcl
 resource "local_file" "my-file" {
     content     = "foo"
     filename = "/tmp/my-file",
 }
-{% endhighlight %}
+```
 
 Simplicity is fantastic when you get started. However, in my experience with DSLs over the past 10 years is that you will, unfortunately, reach a tipping point in which you're going to look at what you've created in horror. 
 Ultimately, there's a universal truth of configuration complexity. No matter how you approach it, you're dealing with 2 distinct users:
@@ -69,7 +69,7 @@ Examples of how this flexibility looks like in practice can be when you take a l
 
 This library uses the standard [aws library](https://github.com/pulumi/pulumi-aws) under the hood, but wraps it up in sane configuration defaults using standard packaging methods. I previously wrote a very [ranty and frustrated post](https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html) about how hard it was to stand up a service on fargate using terraform. Here's what it looks like in awsx (using typescript):
 
-{% highlight typescript %}
+```typescript
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
@@ -86,7 +86,7 @@ const nginx = new awsx.ecs.FargateService("nginx", {
     },
     desiredCount: 2,
 });
-{% endhighlight %}
+```
 
 Seeing code like this makes sense to me. If I want simple, off the shelf defaults, I can write a module/library, but if I want to get into the nuts and bolts of the configuration, I can use the `@pulumi/aws` library and talk to the API directly. 
 

@@ -120,13 +120,13 @@ Well, let's take our earlier example - we want to generate some JSON config spec
 
 Firstly, let's define some Jsonnet:
 
-```json
+```jsonnet
 {
 
   image: std.extVar('image'),
 
 }
-```json
+```
 
 Then, we can generate it using the Jsonnet command line tool, passing in the external variable as we need to:
 
@@ -143,7 +143,7 @@ Easy!
 
 Before, I noted that if you wanted to define an optional field, with YAML templating you had to define if statements for everything. With Jsonnet, you're just defining code!
 
-```json
+```jsonnet
 // define a variable - yes, jsonnet also has comments
 local rg = null;
 {

@@ -37,7 +37,7 @@ kr8 itself is the only component of the kr8 framework that we wrote at Apptio. I
 
 You can see the result of these purposes using a few of the tools in the kr8 binary, for example, listing clusters:
 
-{% highlight bash %}
+```bash
 kr8 cluster list
 +--------------------+--------------------------------------------------------------------+
 |        NAME        |                                PATH                                |
@@ -48,7 +48,7 @@ kr8 cluster list
 | docker-for-desktop | /Users/Lee/github/cluster_config/clusters/local/docker-for-desktop |
 | minikube           | /Users/Lee/github/cluster_config/clusters/local/minikube           |
 +--------------------+--------------------------------------------------------------------+
-{% endhighlight %}
+```
 
 However, using the kr8 binary alone is probably not what you want to do. We bundle and use a variety of other tools with kr8 to achieve the ability to generate manifests for multiple clusters and deploy them.
 

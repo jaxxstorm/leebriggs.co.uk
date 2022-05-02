@@ -8,15 +8,14 @@ Sensu has really evolved into a first class monitoring tool, and the main reason
 
 As previously mentioned, we use Puppet to distribute these checks, and the [puppet-sensu module](https://github.com/sensu/sensu-puppet.git) makes this easy, you simply define a check using the sensu::check defined type:
 
-{% highlight puppet %}
 
+```puppet
   ::sensu::check { 'check_something':
     ensure     => 'present',
     command    => '/my/command.rb',
     standalone => true,
   }
-
-{% endhighlight %}
+```
 
 A big driver for making this easy has been yelp's [monitoring_check module](https://github.com/Yelp/puppet-monitoring_check) puppet module, which is a defined type wrapper around the ::sensu::check type which sets up some sane defaults for you and incorporates some things like sending alerts to different teams, assuming you make use of their [sensu handlers](https://github.com/Yelp/sensu_handlers) as well.
 
@@ -28,17 +27,17 @@ I did something similar to Yelp with my defined types for standalone checks, but
 
 The first thing you have to do is simple, set up a check on the server side of sensu. The way this works is that instead of the check definition residing on the client, it resides on the server, and the sensu client _subscribes_ to the checks. Let's assume here that we have a fleet of web servers that we want to check - first, we'd need to assign a subscription to the sensu client:
 
-{% highlight puppet %}
+```puppet
   node 'sensu-client.example.com' {
     class { 'sensu':
       subscriptions => [ 'webservers', 'base' ],
     }
   }
-{% endhighlight %}
+```
 
 This translate to JSON for the client conf like so:
 
-{% highlight javascript %}
+```json
 {
   "client": {
     "name": "webserver",
@@ -52,12 +51,11 @@ This translate to JSON for the client conf like so:
     "safe_mode": false,
   }
 }
-{% endhighlight %}
+```
 
 One we've set the subscription on the client, we can create a check on the server that executes on the client using the subscription. On your server, create a check like so:
 
-{% highlight puppet %}
-
+```puppet
 node 'sensu-server.example.com' {
   ::sensu::check { 'check-webserver':
     ensure      => 'present',
@@ -66,8 +64,7 @@ node 'sensu-server.example.com' {
     subscribers => [ 'webservers' ],
   }
 }
-
-{% endhighlight %}
+```
 
 Now, when you restart the sensu client and server, the check definition will appear on the sensu server as a normal check but will execute on the client.
 
@@ -81,7 +78,7 @@ Turning a check into an aggregate is easy, assuming you've defined the check on 
 
 To define the aggregate, just set up the aggregate parameter - with the puppet module:
 
-{% highlight puppet %}
+```puppet
 node 'sensu-server.example.com' {
   ::sensu::check { 'check-webserver':
     ensure      => 'present',
@@ -92,12 +89,11 @@ node 'sensu-server.example.com' {
     handle      => false,
   }
 }
-{% endhighlight %}
+```
 
 It's worth noting here that I've also set the parameter handle => false, the reason for this is because I don't care if a single web server fails, I just want to know about the health of the web servers overall. The JSON looks like so:
 
-{% highlight javascript %}
-
+```json
 {
   "checks": {
     "check-webserver": {
@@ -111,12 +107,11 @@ It's worth noting here that I've also set the parameter handle => false, the rea
     }
   }
 }
-
-{% endhighlight %}
+```
 
 Once this starts to run, you'll be able to see the aggregate by querying the sensu API:
 
-{% highlight bash %}
+```bash
 curl -s -u admin -p http://sensu-server.example.com:4567/aggregates | jq .
 Enter host password for user 'admin':
 [
@@ -145,11 +140,11 @@ Enter host password for user 'admin':
       1454069757
     ]
   },
-{% endhighlight %}
+```
 
 and if you look at a single aggregate, you'll start to see how useful they are!
 
-{% highlight bash %}
+```bash
 curl -s -u admin -p http://sensu-server.example.com:4567/aggregates/check-webserver/1454081758 | jq .
 Enter host password for user 'admin':
 {
@@ -159,7 +154,7 @@ Enter host password for user 'admin':
   "unknown": 0,
   "total": 32
 }
-{% endhighlight %}
+```
 
 Now we're in a position to know how many of our webservers are responding easily. We have all the check results aggregated, and we can query the API easily to see the status. The final step is to alert on this aggregate.
 
@@ -167,16 +162,15 @@ Now we're in a position to know how many of our webservers are responding easily
 
 You can write any number of custom checks here to make this work, but I chose to make use of the available [check-aggregate.rb](https://github.com/sensu-plugins/sensu-plugins-sensu/blob/master/bin/check-aggregate.rb) in the community plugins repo. You invoke it like so:
 
-{% highlight bash %}
+```basg
 /etc/sensu/plugins/check-aggregate.rb -a http://sensu-server.example.com:4567 -c check-webserver -u admin -p <password> -C 10 -M "10% of your webservers are down!"
-{% endhighlight %}
+```
 
 This is hopefully pretty self explanatory, but basically, you need to pass the sensu API details, as well as a threshold under which your aggregate will drop and a message the check will output if the check fails. 
 
 To have this run, you can define it as a standalone check:
 
-{% highlight puppet %}
-
+```puppet
 node 'sensu-server.example.com' {
   ::sensu::check { 'check-webserver-cluster':
     ensure      => 'present',
@@ -185,7 +179,7 @@ node 'sensu-server.example.com' {
     source      => "production_webservers",
   }
 }
-{% endhighlight %}
+```
 
 Notice I make use of the "source" parameter so that sensu will create a [JIT client](https://sensuapp.org/docs/latest/clients#jit-clients) rather than have it create an event for our monitoring server.
 

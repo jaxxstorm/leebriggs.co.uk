@@ -14,25 +14,23 @@ Well, it turns out, there's a much better way than this, and it again involves s
 
 As mentioned before, you can have sensu clients subscribe to certain checks on a server and these subscriptions can be anything you want. I personally have all sensu clients subscribe to a "base" subscription, and then designate subscriptions based on Puppet facter facts. The brilliant [sensu-puppet module](https://github.com/sensu/sensu-puppet) allows us to do this easily, and I use hiera to assign these checks to hosts:
 
-{% highlight yaml %}
-
+```yaml
 sensu::subscriptions:
   - "base"
   - "location_%{::datacenter}"
   - "role_%{::role}"
   - "type_%{::virtual}"
-
-{% endhighlight %}
+```
 
 I hope these are fairly self explanatory, but in case they aren't, I'm adding subscriptions to each host based on Facter facts that are either present by default, or I've added as custom facts. datacenter and role are custom facts which are company specific, but you can apply subscriptions however you wish.
 
 In addition to these standard subscriptions, I also add a special subscription: roundrobin subscriptions. They look a little bit like this:
 
-{% highlight yaml %}
+```yaml
 sensu::subscriptions:
   - "roundrobin:%{::datacenter}"
   - "roundrobin:%{::role}"
-{% endhighlight %}
+```
 
 Once we've assigned these subscriptions, we can use them in a special way with sensu.
 
@@ -48,8 +46,7 @@ A round robin check is a special server side check in sensu which only executes 
  
 Because the roundrobin checks make use of the subscriptions feature, you can only designate them on the server side, and you must have a subscription in place to use them. In Puppet this looks like this:
 
-{% highlight puppet %}
-
+```puppet
 node 'sensu-server.example.com' {
   ::sensu::check { 'check-webserver':
     ensure      => 'present',
@@ -58,7 +55,7 @@ node 'sensu-server.example.com' {
     subscribers => [ 'roundrobin:webservers' ],
   }
 }
-{% endhighlight %}
+```
 
 That's it! As long as you have a subscription in place for "roundrobin:webservers" - sensu will do all the work for you.
 

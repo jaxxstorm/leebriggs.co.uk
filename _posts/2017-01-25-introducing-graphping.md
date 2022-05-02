@@ -27,7 +27,7 @@ In order to run it, you need to specify a config file, and an address for a [sta
 
 The config file makes use of [HCL](https://github.com/hashicorp/hcl) which means you can either write a human readable config file, or use a machine generated JSON config file. An example config file looks like this:
 
-{% highlight bash %}
+```bash
 
 interval = 10 # A global interval. Can be overwritten per target group
 prefix = "graphping" # A global prefix for statsd metrics
@@ -56,7 +56,7 @@ target_group "news_sites" {
   }
 }
 
-{% endhighlight %}
+```
 
 This all comes together to allow you to create graphs very similar to SmokePing. Here's an example:
 

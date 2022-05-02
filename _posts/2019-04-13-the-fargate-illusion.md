@@ -47,7 +47,7 @@ I knew my container needed to have some environment variables, and it needed to 
 
 First, I defined some environment variables:
 
-{% highlight hcl %}
+```hcl
 container_environment_variables = [
     {
       name  = "USER"
@@ -58,11 +58,11 @@ container_environment_variables = [
       value = "${var.password}"
     }
 ]
-{% endhighlight %}
+```
 
 Then I compiled the task definition using the module I mentioned above:
 
-{% highlight hcl %}
+```hcl
 module "container_definition_app" {
   source  = "cloudposse/ecs-container-definition/aws"
   version = "v0.7.0"
@@ -85,7 +85,7 @@ module "container_definition_app" {
   environment = "${local.container_environment_variables}"
 
 }
-{% endhighlight %}
+```
 
 I was pretty confused at this point - I need to define a lot of configuration here to get this running and I've barely even started, but it made a little sense - anything running a docker container needs to have _some_ idea of the configuration values of the docker container. I've [previously written](https://leebriggs.co.uk/blog/2018/05/08/kubernetes-config-mgmt.html) about the problems with Kubernetes and configuration management and the same problem seemed to be rearing its ugly head again here.
 
@@ -93,7 +93,7 @@ Next, I defined the task definition from the module above (which thankfully abst
 
 I realised immediately I was missing something as I was defining the module parameters. I need an IAM role as well! Okay, let me define that:
 
-{% highlight hcl %}
+```hcl
 resource "aws_iam_role" "ecs_task_execution" {
   name = "${var.name}-ecs_task_execution"
 
@@ -119,11 +119,11 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   role       = "${aws_iam_role.ecs_task_execution.id}"
   policy_arn = "${element(var.policies_arn, count.index)}"
 }
-{% endhighlight %}
+```
 
 That makes sense, I'd need to define an RBAC policy in Kubernetes, so I'm still not exactly losing or gaining anything here. I am starting to think at this point that this feels very familiar from a Kubernetes perspective.
 
-{% highlight hcl %}
+```hcl
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.name}"
   network_mode             = "awsvpc"
@@ -136,7 +136,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions    = "${module.container_definition_app.json}"
 
 }
-{% endhighlight %}
+```
 
 At this point, I've written quite a few lines of code to get this running, read a lot of ECS documentation and all I've done is define a task definition. I still haven't got this thing running yet. I'm really confused at this point what the value add is here over a Kubernetes based platform, but I continued onwards.
 
@@ -144,7 +144,7 @@ At this point, I've written quite a few lines of code to get this running, read 
 
 A service is partly how to expose the container to the world, and partly how you define how many replicas it has. My first thought was "Ah! This is like a Kubernetes service!" and I set about mapping the ports and such like. Here was my first run at the terraform:
 
-{% highlight hcl%}
+```hcl
 resource "aws_ecs_service" "app" {
   name                               = "${var.name}"
   cluster                            = "${module.ecs.this_ecs_cluster_id}"
@@ -160,7 +160,7 @@ resource "aws_ecs_service" "app" {
   }
 
 }
-{% endhighlight %}
+```
 
 I again got frustrated when I had to define the security group for this that allowed access to the ports needed, but I did so and plugged that into the network configuration. Then I got a smack in the face.
 
@@ -182,7 +182,7 @@ I now realised I needed:
 
 So I set about making those. I made use of some popular terraform modules, and came up with this:
 
-{% highlight hcl %}
+```hcl
 
 # Define a wildcard cert for my app
 module "acm" {
@@ -241,13 +241,13 @@ resource "aws_lb_listener" "main-tls" {
     type             = "forward"
   }
 }
-{% endhighlight %}
+```
 
 I'll be completely honest here - I screwed this up several times. I had to fish around in the AWS console to figure out what I'd done wrong. It certainly wasn't an "easy" process - and I've done this before - many times.  Honestly, at this point, Kubernetes looked positively _enticing_ to me, but I realised it was because I was very familiar with it. If I was lucky enough to be using a managed Kubernetes platform (with external-dns and cert-manager preinstalled) I'd really wonder what value add I was missing from Fargate. It just really didn't feel that easy.
 
 After a bit of back and forth, I now had a working ECS service. The final definition, including the service, looked a bit like this:
 
-{% highlight hcl %}
+```hcl
 data "aws_ecs_task_definition" "app" {
   task_definition = "${var.name}"
   depends_on      = ["aws_ecs_task_definition.app"]
@@ -278,7 +278,7 @@ resource "aws_ecs_service" "app" {
   ]
 
 }
-{% endhighlight %}
+```
 
 I felt like it was close at this point, but then I remembered I'd only done 2 of the required 3 steps from the original "Getting Started" document - I still needed to define the ECS cluster.
 
@@ -286,14 +286,14 @@ I felt like it was close at this point, but then I remembered I'd only done 2 of
 
 Thanks to a very well [defined module](https://github.com/terraform-aws-modules/terraform-aws-ecs), defining the cluster to run all this on was actually very easy.
 
-{% highlight hcl %}
+```hcl
 module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
   version = "v1.1.0"
 
   name = "${var.name}"
 }
-{% endhighlight %}
+```
 
 What surprised me the _most_ here is why I had to define a cluster at all. As someone reasonably familiar with ECS it makes some sense you'd need a cluster, but I tried to consider this from the point of view of someone having to go through this process as a complete newcomer - it seems surprising to me that Fargate is billed as "serverless" but you still need to define a cluster. It's a small detail, but it really stuck in my mind.
 
@@ -301,7 +301,7 @@ What surprised me the _most_ here is why I had to define a cluster at all. As so
 
 At this stage of the process, I was fairly happy I managed to get something running. There was however something missing from my original criteria. If we go all the way back to the task definition, you'll remember my app has an environment variable for the password:
 
-{% highlight hcl %}
+```hcl
 container_environment_variables = [
     {
       name  = "USER"
@@ -312,7 +312,7 @@ container_environment_variables = [
       value = "${var.password}"
     }
 ]
-{% endhighlight %}
+```
 
 If I looked at my task definition in the AWS console, my password was there, staring at me in plaintext. I wanted this to end, so I set about trying to move this into something else, similar to [Kubernetes secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
 
@@ -326,19 +326,19 @@ The AWS documentation [covers this](https://docs.aws.amazon.com/AmazonECS/latest
 
 First, you have to define a parameter and give it a name. In terraform, it looks like this:
 
-{% highlight hcl %}
+```hcl
 resource "aws_ssm_parameter" "app_password" {
   name  = "${var.app_password_param_name}" # The name of the value in AWS SSM
   type  = "SecureString"
   value = "${var.app_password}" # The actual value of the password, like correct-horse-battery-stable
 }
-{% endhighlight %}
+```
 
 Obviously the key component here is the "SecureString" type. This uses the default AWS KMS key to encrypt the data, something that was not immediately obvious to me. This has a huge advantage over Kubernetes secrets, which aren't encrypted in etcd by default.
 
 Then I specified another local value map for ECS, and passed that as a secret parameter:
 
-{% highlight hcl %}
+```hcl
 container_secrets = [
     {
       name      = "PASSWORD"
@@ -367,7 +367,7 @@ module "container_definition_app" {
 
   environment = "${local.container_environment_variables}"
   secrets     = "${local.container_secrets}"
-{% endhighlight %}
+```
 
 ### A problem arises
 

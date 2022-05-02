@@ -66,8 +66,7 @@ Consul has an excellent [Puppet Module](https://github.com/solarkennedy/puppet-c
 
 To deploy the servers with Puppet, create a consul server role and include the puppet module:
 
-{% highlight puppet %}
-
+```puppet
 node 'consulserver' {
   class { '::consul':
     config_hash => {
@@ -82,8 +81,7 @@ node 'consulserver' {
     }
   }
 }
-
-{% endhighlight %}
+```
 
 The important params here are:
  * bootstrap_expect: How large should your server cluster be?
@@ -92,26 +90,26 @@ The important params here are:
 
 Once you've deployed this to your three consul hosts, and the service is started, you'll see something like this in the logs of each server:
 
-{% highlight bash %}
+```bash
 [WARN] raft: EnableSingleNode disabled, and no known peers. Aborting election.
-{% endhighlight %}
+```
 
 What's happening here is that your cluster is looking for peers, but it can't find them, so let's make a cluster. From _one_ of the servers, perform the following command:
 
-{% highlight bash %}
+```bash
 $ consul join <Node A Address> <Node B Address> <Node C Address>
 Successfully joined cluster by contacting 3 nodes.
-{% endhighlight %}
+```
 
 and then, in the logs, you'll see something like this
 
-{% highlight bash %}
+```bash
 [INFO] consul: adding server foo (Addr: 127.0.0.2:8300) (DC: dc1)
 [INFO] consul: adding server bar (Addr: 127.0.0.1:8300) (DC: dc1)
 [INFO] consul: Attempting bootstrap with nodes: [127.0.0.3:8300 127.0.0.2:8300 127.0.0.1:8300]
 ...
 [INFO] consul: cluster leadership acquired
-{% endhighlight %}
+```
 
 You have now bootstrapped a consul cluster, and you're ready to start adding agents to it from the rest of your infrastructure!
 
@@ -121,8 +119,7 @@ As I said earlier, you'll probably want to deploy the agent to every single host
 
 Using Puppet, you deploy the agent to every server like so:
 
-{% highlight puppet %}
-
+```puppet
 node 'default' {
   class { '::consul':
     datacenter    => "home",
@@ -132,8 +129,7 @@ node 'default' {
     retry_join    => ["server_a", "server_b", "server_c"],
   }
 }
-
-{% endhighlight %}
+```
 
 The key differences from the servers are:
 
@@ -142,34 +138,34 @@ The key differences from the servers are:
 
 Once you've deployed this, you'll have a consul cluster running with agents attached. You can see the status of the cluster like so:
 
-{% highlight bash %}
+```bash
 [root@host~]# consul members
 Node          Address            Status  Type    Build  Protocol  DC
 hostD         192.168.4.26:8301  alive   client  0.6.3  2         home
 hostA         192.168.4.21:8301  alive   server  0.6.3  2         home
 hostB         192.168.4.29:8301  alive   server  0.6.3  2         home
 hostC         192.168.4.34:8301  alive   server  0.6.3  2         home
-{% endhighlight %}
+```
 
 ## Consul Services
 
 Now we have our cluster deployed, we need to make it aware of services. There's a service already deployed for the consul cluster itself, and you can see how it's deployed and the status of it using a DNS query to the consul agent. 
 
-{% highlight bash %}
+```bash
 dig +short @127.0.0.1 -p 8600 consul.service.home.consul. ANY
 192.168.4.34
 192.168.4.21
 192.168.4.29
-{% endhighlight %}
+```
 
 Here, consul has returned the status of the consul service to let me know it's available from these IP addresses. Consul also supports SRV records, so it can even return the port that it's listening on
 
-{% highlight bash %}
+```bash
 dig +short @127.0.0.1 -p 8600 consul.service.home.consul. SRV
 1 1 8300 nodeA.node.home.consul.
 1 1 8300 nodeB.node.home.consul.
 1 1 8300 nodeC.node.home.consul.
-{% endhighlight %}
+```
 
 The way it determines what nodes are available to provide a service is using _checks_ which I mentioned earlier. These can be either:
 
@@ -185,36 +181,36 @@ In order for us to get started with a consul service, we need to deploy a check.
 
 I chose to first deploy a puppetmaster service check, so I'll use that as my example. Again, I used the [puppet module](https://github.com/solarkennedy/puppet-consul) to do this, so in my Puppetmaster role definition, I simple did this:
 
-{% highlight puppet %}
+```puppet
 node 'puppetmaster' {
   ::consul::service { 'puppetmaster':
     port => '8140',
     tags => ['puppet'],
   }
 }
-{% endhighlight %}
+```
 
 This defines the service that this node provides and on which port. I now need to define the healthcheck for this service - I used a simple TCP check:
 
-{% highlight puppet %}
+```puppet
 ::consul::check { 'puppetmaster_tcp':
     interval   => '60',
     tcp        => 'localhost:8140',
     notes      => 'Puppetmasters listen on port 8140',
     service_id => 'puppetmaster',
 }
-{% endhighlight %}
+```
 
 now, when Puppet converges, I should be able to query my service on the Puppetmaster:
 
-{% highlight bash %}
+```bash
 dig +short @127.0.0.1 -p 8600 puppetmaster.service.home.consul. SRV
 1 1 8140 puppetmaster.example.lan.node.home.consul.
-{% endhighlight %}
+```
 
 Excellent, the service exists and it must be healthy, because there's a result for the service. Just to confirm this, lets use consul's [http API](https://www.consul.io/docs/agent/http.html) to query the service status:
 
-{% highlight bash %}
+```bash
 [root@puppetmaster ~]# curl -s http://127.0.0.1:8500/v1/health/service/puppetmaster | jq
 [
   {
@@ -264,7 +260,7 @@ Excellent, the service exists and it must be healthy, because there's a result f
     ]
   }
 ]
-{% endhighlight %}
+```
 
 ### A failing check
 
@@ -272,21 +268,21 @@ Now, this is great at this point, we have a healthy service with a passing healt
 
 Well, let's stop our Puppetmaster and see.
 
-{% highlight bash %}
+```bash
 [root@puppetmaster ~]# service httpd stop
 Redirecting to /bin/systemctl stop  httpd.service # I use passenger to serve puppetmasters, so we'll stop http
-{% endhighlight %}
+```
 
 Now, let's do our DNS query again
 
-{% highlight bash %}
+```bash
 [root@puppetmaster ~]# dig +short @127.0.0.1 -p 8600 puppetmaster.service.home.consul. SRV
 [root@puppetmaster ~]#
-{% endhighlight %}
+```
 
 I'm not getting _any_ dns results from consul. This is basically because I've only deployed one Puppetmaster, and I just stopped it from running, but in a multi-node setup, it would return only the healthy nodes. I can confirm this from the consul API again:
 
-{% highlight bash %}
+```bash
 [root@puppetmaster ~]# curl -s http://127.0.0.1:8500/v1/health/service/puppetmaster | jq
 [
   {
@@ -336,18 +332,18 @@ I'm not getting _any_ dns results from consul. This is basically because I've on
     ]
   }
 ]
-{% endhighlight %}
+```
 
 Note here how the service is returning critical, so consul has removed it from the DNS query! Easy!
 
 Now if I start it back up, it will of course start serving traffic again and become available in the DNS query:
 
-{% highlight bash %}
+```bash
 [root@puppetmaster ~]# service httpd start
 Redirecting to /bin/systemctl start  httpd.service
 [root@puppetmaster ~]# dig +short @127.0.0.1 -p 8600 puppetmaster.service.home.consul. SRV
 1 1 8140 puppetmaster.example.lan.node.home.consul.
-{% endhighlight %}
+```
 
 ### DNS resolution
 
@@ -362,15 +358,15 @@ In my homelab, I went for option 2, but I would imagine in lots of production en
 
 Assuming dnsmasq is installed, you just need a config option in /etc/dnsmasq.d/10-consul like so:
 
-{% highlight bash %}
+```bash
 server=/consul/127.0.0.1#8600
-{% endhighlight %}
+```
 
 Now, set your resolv.conf to look at localhost first:
 
-{% highlight bash %}
+```bash
 nameserver 127.0.0.1
-{% endhighlight %}
+```
 
 And now you can make DNS queries without the port for consul services!
 
@@ -378,28 +374,28 @@ And now you can make DNS queries without the port for consul services!
 
 For the final step, you need to do a final thing for your Puppermasters. Because the puppetmaster is now being served on the address puppetmaster.service.home.consul, you'll need to tweak your puppet config slightly to get things working. First, updated the cert names allowed adding the following to your master's /etc/puppet/puppet.conf:
 
-{% highlight bash %}
+```bash
 dns_alt_names=puppetmaster.service.home.consul
-{% endhighlight %}
+```
 
 Then, clean our the master's _client_ key (not the CA!) and regenerate a new cert:
 
-{% highlight bash %}
+```bash
 rm -rf /var/lib/puppet/ssl/private_keys/puppetmaster.example.lan.pem
 puppet cert clean puppetmaster.example.lan
 service httpd stop
 puppet master --no-daemonize
-{% endhighlight %}
+```
 
 At this point, we should be able to run puppet against this new DNS name:
 
-{% highlight bash %}
+```bash
 root@puppetmaster ~]# puppet agent -t --server=puppetmaster.service.home.consul
 Info: Retrieving pluginfacts
 Info: Retrieving plugin
 Info: Loading facts
 ....
-{% endhighlight %}
+```
 
 Now, we just need to change the master setting in our puppet.conf, which you can do with Puppet itself of course!
 

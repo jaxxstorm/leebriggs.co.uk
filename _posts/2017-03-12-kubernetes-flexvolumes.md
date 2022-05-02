@@ -27,13 +27,13 @@ If you've been using Volumes in Kubernetes in a cloud provider, you might not be
 
 The first thing you have to do is create an EBS volume. If you're using the [AWS CLI](https://aws.amazon.com/cli/) this is easy as:
 
-{% highlight bash %}
+```bash
 aws ec2 create-volume --availability-zone eu-west-1c --size 10 --volume-type gp2
-{% endhighlight %}
+```
 
 Which will return something like..
 
-{% highlight bash %}
+```bash
 {
     "AvailabilityZone": "eu-west-1c",
     "Encrypted": false,
@@ -45,13 +45,13 @@ Which will return something like..
     "CreateTime": "2017-03-12T14:49:36.377Z",
     "Size": 10
 }
-{% endhighlight %}
+```
 
 Your EBS volume is now ready to go.
 
 Once you have the volume, you'll probably want to attach it to a Kubernetes pod! In order to do this, you'll need to take the volume ID and use it in your kubernetes manifest. The [awsElasticBlockStore](https://kubernetes.io/docs/user-guide/volumes/#awselasticblockstore) has an example, like so:
 
-{% highlight yaml %}
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -68,13 +68,13 @@ spec:
     awsElasticBlockStore:
       volumeID: vol-xxxxxxxxxxxxxxxxx
       fsType: ext4
-{% endhighlight %}
+```
 
 Now, if you look in the pod, you'll see a mount at `/test-ebs`, but how has it got there? The answer is actually surprisingly simple.
 
 If you examine the ebs volume that was created, you'll see it's been attached to an instance!
 
-{% highlight bash %}
+```bash
 aws ec2 describe-volumes --volume-ids vol-xxxxxxxxxxxxxxxxx
 {
     "Volumes": [
@@ -101,24 +101,24 @@ aws ec2 describe-volumes --volume-ids vol-xxxxxxxxxxxxxxxxx
         }
     ]
 }
-{% endhighlight %}
+```
 
 So let's log into this host, and find the device:
 
-{% highlight bash %}
+```bash
 findmnt /dev/xvdba
 TARGET                                                                                               SOURCE     FSTYPE OPTIONS
 /var/lib/kubelet/plugins/kubernetes.io/aws-ebs/mounts/vol-xxxxxxxxxxxxxxxxx                          /dev/xvdba ext4   rw,relatime,data=ordered
 /var/lib/kubelet/pods/b6c57370-0733-11e7-8421-06533dc554b3/volumes/kubernetes.io~aws-ebs/test-volume /dev/xvdba ext4   rw,relatime,data=ordered
-{% endhighlight %}
+```
 
 As you can see here, it's mounted on the host under the `/var/lib/kubelet` directory. This gives us a clue as to how this happened, but to confirm, you can examine the kubelet logs and you'll see things like this:
 
-{% highlight bash %}
+```bash
 Mar 12 14:54:11 ip-172-20-57-70 kubelet[1199]: I0312 14:54:11.716670    1199 operation_executor.go:832] MountVolume.WaitForAttach succeeded for volume "kubernetes.io/aws-ebs/vol-xxxxxxxxxxxxxxxxx" (spec.Name: "test-volume") pod "b6c57370-0733-11e7-8421-06533dc554b3" (UID: "b6c57370-0733-11e7-8421-06533dc554b3").
 ...
 Mar 12 14:54:15 ip-172-20-57-70 kubelet[1199]: I0312 14:54:15.738019    1199 mount_linux.go:369] Disk successfully formatted (mkfs): ext4 - /dev/xvdba /var/lib/kubelet/plugins/kubernetes.io/aws-ebs/mounts/vol-xxxxxxxxxxxxxxxxx
-{% endhighlight %}
+```
 
 The main point here is that when we provide a pod with a volume mount, it's the **kubelet** that takes care of the process. All it does it mount the external volume (in this case the EBS volume) onto a directory on the host (under the `/var/lib/kubelet` dir) and then from there, it can map that volume into the container. There isn't any fancy magic on the container side, it's essentially just a normal [docker volume](https://docs.docker.com/engine/tutorials/dockervolumes/) to the container.
 
@@ -145,12 +145,12 @@ The kubernetes repo has a helpful [LVM example](https://github.com/kubernetes/ku
 
 The init function is very simple, as LVM doesn't require and initialization:
 
-{% highlight bash %}
+```bash
 if [ "$op" = "init" ]; then
 	log "{\"status\": \"Success\"}"
 	exit 0
 fi
-{% endhighlight %}
+```
 
 Notice how we're returning JSON here, which isn't much fun in bash!
 
@@ -158,7 +158,7 @@ Notice how we're returning JSON here, which isn't much fun in bash!
 
 The attach function for the LVM example simply determines if the device exists. Because we don't have to do any API calls to a cloud provider, this makes it quite simple:
 
-{% highlight bash %}
+```bash
 attach() {
 	JSON_PARAMS=$1
 	SIZE=$(echo $1 | jq -r '.size')
@@ -171,7 +171,7 @@ attach() {
 	log "{\"status\": \"Success\", \"device\":\"${DMDEV}\"}"
 	exit 0
 }
-{% endhighlight %}
+```
 
 As you saw earlier, the LVM device needs to exist before we can mount it (in the EBS example earlier, we had to create the device) and so during the attach phase, we ensure the device is available.
 
@@ -179,7 +179,7 @@ As you saw earlier, the LVM device needs to exist before we can mount it (in the
 
 The final stage is the mount section.
 
-{% highlight bash %}
+```bash
 domountdevice() {
 	MNTPATH=$1
 	DMDEV=$2
@@ -214,7 +214,7 @@ domountdevice() {
 	log "{\"status\": \"Success\"}"
 	exit 0
 }
-{% endhighlight %}
+```
 
 This is a little bit more involved, but still relatively simple. Essentially, what happens here is:
 * The passed device is formatted to a filesystem provided in the parameters
@@ -225,7 +225,7 @@ This is a little bit more involved, but still relatively simple. Essentially, wh
 
 You may be wondering, where do these parameters I keep talking about come from? The answer is from the pod manifest sent to the kubelet. Here's an example that uses the above LVM FlexVolume:
 
-{% highlight yaml %}
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -249,7 +249,7 @@ spec:
         volumeID: "vol1"
         size: "1000m"
         volumegroup: "kube_vg"
-{% endhighlight %}
+```
 
 The key section here is the "options" section. This volume ID, size and volume group is all passed to the kubelet as `$3` as a JSON string, which is why there's a bunch of [jq](https://stedolan.github.io/jq/) munging happening in the above scripts.
 
@@ -258,10 +258,10 @@ Now you understand how FlexVolumes work, you need to make the kubelet aware of t
 
 FlexVolumes need a "namespace" (for want of a better word) and a name. So for example, my personally built lvm FlexVolume might be `leebriggs.co.uk/lvm`. When we install our script, it needs to be installed like so on the host that runs the kubelet:
 
-{% highlight bash %}
+```bash
 mkdir -p /usr/libexec/kubernetes/kubelet-plugins/volume/exec/leebriggs.co.uk~lvm
 mv lvm /usr/libexec/kubernetes/kubelet-plugins/volume/exec/leebriggs.co.uk~lvm/lvm
-{% endhighlight %}
+```
 
 Once you've done this, restart the kubelet, and you should be able to use your FlexVolume as you need.
 

@@ -14,7 +14,7 @@ Fortunately, a bunch of very smart people came across this problem a while ago a
 
 [hiera-eyaml](https://github.com/TomPoulton/hiera-eyaml) has been around a while now and gives you the capability to encrypt secrets stored in hiera. It provides an `eyaml` command line tool to make use of this, and will encrypt values for you using a pluggable backend. By default, it uses asymmetric encryption (PKCS#7) and will make any value indecipherable to anyone who has the key. You can see the example in the linked github repo, but for verbosity sake, it looks like this:
 
-{% highlight yaml %}
+```yaml
 
 ---
 plain-property: You can see me
@@ -27,7 +27,7 @@ encrypted-property: >
     /HjZFXwcXRtTlzewJLc+/gox2IfByQRhsI/AgogRfYQKocZgFb/DOZoXR7wm
     IZGeunzwhqfmEtGiqpvJJQ5wVRdzJVpTnANBA5qxeA==]
 
-{% endhighlight %}
+```
 
 In order to see the encrypted-property, you need to have access to the preshared key you used to encrypt the value, which means you have to copy the pre-shared key to your master. This is fine if you're a single user managing a small number of Puppetmasters, but as your team scales this actually introduces a security consideration.
 
@@ -62,9 +62,9 @@ As you can see, this drastically improves security of your important data stored
 
 There are plenty of docs out there to explain how to generate a GPG key for each OS. In a short form, you should do this:
 
-{% highlight bash %}
+```bash
 gpg --gen-key
-{% endhighlight %}
+```
 
 You'll get a handy menu prompt that will help you generate a key. **SET A PASSPHRASE**. Having a blank passphrase will compromise the whole web of trust for your encrypted data.
 
@@ -74,15 +74,15 @@ Because GPG operates on the concept of each user using different keys, you'll no
 
 If you're lucky, you can just use the above command and have done with it. In order to be more specific, here's the way I know works to generate keys:
 
-{% highlight bash %}
+```bash
 # Use a reasonable directory for gpghome
 mkdir -m 0700 /etc/puppetlabs/.gpghome
 chown puppet:puppet /etc/puppet/.gpghome
-{% endhighlight %}
+```
 
 Now, the GPG we generate for the puppetmasters need some special attributes, so we'll need a custom batch config file at `/etc/puppetlabs/.gpghome/keygen.inp`. Make sure you replace `_keyname_` with something useful, like maybe `puppetmaster`
 
-{% highlight bash %}
+```bash
 %echo Generating a default key
 Key-Type: default
 Subkey-Type: default
@@ -92,17 +92,17 @@ Expire-Date: 0
 %no-protection
 %commit
 %echo done
-{% endhighlight %}
+```
 
 Now, generate the key:
 
-{% highlight bash %}
+```bash
 sudo -u puppet gpg --homedir /etc/puppet/.gpghome --gen-key --batch /etc/puppet/.gpghome/keygen.inp
-{% endhighlight %}
+```
 
 Now that's done, you should see a GPG key in your puppetmaster's keyring:
 
-{% highlight bash %}
+```bash
 sudo -u puppet gpg --homedir /etc/puppet/.gpghome --list-keys
 gpg: checking the trustdb
 gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
@@ -112,7 +112,7 @@ gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
 pub   2048R/XXXXXXXX 2016-11-14
 uid                  puppetmaster
 sub   2048R/XXXXXXX 2016-11-14
-{% endhighlight %}
+```
 
 ### A web of trust
 
@@ -122,25 +122,25 @@ The way you distribute the public keys is up to you, but there are tools like [K
 
 At a very minimum, you'll need to sign the keys from your puppetmaster that you generated earlier. In order to do that, export the key in ASCII format:
 
-{% highlight bash %}
+```bash
 sudo -u puppet gpg --homedir /etc/puppet/.gpghome --export -a -o /etc/puppet/.gpghome/puppetmaster.pub
-{% endhighlight %}
+```
 
 Copy the `puppetmaster.pub` file locally so it's ready to import.
 
 In order to sign it, copy the file locally to your machine from $distribution_method and then run this:
 
-{% highlight bash %}
+```bash
 gpg --import /path/to/file.pub
-{% endhighlight %}
+```
 
 From here, you need to verify the signature, and if you're happy, sign the key:
 
-{% highlight bash %}
+```bash
 
 gpg --sign-key <keyname>
 
-{% endhighlight %}
+```
 
 You'll need to enter your own GPG keys' passphrase in order to sign the key.
 
@@ -156,17 +156,17 @@ Once your keys and gpg config are set up, you'll need to get `hiera-eyaml-gpg` w
 
 The installation requirements are clearly spelled out [here](https://github.com/sihil/hiera-eyaml-gpg#requirements) but for clarity's sake, I'll cover the process here. The process is basically the same for both users who'll be using eyaml to encrypt values, and puppetmasters who will be encrypting values. From an OS perspective, you'll need to make sure you have the `ruby`, `ruby-devel`, `rubygems` and `gpgme` packages installed. On CentOS, that looks like this:
 
-{% highlight bash %}
+```bash
 sudo yum install ruby gpgme rubygems ruby-devel
-{% endhighlight %}
+```
 
 Then, install the required rubygems in the relevant ruby path. If you're using the latest version of puppetserver, you'll need to install this using `puppetserver gem install`
 
-{% highlight bash %}
+```bash
 sudo gem install gpgme
 sudo gem install hiera-eyaml
 sudo gem install hiera-eyaml-gpg
-{% endhighlight %}
+```
 
 ### The Recipients File
 
@@ -174,7 +174,7 @@ One of the main ways that `hiera-eyaml-gpg` differs from standard `hiera-eyaml` 
 
 When the `eyaml` command is invoked, it will search in the current working directory for this file, and if one is not found it will go up through the directory tree until one is found. As an example, your hieradats directory might look like this:
 
-{% highlight bash %}
+```bash
 ├── development
 │   ├── app1
 │   │   └── hiera-eyaml-gpg.recipients
@@ -186,18 +186,18 @@ When the `eyaml` command is invoked, it will search in the current working direc
     │   └── hiera-eyaml-gpg.recipients
     ├── hiera-eyaml-gpg.recipients
     └── role.eyaml
-{% endhighlight %}
+```
 
 With this kind of layout, it's possible to allow users access to certain app credentials, datacenters or even environments, without compromising all the credentials in hiera.
 
 The format of the hiera-eyaml-gpg.recipients file is simple, it simply lists the GPG keys that are allowed to encrypt/decrypt values:
 
 
-{% highlight bash %}
+```bash
 puppetmaster-prod
 lbriggs
 a_nother_user
-{% endhighlight %}
+```
 
 The value of this can be found in the uid field of the `gpg --list-keys` command.
 
@@ -205,7 +205,7 @@ The value of this can be found in the uid field of the `gpg --list-keys` command
 
 The final step in the process is to make `hiera` aware of this GPG plugin. Update to `hiera.yaml` to look like this:
 
-{% highlight yaml %}
+```yaml
 ---
 :backends:
   - yaml
@@ -218,7 +218,7 @@ The final step in the process is to make `hiera` aware of this GPG plugin. Updat
   :datadir: "/etc/puppet/environments/%{environment}/hieradata"
   :gpg_gnupghome: /etc/puppet/.gpghome
   :extension: 'eyaml'
-{% endhighlight %}
+```
 
 At this point, puppet should use the GPG extension, assuming you installed it correctly previously
 
@@ -236,13 +236,13 @@ The final step here is adding an encrypted value to hiera. When you did `gem ins
 
 In order to use it simply run the following:
 
-{% highlight yaml %}
+```yaml
 eyaml edit hieradata/<folder>/<file>.eyaml
-{% endhighlight %}
+```
 
 You'll be asked to enter your GPG key password, and then you'll get dropped into an editor with something like this in the header:
 
-{% highlight yaml %}
+```yaml
 #| This is eyaml edit mode. This text (lines starting with #| at the top of the
 #| file) will be removed when you save and exit.
 #|  - To edit encrypted values, change the content of the DEC(<num>)::PKCS7[]!
@@ -254,19 +254,19 @@ You'll be asked to enter your GPG key password, and then you'll get dropped into
 #|     * ensure you include the exclamation mark when you copy and paste
 #|     * you must not include a number when adding a new block
 #|    e.g. DEC::PKCS7[]! -or- DEC::GPG[]!
-{% endhighlight %}
+```
 
 As we noted, you're using the GPG plugin, so add your value like so:
 
-{% highlight yaml %}
+```yaml
 class::class::parameter: DEC::GPG[correct_horse_battery_staple]!
-{% endhighlight %}
+```
 
 When you save the file, you can cat it again and you'll see the value is now encrypted:
 
-{% highlight yaml %}
+```yaml
 class::class::parameter: ENC[GPG,XXXXXXXXXXXXXXXXXXXXXXXXXXXXX=]
-{% endhighlight %}
+```
 
 From here, you can push it to git and have it downloaded using the method you use to grab your config (I hope you're using r10k!) and the puppetmaster (assuming you set up the GPG encryption correctly!) will be able to decrypt these secret and service it to hosts.
 

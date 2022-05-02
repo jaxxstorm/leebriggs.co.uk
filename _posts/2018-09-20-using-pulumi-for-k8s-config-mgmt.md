@@ -55,15 +55,15 @@ If you remember back to my [previous post](https://leebriggs.co.uk/blog/2018/05/
 
 There are two main reasons Pulumi is helping here. Firstly, it allows you to differentiate kubernetes clusters within stacks. As an example, let's say I have two clusters - one in GKE and one in Digital Ocean. Here you can see them in my kubernetes contexts:
 
-{% highlight bash %}
+```bash
 kubectx
 digitalocean
 lbrlabs@gcloud
-{% endhighlight %}
+```
 
 I can initiate a _stack_ for each of these clusters with Pulumi, like so:
 
-{% highlight bash %}
+```bash
 # create a Pulumi.yml first!
 cat <<EOF > Pulumi.yml
 name: nginx
@@ -72,7 +72,7 @@ description: An example stack for Pulumi
 EOF
 pulumi stack init gcloud
 pulumi config set kubernetes:context lbrlabs@gcloud
-{% endhighlight %}
+```
 
 Obviously, you'd repeat the stack and config steps for each cluster!
 
@@ -80,9 +80,9 @@ Now, if I want to actually deploy something to the stack, I need to write some c
 
 Fortunately, Pulumi automates this for us!
 
-{% highlight bash %}
+```bash
 pulumi new --generate-only --force
-{% endhighlight %}
+```
 
 If you're doing a Kubernetes thing, you'll need to select kubernetes-typescript from the template prompt.
 
@@ -92,13 +92,13 @@ Now we're ready to finally write some code!
 
 When you ran `pulumi new`, you got an `index.ts` file. In it, it imports pulumi:
 
-{% highlight typescript %}
+```typescript
 import * as k8s from "@pulumi/kubernetes";
-{% endhighlight %}
+```
 
 You can now write standard typescript and generate Kubernetes resources. Here's an example nginx pod as a deployment:
 
-{% highlight typescript %}
+```typescript
 import * as k8s from "@pulumi/kubernetes";
 
 // set some defaults
@@ -148,59 +148,59 @@ const apacheDeployment = new k8s.apps.v1.Deployment(
       },
     }
   });
-{% endhighlight %}
+```
 
 Here you can already see the power that writing true code has - defining a constant for defaults and allowing us to use those values in the declaration of the resource means less duplicated code and less copy/pasting.
 
 The real power comes when using the config options we set earlier. Assuming we have two Pulumi stacks, `gcloud` and `digitalocean`:
 
-{% highlight bash %}
+```bash
 pulumi stack ls
 NAME                                             LAST UPDATE              RESOURCE COUNT
 digitalocean*                                    n/a                      n/a
 gcloud                                           n/a                      n/a
-{% endhighlight %}
+```
 
 and these stacks are mapped to different contexts, like so:
 
-{% highlight bash %}
+```bash
 pulumi config -s gcloud
 KEY                                              VALUE
 kubernetes:context                               lbrlabs@gcloud
 pulumi config -s digitalocean
 KEY                                              VALUE
 kubernetes:context                               digitalocean
-{% endhighlight %}
+```
 
 you can now also set different configuration options and keys which can be used in the code.
 
-{% highlight bash %}
+```bash
 pulumi config set imageTag 1.14-alpine -s gcloud
 pulumi config set imageTag 1.15-alpine -s digitalocean
-{% endhighlight %}
+```
 
 This will write out these values into a `Pulumi.<stackname>.yaml` in the project directory:
 
-{% highlight bash %}
+```bash
 cat Pulumi.digitalocean.yaml
 config:
   kubernetes:context: digitalocean
   pulumi-example:imageTag: 1.15-alpine
-{% endhighlight %}
+```
 
 and we can now use this in the code very easily:
 
-{% highlight typescript %}
+```typescript
 let config = new pulumi.Config("pulumi-example"); // use the name field in the Pulumi.yaml here
 let imageTag = config.require("imageTag");
 
 // this is part of the pod spec, you'll need the rest of the code too!
 image: `nginx:${imageTag}`,
-{% endhighlight %}
+```
 
 Now, use Pulumi from your project's root to see what would happen:
 
-{% highlight bash %}
+```bash
 pulumi up -s gcloud
 Previewing update of stack 'gcloud'
 Previewing changes:
@@ -225,13 +225,13 @@ info: 2 changes performed:
 Update duration: 17.704161467s
 
 Permalink: file:///Users/Lee/.pulumi/stacks/gcloud.json
-{% endhighlight %}
+```
 
 Obviously you can specify whicever stack you need as required!
 
 Let's verify what happened...
 
-{% highlight bash %}
+```bash
 kubectx digitalocean # switch to DO context
 kubectl get deployment -o wide
 NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINERS   IMAGES              SELECTOR
@@ -242,7 +242,7 @@ Switched to context "lbrlabs@gcloud".
 k get deployment -o wide
 NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINERS   IMAGES              SELECTOR
 nginx     1         1         1            1           3m        nginx        nginx:1.14-alpine   app=nginx
-{% endhighlight %}
+```
 
 Okay, so as you can see here, I've deployed an nginx deployment to two different clusters, with two different images with very little effort and energy. Awesome!
 
@@ -259,7 +259,7 @@ Pulumi really helps and solves this problem. Let me show you how!
 
 First, let's create a Pulumi component using a helm chart:
 
-{% highlight typescript %}
+```typescript
 import * as k8s from "@pulumi/kubernetes";
 
 const redis = new k8s.helm.v2.Chart("redis", {
@@ -271,11 +271,11 @@ const redis = new k8s.helm.v2.Chart("redis", {
         rbac: { create: true },
     }
 });
-{% endhighlight %}
+```
 
 And now preview what would happen on this stack:
 
-{% highlight bash %}
+```bash
 pulumi preview -s digitalocean
 Previewing update of stack 'digitalocean'
 Previewing changes:
@@ -293,13 +293,13 @@ Previewing changes:
 
 info: 9 changes previewed:
     + 9 resources to create
-{% endhighlight %}
+```
 
 As you can see, we're generating the resources automatically because Pulumi renders the helm chart for us, and then creates the resources, which really is very awesome.
 
 However, it gets more awesome when you see there's a callback called `transformations`. This allows you to patch and manipulate the generated resources! For example:
 
-{% highlight typescript %}
+```typescript
 import * as k8s from "@pulumi/kubernetes";
 
 const redis = new k8s.helm.v2.Chart("redis", {
@@ -322,7 +322,7 @@ const redis = new k8s.helm.v2.Chart("redis", {
         }
     ]
 });
-{% endhighlight %}
+```
 
 Of course, you can combine this with the configuration options from before as well, so you can override these as needed.
 

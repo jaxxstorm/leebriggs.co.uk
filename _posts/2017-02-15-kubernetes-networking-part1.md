@@ -44,7 +44,7 @@ When the pod network starts up, you usually have to provide a relatively large s
 
 The subnet is usually predetermined and needs to be stored somewhere, which increasingly seems to be etcd. You usually have to set this before launching the pod network, and it's often stored in the kubernetes manifest. If you look at the [kube-flannel](https://github.com/coreos/flannel/blob/master/Documentation/kube-flannel.yml) manifest, you'll see this:
 
-{% highlight yaml %}
+```yaml
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -68,7 +68,7 @@ data:
         "Type": "vxlan"
       }
     }
-{% endhighlight %}
+```
 
 This is simple, it's setting a [CNI](https://github.com/containernetworking/cni) config, which will then be shipped off to etcd to be stored for safekeeping.
 
@@ -86,7 +86,7 @@ In the meantime, let's look at what a working config looks like in action.
 
 I've deployed the guestbook here, and you can see the pod ips like so:
 
-{% highlight bash %}
+```bash
 kubectl get po -o wide
 NAME                           READY     STATUS    RESTARTS   AGE       IP                NODE
 frontend-88237173-jdfgg        1/1       Running   0          2h        192.168.175.197   host1
@@ -95,11 +95,11 @@ frontend-88237173-z3ltv        1/1       Running   0          5h        192.168.
 redis-master-343230949-2qrp7   1/1       Running   0          5h        192.168.90.131    host3
 redis-slave-132015689-890b2    1/1       Running   0          5h        192.168.90.132    host1
 redis-slave-132015689-k0rk5    1/1       Running   0          5h        192.168.175.196   host3
-{% endhighlight %}
+```
 
 Now, in a working cluster, I should be able to get to any one of these IPs from my master:
 
-{% highlight bash %}
+```bash
 # ping -c 1 192.168.175.196
 PING 192.168.175.196 (192.168.175.196) 56(84) bytes of data.
 64 bytes from 192.168.175.196: icmp_seq=1 ttl=63 time=0.433 ms
@@ -107,20 +107,20 @@ PING 192.168.175.196 (192.168.175.196) 56(84) bytes of data.
 --- 192.168.175.196 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 rtt min/avg/max/mdev = 0.433/0.433/0.433/0.000 ms
-{% endhighlight %}
+```
 
 *if this doesn't work from any node in your cluster, something is probably wrong*
 
 Similarly, you should be able to enter another pod and ping across pods:
 
-{% highlight bash %}
+```bash
 # ping -c 1 192.168.90.131
 PING 192.168.90.131 (192.168.90.131): 48 data bytes
 56 bytes from 192.168.90.131: icmp_seq=0 ttl=62 time=0.358 ms
 --- 192.168.90.131 ping statistics ---
 1 packets transmitted, 1 packets received, 0% packet loss
 round-trip min/avg/max/stddev = 0.358/0.358/0.358/0.000 ms
-{% endhighlight %}
+```
 
 This fulfills the fundamental requirements of Kubernetes, and you know things are working. If this isn't working, you need to get troubleshooting as to why.
 
@@ -135,12 +135,12 @@ With Calico, this is much easier to debug (in my opinion) and I'll detail some t
 
 One thing that I got confused about when I started with kubernetes is, why can't I ping service IPs?
 
-{% highlight bash %}
+```bash
 # ping -c 1 kubernetes.default
 PING kubernetes.default.svc.cluster.local (10.96.0.1): 48 data bytes
 --- kubernetes.default.svc.cluster.local ping statistics ---
 1 packets transmitted, 0 packets received, 100% packet loss
-{% endhighlight %}
+```
 
 The reason for this is actually quite simple - they don't *technically* exist!
 
@@ -148,7 +148,7 @@ The reason for this is actually quite simple - they don't *technically* exist!
 
 All the services in a cluster are handled by [kube-proxy](https://kubernetes.io/docs/admin/kube-proxy/). kube-proxy runs on every node in the cluster, and what it does it write `iptables` rules for each service. You can see this when you run `iptables-save`:
 
-{% highlight bash %}
+```bash
 -A KUBE-SERVICES -d 10.107.179.200/32 -p tcp -m comment --comment "default/redis-master: cluster IP" -m tcp --dport 6379 -j KUBE-SVC-7GF4BJM3Z6CMNVML
 -A KUBE-SERVICES ! -s 192.168.0.0/16 -d 10.98.90.196/32 -p tcp -m comment --comment "default/redis-slave: cluster IP" -m tcp --dport 6379 -j KUBE-MARK-MASQ
 -A KUBE-SERVICES -d 10.98.90.196/32 -p tcp -m comment --comment "default/redis-slave: cluster IP" -m tcp --dport 6379 -j KUBE-SVC-AGR3D4D4FQNH4O33
@@ -158,23 +158,23 @@ All the services in a cluster are handled by [kube-proxy](https://kubernetes.io/
 -A KUBE-SERVICES -d 10.96.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
 -A KUBE-SERVICES ! -s 192.168.0.0/16 -d 10.96.0.10/32 -p udp -m comment --comment "kube-system/kube-dns:dns cluster IP" -m udp --dport 53 -j KUBE-MARK-MASQ
 -A KUBE-SERVICES -d 10.96.0.10/32 -p udp -m comment --comment "kube-system/kube-dns:dns cluster IP" -m udp --dport 53 -j KUBE-SVC-TCOU7JCQXEZGVUNU
-{% endhighlight %}
+```
 
 This is just a taste of what you'll see, but essentially, these iptables rules manage the traffic towards the service IPs. They don't actually *have* any rules for ICMP, because it's not needed.
 
 So, if from host you try hit a service on a `TCP` port, you'll see it works!
 
-{% highlight bash %}
+```bash
 # curl -k https://10.96.0.1
 Unauthorized
-{% endhighlight %}
+```
 
 Don't be fooled on the Unauthorized message here, it's just the kubernetes API rejecting unauthorized requests. Iptables handily translated the request off towards the node the pod is running on, and made it hit the IP for you. Here's the `iptables` rule:
 
-{% highlight bash %}
+```bash
 -A KUBE-SEP-EHCIXHWU3R7SVNN2 -s 172.29.132.126/32 -m comment --comment "default/kubernetes:https" -j KUBE-MARK-MASQ
 -A KUBE-SEP-EHCIXHWU3R7SVNN2 -p tcp -m comment --comment "default/kubernetes:https" -m recent --set --name KUBE-SEP-EHCIXHWU3R7SVNN2 --mask 255.255.255.255 --rsource -m tcp -j DNAT --to-destination 172.29.132.126:6443
-{% endhighlight %}
+```
 
 Simple!
 

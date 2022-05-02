@@ -16,7 +16,7 @@ I also make heavy use of [travis-ci](https://travis-ci.org) in my public and ope
 
 Let's say you have a starting .gitlab-ci.yml like so:
 
-{% highlight yaml %}
+```yaml
 ---
 stages:
   - test
@@ -44,7 +44,7 @@ build_rpm_centos7:
   stage: build
   tags:
     - docker
-{% endhighlight %}
+```
 
 This is a totally valid file, but there's a whole load of repetition in here which really shouldn't need to be here. We can use some features of [yaml](https://en.wikipedia.org/wiki/YAML) called [anchors and aliases](https://en.wikipedia.org/wiki/YAML#Advanced_components_of_YAML) which allow us to reduce the amount of code here. This is documented [here](http://docs.gitlab.com/ce/ci/yaml/README.html#special-yaml-features) in the Gitlab CI Readme, but I want to break it down into sections.
 
@@ -52,7 +52,7 @@ This is a totally valid file, but there's a whole load of repetition in here whi
 
 Firstly, we need to define a ["hidden job"](http://docs.gitlab.com/ce/ci/yaml/README.html#hidden-jobs) - this is essentially of course a job gitlab-ci is aware of but doesn't actually run. It defines a yaml hash which we can merge into another hash later. We'll take all of the hash values from the above two jobs that are the same, and place it in that hidden job:
 
-{% highlight yaml %}
+```yaml
 # here we define a hidden job called "build" (prefixed with a dot)
 # and then we assign it to an alias &build_definition
 .build: &build_definition
@@ -64,11 +64,11 @@ Firstly, we need to define a ["hidden job"](http://docs.gitlab.com/ce/ci/yaml/RE
   stage: build
   tags:
     - docker
-{% endhighlight %}
+```
 
 What this has done is essentially created something _like_ a function. When we _call_ &build_definition, it'll spit out the following yaml hash:
 
-{% highlight yaml %}
+```yaml
 ---
   script:
     - rpmbuild -ba
@@ -78,24 +78,24 @@ What this has done is essentially created something _like_ a function. When we _
   stage: build
   tags:
     - docker
-{% endhighlight %}
+```
 
 As you can see, the above yaml hash is only missing 2 things: A parent hash key and the value for "image".
 
 ## Reduce the code
 
 In order to make use of this alias, we first need to actually define our build jobs. Remember, the above job is _hidden_ so if we pushed to our git repo right now, nothing would happen. Let's define our two build jobs.
-{% highlight yaml %}
+```yaml
 build_centos6:
   image: centos:6
 
 build_centos7:
   image: centos:7
-{% endhighlight %}
+```
 
 Obviously, this isn't enough to actually run a build. What we now need to do is merge to two hashes from the hidden job/alias and with our build definition.
 
-{% highlight yaml %}
+```yaml
 build_centos6:
   <<: *build_definition # this essentially says insert the hash values from &build_definition hash
   image: centos:6
@@ -103,7 +103,7 @@ build_centos6:
 build_centos7:
   <<: *build_definition
   image: centos:7
-{% endhighlight %}
+```
 
 That's a lot less code duplication, and if you know what you're looking at, it's much easier to read.
 
@@ -111,13 +111,13 @@ That's a lot less code duplication, and if you know what you're looking at, it's
 
 This all might seem a little confusing at first because it's hard to visualise. The best way to get your head around what the output of your CI file is, is to remember that all Gitlab CI does when you push the file is load it into a hash and read the values. With that in mind, try this little 1 line script on your file:
 
-{% highlight bash %}
+```bash
 ruby -e "require 'yaml'; require 'pp'; hash = YAML.load_file('.gitlab-ci.yml'); pp hash"
-{% endhighlight %}
+```
 
 This is what the original yaml file hash looks like:
 
-{% highlight ruby %}
+ruby
 {"stages"=>["test", "build", "deploy"],
  "build_rpm_centos6"=>
   {"image"=>"centos:6",
@@ -131,11 +131,11 @@ This is what the original yaml file hash looks like:
    "except"=>["tags", "master"],
    "stage"=>"build",
    "tags"=>["docker"]}}
-{% endhighlight %}
+```
 
 And this is what the hash from the file with the anchors and such like contains:
 
-{% highlight ruby %}
+ruby
 {"stages"=>["test", "build", "deploy"],
  ".build"=>
   {"script"=>["rpmbuild -ba"],
@@ -154,6 +154,6 @@ And this is what the hash from the file with the anchors and such like contains:
    "stage"=>"build",
    "tags"=>["docker"],
    "image"=>"centos:7"}}
-{% endhighlight %}
+```
 
 Hopefully that makes it easier to understand! As mentioned earlier, this isn't as powerful (yet?) as Travis's matrix feature, which can quickly expand your jobs multiple times over, but with nested aliases you can easily have quite a complex matrix.

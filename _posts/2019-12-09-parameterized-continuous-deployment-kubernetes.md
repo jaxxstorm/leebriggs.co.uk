@@ -54,7 +54,7 @@ Download the jk binary
 
 Init a repo using your favourite javascript dependency tool (yarn, for example)
 
-{% highlight bash %}
+```bash
 yarn init
 yarn init v1.15.2
 question name (jkcfg-example):
@@ -67,11 +67,11 @@ question license (MIT): MIT
 question private: no
 success Saved package.json
 ✨  Done in 43.32s.
-{% endhighlight %}
+```
 
 Add the `@jkcfg/kubernetes` package:
 
-{% highlight bash %}
+```bash
 yarn add @jkcfg/kubernetes
 yarn add v1.15.2
 info No lockfile found.
@@ -87,11 +87,11 @@ info All dependencies
 ├─ @jkcfg/kubernetes@0.5.1
 └─ @jkcfg/std@0.3.2
 ✨  Done in 3.31s.
-{% endhighlight %}
+```
 
 Okay, so we're ready to generate some manifests. A simple deployment might look like this:
 
-{% highlight javascript %}
+```javascript
 import * as k8s from '@jkcfg/kubernetes/api';
 import * as std from '@jkcfg/std';
 
@@ -132,13 +132,13 @@ const deployment = new k8s.apps.v1.Deployment(`myapp`, {
 ]
 
 std.write(myapp, `manifests/myapp.yaml`, { format: std.Format.YAMLStream });
-{% endhighlight %}
+```
 
 Once you have your deployment javascript file, you can generate a YAML document by running the `jk` command:
 
-{% highlight bash %}
+```bash
 jk run index.js
-{% endhighlight %}
+```
 
 ### Parameters
 
@@ -146,18 +146,18 @@ Okay, we have a nice deployment manifest now, but how does this help me with dif
 
 jkcfg supports "parameters" which can be passed either via a command line argument, or a file. This is similar to Helm's [values](https://helm.sh/docs/topics/chart_template_guide/values_files/) files which are evaluated at compile time. Using values in jkcfg is very straightforward. 
 
-{% highlight javascript%}
+```javascript
 // Import the param package
 import * as param from '@jkcfg/std/param';
 
 // declare a constant, replica which is set to the value of "replicas"
 // and has a default of "1"
 const replicas = param.Number('replicas', 1)
-{% endhighlight %}
+```
 
 You can then use this value inside your deployment manifest. Here's the end result:
 
-{% highlight javascript%}
+```javascript
 import * as k8s from '@jkcfg/kubernetes/api';
 import * as std from '@jkcfg/std';
 import * as param from '@jkcfg/std/param';
@@ -201,27 +201,27 @@ const deployment = new k8s.apps.v1.Deployment(`myapp`, {
   ]
 
 std.write(myapp, `manifests/myapp.yaml`, { format: std.Format.YAMLStream });
-{% endhighlight %}
+```
 
 Once you've started using parameters, you probably don't always want to use the same number of replicas. You can invoke the parameters in two ways. The first, and easiest, is on the command line:
 
-{% highlight bash %}
+```bash
 jk run index.js -p replicas=5
-{% endhighlight %}
+```
 
 Check the manifest now in `manifests/myapp.yaml`: you'll see we've set the replicas to 5!
 
 The other way of overriding the parameters is using a parameters file. This can be YAML or JSON. Create a file called `params/myapp.yaml` and populate it like so:
 
-{% highlight bash %}
+```bash
 replicas: 100
-{% endhighlight %}
+```
 
 Then use it with jk like so:
 
-{% highlight bash %}
+```bash
 jk run -f params/myapp.yaml index.js
-{% endhighlight %}
+```
 
 Easy!
 
@@ -245,7 +245,7 @@ Of course, because this configuration is written in JavaScript, we can take adva
 
 Here's the repo contents:
 
-{% highlight bash %}
+```bash
 .
 ├── README.md
 ├── index.js
@@ -253,7 +253,7 @@ Here's the repo contents:
 ├── labels.js
 ├── package.json
 └── yarn.lock
-{% endhighlight %}
+```
 
 I'll break down the `js` files so we can get an idea of what this entails.
 
@@ -261,7 +261,7 @@ I'll break down the `js` files so we can get an idea of what this entails.
 
 The main meat of the package is in `kube.js`. Let's take a look at this:
 
-{% highlight bash %}
+```bash
 import * as api from '@jkcfg/kubernetes/api';
 import { Labels } from './labels';
 
@@ -380,7 +380,7 @@ export {
   Service,
 };
 
-{% endhighlight %}
+```
 
 Obviously this is a lot more involved than our previous, very simple deployment from earlier. What's worth noting though is that this is completely configurable by a `service` object in our jkcfg configuration parameter. I've gone for an approach here as well where we load the configuration variable from a configmap, which is _not_ managed by this module. That way, we can use a basic boilerplate module for _most_ of the stuff we want to deploy, and we can have a pretty high degree of confidence that the deployments meet our standards.
 
@@ -388,7 +388,7 @@ Obviously this is a lot more involved than our previous, very simple deployment 
 
 This labels file is simply a way of ensuring we have the correct labels defined for all our resources. Here's what it looks like:
 
-{% highlight javscript %}
+```javascript
 export function Labels(service) {
     return {
         app: service.name,
@@ -397,7 +397,7 @@ export function Labels(service) {
         region: service.region,
     };
 }
-{% endhighlight %}
+```
 
 Notice, we're exporting this as a function. The "why" will become apparent later...
 
@@ -405,7 +405,7 @@ Notice, we're exporting this as a function. The "why" will become apparent later
 
 Finally, our `index.js` where we export all this to be used:
 
-{% highlight javascript %}
+```javascript
 import { Labels } from './labels';
 import * as k from './kube';
 
@@ -418,7 +418,7 @@ export function KubeService(service) {
 }
 
 export { Labels };
-{% endhighlight %}
+```
 
 We now have a very basic NPM package. We can push this to git or to the NPM registry and let people use. So how do we actually use it?
 
@@ -426,23 +426,23 @@ We now have a very basic NPM package. We can push this to git or to the NPM regi
 
 Using this is pretty straightforward. First, add it as a dependency:
 
-{% highlight bash %}
+```bash
 yarn add "git+https://github.com/jaxxstorm/jkcfg-example#master" # Pull the dep from git on the master branch
-{% endhighlight %}
+```
 
 Then import it to be used in your jkcfg `index.js`:
 
-{% highlight javascript %}
+```javascript
 import * as param from '@jkcfg/std/param';
 import * as api from '@jkcfg/kubernetes/api';
 import * as std from '@jkcfg/std';
 // Import the akp packages
 import * as ks from '@jaxxstorm/jkcfg-example'; // This is my package name
-{% endhighlight  %}
+```
 
 Now we've imported it, the fun stuff starts. For your average person, you can generate the deployment, service and ingress with two files. First, pad out your `index.js` like so:
 
-{% highlight javascript %}
+```javascript
 // This reads the params file specified on the command line
 const service = param.Object('service');
 // Set the value of manifest (written to a file later) to the exported function
@@ -450,13 +450,13 @@ const manifest = ks.KubeServiceService(service);
 
 // Write the contents of manifest to a manifest file
 std.write(manifest, `manifests/${service.name}.yaml`, { format: std.Format.YAMLStream });
-{% endhighlight  %}
+```
 
 That's it! 10 lines of JavaScript to generate our Kubernetes manifest!
 
 Before we get too excited, we need to populate our params file:
 
-{% highlight yaml %}
+```yaml
 service:
   name: myapp # the name of your service
   namespace: myapp # the namespace you want to deploy to
@@ -481,15 +481,15 @@ service:
   environment: dev
   tier: standard # only used for some config options, added as a label
   region: us-west-2
-{% endhighlight  %}
+```
 
 As you can see, the service object does most of the work for us, and we can tailor it per region or per environment as needed.
 
 At this stage, we're ready to generate our manifests again. Let's use the command from before:
 
-{% highlight bash %}
+```bash
 jk run deployment/kube/jk/index.js -o complex/manifests -f complex/params/dev/us-west-2.yaml -p version=0.0.1
-{% endhighlight %}
+```
 
 Notice how we specify the version as a parameter outside the params file, simply because we expect this to be a dynamic value. I'll talk more about this in my next post.
 
@@ -503,7 +503,7 @@ The reality is though, you're still going to need to add configuration data for 
 
 In your `index.js` add the following:
 
-{% highlight javascript %}
+```javascript
 // Read the params file for the config object
 const config = param.Object('config');
 
@@ -520,11 +520,11 @@ function ConfigMap(service) {
 
 // Add the ConfigMap function output to the manifest that is written
 manifest.push(ConfigMap(service))
-{% endhighlight %}
+```
 
 Your end result should be this:
 
-{% highlight javascript %}
+```javascript
 import * as param from '@jkcfg/std/param';
 import * as api from '@jkcfg/kubernetes/api';
 import * as std from '@jkcfg/std';
@@ -555,11 +555,11 @@ manifest.push(ConfigMap(service))
 
 // Write the contents of manifest to a manifest file
 std.write(manifest, `manifests/${service.name}.yaml`, { format: std.Format.YAMLStream });
-{% endhighlight  %}
+```
 
 This will now generate a ConfigMap, but it'll be empty. You need to add a `config` object to your params file. It'll end up looking like this:
 
-{% highlight yaml %}
+```yaml
 service:
   name: myapp # the name of your service
   namespace: myapp # the namespace you want to deploy to
@@ -586,7 +586,7 @@ service:
   region: us-west-2
 config:
   FOO: bar # Environment variables you want in your configmap
-{% endhighlight  %}
+```
 
 And now we have a working deployment, with all the resources we might need to run a service.
 

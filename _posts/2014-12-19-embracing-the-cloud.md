@@ -26,11 +26,11 @@ Once I'd done that, I wanted to add this post. So I added a _posts directory, cr
 
 It's useful to be able to see what your posts look like while you're writing them, so I installed the jekyll gem and and then served up the page localy
 
-{% highlight bash %}
+```bash
 sudo gem install jekyll
 bundle install
 bundle exec jekyll serve
-{% endhighlight %}
+```
 
 You can see the post as you edit it at http://localhost:4000.
 
@@ -42,33 +42,33 @@ The JSON resume project is basically, as you would expect, a schema definition f
 
 This whole ecosystem really took the pain out of updating my CV. First, I installed the tool:
 
-{% highlight bash %}
+```
 npm install -g resume-cli
-{% endhighlight %}
+```
 
 I used used the resume-cli to generate a template inside my git repository
 
-{% highlight bash %}
+```bash
 resume-cli init
-{% endhighlight %}
+```
 
 I used the [schema](https://jsonresume.org/schema/) to fill out all the relevant details, and then picked a [theme](https://jsonresume.org/themes/) from those available. Once I was done, I can publish the resume for easy viewing with the resume-cli:
 
-{% highlight bash %}
+```bash
 resume-cli publish --theme elegant
-{% endhighlight %}
+```
 
 Again, like Jekyll, you can see how this all looks locally before publishing:
 
-{% highlight bash %}
+```bash
 resume-cli serve --theme elegant
-{% endhighlight %}
+```
 
 I think the result [looks great](https://registry.jsonresume.org/briggsl) and I can easily generate a PDF for emailing if needs be, even with a different theme:
 
-{% highlight bash %}
+```bash
 resume-cli export --theme elegant --format pdf
-{% endhighlight %}
+```
 
 ## Wiki
 

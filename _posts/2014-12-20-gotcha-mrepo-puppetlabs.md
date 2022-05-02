@@ -10,7 +10,7 @@ As well as mirroring the CentOS repos, we also mirror the [PuppetLabs CentOS Rep
 
 I did a manual mrepo sync of the repo, and noticed it was defaulting to the IPv6 Address that PuppetLabs uses:
 
-{% highlight bash %}
+```bash
 # mrepo -ugvvvvvvv -r puppetlabs_products
 Verbosity set to level 7
 < ...snip.... >
@@ -21,12 +21,12 @@ Execute: exec /usr/bin/lftp  -d -c '; mirror -c -P -v -v -v -v -v -v -e -I *.rpm
 ---- Resolving host address...
 ---- 2 addresses found: 2600:3c00::f03c:91ff:fe69:6bf0, 198.58.114.168
 ---- Connecting to yum.puppetlabs.com (2600:3c00::f03c:91ff:fe69:6bf0) port 80
-{% endhighlight %}
+```
 
 Obviously, this wasn't much good to me, and it can already see the IPv4 address, so why isn't it using it?
 
 The answer, it turns out, is due to mrepo's sync tool [lftp](http://lftp.yar.ru/). In order to fix this, you need to configure lftp to use IPv4 first. To do this, it's as simple as adding the following to the lftp config like so:
 
-{% highlight bash %}
+```bash
 echo 'set dns:order "inet inet6"' >> /etc/lftp.conf
-{% endhighlight %}
+```

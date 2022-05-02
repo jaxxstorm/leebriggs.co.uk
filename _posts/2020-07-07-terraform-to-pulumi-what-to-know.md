@@ -18,7 +18,7 @@ So, in this post, I'd like to try and detail a few concepts I've learned and map
 
 The very first thing you'll come across when you fire up Pulumi is that state management gets handled differently. In Terraform, you set up your state inside a provider block within your code, like so:
 
-{% highlight hcl %}
+```hcl
 terraform {
   backend "s3" {
     bucket = "state-bucket"
@@ -26,7 +26,7 @@ terraform {
     region = "us-west-2"
   }
 }
-{% endhighlight %}
+```
 
 Every time this is changed, you need to run `terraform init` before running `terraform apply`. 
 Depending on how you organize your terraform code, you need to provide this configuration for each repo you're managing. You might choose to use different state buckets or use different keys within that state.
@@ -35,14 +35,14 @@ Pulumi handles this very differently. You manage the state using the `pulumi log
 
 By default, pulumi will log you into its SaaS managed backend (which is free for individual use). To use an object store/bucket, you login by providing the bucket name prefixed with the type of bucket, like so:
 
-{% highlight bash %}
+```bash
 # AWS S3
 pulumi login s3://my-state-bucket
 # Azure Blob Storage
 pulumi login azblob://my-state-bucket
 # GCloud Cloud Storage
 pulumi login gcs://my-state-bucket
-{% endhighlight %}
+```
 
 You can read more information on how to use this [here](https://www.pulumi.com/docs/intro/concepts/state/#self-managed-backend).
 
@@ -54,14 +54,14 @@ You may be asking yourself at this point "should I use the same state for all my
 
 With the SaaS backend, you can [define permissions](https://www.pulumi.com/docs/intro/console/collaboration/stack-permissions/) easily in your organization use the console. If you're using the cloud storage backends, you might want to consider using different state for each environment. To do that, you need to make sure you login to the correct backend before running pulumi up:
 
-{% highlight bash %}
+```bash
 # set the AWS creds you want to use with AWS profiles
 export AWS_PROFILE=production
 # Login to the dev backend
 pulumi login s3://pulumi-prod-state
 # run pulumi
 pulumi up --stack vpc.production
-{% endhighlight %}
+```
 
 ## A quick note on sensitive data
 
@@ -132,17 +132,17 @@ There are some great ComponentResource examples available, but my favourite is [
 
 With Terraform, if you need to pass data between different projects or modules, you'd define an output:
 
-{% highlight hcl %}
+```hcl
 output "instance_ip_addr" {
   value = aws_instance.server.private_ip
 }
-{% endhighlight %}
+```
 
 The "output" then gets stored in the terraform state in a way that makes it accessible either when a module reads the state or when the module is instantiated within your terraform code.
 
 With Pulumi, you just need to export the resource or parameter, which varies depending on the programming languages. As an example, you might create a VPC and export it in typescript like so:
 
-{% highlight typescript %}
+```typescript
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 
@@ -151,13 +151,13 @@ const bucket = new aws.s3.Bucket("my-bucket");
 
 // Export the name of the bucket
 export const bucketName = bucket.id;
-{% endhighlight %}
+```
 
 Here, we export the bucket id from the created bucket, which makes it available across stacks. You can then use a [Stack Reference](https://www.pulumi.com/docs/intro/concepts/organizing-stacks-projects/#inter-stack-dependencies) to use it elsewhere.
 
 In addition to this, it's common to have different states for different components in Terraform,  you might also need to use the [remote state data source](https://www.terraform.io/docs/providers/terraform/d/remote_state.html) to reference outputs in other terraform states:
 
-{% highlight hcl %}
+```hcl
 data "terraform_remote_state" "vpc" {
   count   = (var.vpc_id == "" && var.vpc_id == "") ? 1 : 0
   backend = "s3"
@@ -167,7 +167,7 @@ data "terraform_remote_state" "vpc" {
     region = "${var.tfstate_global_bucket_region}"
   }
 }
-{% endhighlight %}
+```
 
 In Pulumi, this isn't supported because it's very rarely needed. I'm hoping to write a more detailed post on this soon.
 

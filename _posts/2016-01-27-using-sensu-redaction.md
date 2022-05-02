@@ -23,29 +23,24 @@ Determining what to redact is fairly easy; just include a "redact" key in the cl
 
 If you use Puppet, you can do this really easily using the sensu-puppet module using sensu::redact (note, at time of writing this hasn't been merged, but hoping it will soon!)
 
-{% highlight puppet %}
-
+```puppet
 class { 'sensu':
   redact => [ 'password', 'pass', 'api_key' ]
 }
-
-{% endhighlight %}
+```
 
 Or, if like me, you use hiera, setting the following in your common.yaml
 
-{% highlight yaml %}
-
+```yaml
 sensu::redact
   - "password"
   - "pass"
   - "api_key"
-
-{% endhighlight %}
+```
 
 This will result in the following JSON in your client config:
 
-{% highlight javascript %}
-
+```json
 {
   "client": {
     "name": "client",
@@ -72,15 +67,14 @@ This will result in the following JSON in your client config:
     }
   }
 }
-
-{% endhighlight %}
+```
 
 
 ### Setting a service password
 
 Depending on how you do your configuration management, you may find this easy or hard, but the next step is to set a password inside the client for the service you'll monitor. I make heavy use of the [roles and profiles](http://garylarizza.com/blog/2014/02/17/puppet-workflow-part-2/) pattern with my Puppet config, so this is a simple as setting a password inside a particular client role. Normally I use hiera to do this, and I make use of sensu-puppet's client_custom options to set up these passwords. It looks a little bit like this:
 
-{% highlight puppet %}
+```puppet
 class { 'sensu':
   redact => [ 'password', 'pass', 'api_key' ]
   client_custom => {
@@ -89,11 +83,11 @@ class { 'sensu':
     },
   },
 }
-{% endhighlight %}
+```
 
 or with hiera:
 
-{% highlight yaml %}
+```yaml
 sensu::redact
   - "password"
   - "pass"
@@ -101,12 +95,11 @@ sensu::redact
 sensu::client_custom:
   nexus:
     password: "correct-horse-battery-staple"
-{% endhighlight %}
+```
 
 The resulting JSON, for those that use different config management systems, looks like this:
 
-{% highlight javascript %}
-
+```json
 {
   "client": {
     "name": "client",
@@ -136,8 +129,7 @@ The resulting JSON, for those that use different config management systems, look
     }
   }
 }
-
-{% endhighlight %}
+```
 
 Note I've set up the service name (github) and then made a subkey of "password". Because we set the "password" field to be redacted, we need to use a subkey, so that only the password is redacted.
 
@@ -149,15 +141,15 @@ When you look in your dashboard or in your logfiles, you'll now see something li
 
 Now, when I define the sensu check on the clients (with the same role, so it has access to the password, obviously) we use [check command token substituion](https://sensuapp.org/docs/0.16/checks#check-command-token-substitution) to make use of this field. This will essentially grab the correct value from the client config (which you defined earlier) and use that instead of the substitution.
 
-{% highlight puppet %}
+```puppet
 sensu::check{ 'check_password_test':
   command      => '/usr/local/bin/check_password_test --password :::github.password::: ',
 }
-{% endhighlight %}
+```
 
 of course, with JSON, just make sure the command field uses the substitution:
 
-{% highlight javascript %}
+```json
 {
   "checks": {
     "check_password_test": {
@@ -166,7 +158,6 @@ of course, with JSON, just make sure the command field uses the substitution:
     }
   }
 }
-
-{% endhighlight %}
+```
 
 Hopefully this clears up some questions about how exactly sensu redaction is used in the wild, as it's fairly easy to implement and yet not a lot of people seem to do it!
