@@ -48,39 +48,38 @@ Let's say my external parameter is simple - it's a string. It'd look a bit like 
 
 {% assign var = "{{ .Values.image }}" %}
 
-{% highlight go %}
+```go
 image: "{{ var }}"
-{% endhighlight %}
+```
 
 That's not so bad right? You just specify a value for `image` in your values.yaml and you're on your way.
 
 The real problem starts to get highlighted when you want to do more complicated and complex things. In this particular example, you're doing okay because you _know_ you have to specify an image for a Kubernetes deployment. However, what if you're working with something like an optional field? Well, then it gets a little more unwieldy:
 
-{% highlight go %}
+```go
 {{ "{{- with .resourceGroup " }} }}
     resourceGroup: {{ "{{ . " }} }}
 {{ "{{- end"  }} }}
-{% endhighlight %}
+```
 
 Optional values just make things ugly in templating languages, and you can't just leave the value blank, so you have to resort to ugly loops and conditionals that are probably going to bite you later.
 
 Let's say you need to go a step further, and you need to push an array or map into the config. With helm, you'd do something like this.
 
-{% highlight go %}
+```go
 {{   "{{- with .Values.podAnnotations " }} }}
       annotations:
 {{ "{{ toYaml . | indent 8 " }} }}
 {{ "{{- end " }} }}
-{% endhighlight %}
-
+```
 Firstly, let's ignore the madness of having a templating function `toYaml` to convert yaml to yaml and focus more on the whitespace issue here.
 
 YAML has strict requirements and whitespace implementation rules. The following, for example, is not valid or complete yaml:
 
-{% highlight yaml %}
+```yaml
 something: nothing
   hello: goodbye
-{% endhighlight %}
+```
 
 Generally, if you're handwriting something, this isn't necessarily a problem because you just hit backspace twice and it's fixed. However, if you're generating YAML using a templating system, you can't do that - and if you're operating above 5 or 10 configuration files, you probably want to be _generating_ your config rather than writing it.
  
@@ -88,12 +87,12 @@ So, in the above example, you want to embed the values of `.Values.podAnnotation
 
 What makes this _even more confusing_ is that the go parser doesn't actually know anything about YAML at all, so if you try to keep the syntax clean and indent the templates like this:
 
-{% highlight go %}
+```go
 {{  "{{- with .Values.podAnnotations" }} }}
       annotations:
       {{ "{{ toYaml . | indent 6" }} }}
 {{  "{{- end " }} }}
-{% endhighlight %}
+```
 
 You actually can't do that, because the templating system gets confused. This is a singular example of the complexity and difficulty you end up facing when generating config data in YAML, but when you really start to do more complex work, it really starts to become obvious that this isn't the way to go.
 
@@ -105,9 +104,9 @@ So what should we do instead? That's where [jsonnet](https://jsonnet.org) comes 
 
 Before we actually talk about Jsonnet, it's worth reminding people of a very important (but oft forgotten point). [YAML is a superset of JSON](https://yaml.org/spec/1.2/spec.html#id2759572) and converting between the two is trivial. Many applications and programming languages will parse JSON and YAML natively, and many can convert between the two very simple. For example, in Python:
 
-{% highlight  python %}
+```python
 python -c 'import json, sys, yaml ; y=yaml.safe_load(sys.stdin.read()) ; print(json.dumps(y))'
-{% endhighlight %}
+```
 
 So with that in mind, let's talk about Jsonnet.
 
@@ -121,22 +120,22 @@ Well, let's take our earlier example - we want to generate some JSON config spec
 
 Firstly, let's define some Jsonnet:
 
-{% highlight jsonnet %}
+```json
 {
 
   image: std.extVar('image'),
 
 }
-{% endhighlight %}
+```json
 
 Then, we can generate it using the Jsonnet command line tool, passing in the external variable as we need to:
 
-{% highlight bash %}
+```bash
 jsonnet image.jsonnet -V image="my-image"
 {
    "image": "my-image"
 }
-{% endhighlight %}
+```
 
 Easy!
 
@@ -144,8 +143,7 @@ Easy!
 
 Before, I noted that if you wanted to define an optional field, with YAML templating you had to define if statements for everything. With Jsonnet, you're just defining code!
 
-{% highlight jsonnet %}
-
+```json
 // define a variable - yes, jsonnet also has comments
 local rg = null;
 {
@@ -156,22 +154,22 @@ local rg = null;
   [if rg != null then 'resourceGroup']: rg,
 
 }
-{% endhighlight %}
+```
 
 The output here, because our variable is null, means that we never actually populate resourceGroup. If you specify a value, it will appear:
 
-{% highlight bash%}
+```bash
 jsonnet image.jsonnet -V image="my-image" 
 {
    "image": "my-image"
 }
-{% endhighlight %}
+```
 
 ### Maps and parameters
 
 Okay, now let's look at our previous annotation example. We want to define some pod annotations, which takes a YAML map as its input. You want this map to be configurable by specifying external data, and obviously doing that on the command line sucks (you'd be very unlikely to specify this with Helm on the command line, for example) so generally you'd use Jsonnet imports to this. I'm going to specify this config as a variable and then load that variable into the annotation:
 
-{% highlight jsonnet %}
+```jsonnet
 local annotations = {
   'nginx.ingress.kubernetes.io/app-root': '/',
   'nginx.ingress.kubernetes.io/enable-cors': true,
@@ -183,7 +181,7 @@ local annotations = {
   },
 
 }
-{% endhighlight %}
+```
 
 This might just be my bias towards Jsonnet talking, but this is so dramatically easier than faffing about with indentation that I can't even begin to describe it. 
 
@@ -194,7 +192,7 @@ The final thing I wanted to quickly explore, which is something that I feel can'
 
 Let's take our example above with the annotations, and look at the result file:
 
-{% highlight json %}
+```json
 {
    "metadata": {
       "annotations": {
@@ -203,13 +201,13 @@ Let's take our example above with the annotations, and look at the result file:
       }
    }
 }
-{% endhighlight %}
+```
 
 Now, let's say for example I wanted to append a set of annotations to this annotations map. In any templating system, I'd probably have to rewrite the whole map.
 
 Jsonnet makes this _trivial_. I can simply use the `+` operator to add something to this. Here's a (poor) example:
 
-{% highlight jsonnet %}
+```jsonnet
 local annotations = {
   'nginx.ingress.kubernetes.io/app-root': '/',
   'nginx.ingress.kubernetes.io/enable-cors': true,
@@ -226,11 +224,11 @@ local annotations = {
     },
   },
 }
-{% endhighlight %}
+```
 
 The end result is this:
 
-{% highlight json %}
+```json
 {
    "metadata": {
       "annotations": {
@@ -240,18 +238,10 @@ The end result is this:
       }
    }
 }
-{% endhighlight %}
+```
 
 Obviously, in this case, it's more code to this, but as your example get more complex, it becomes extremely useful to be able to manipulate objects this way.
 
 ## Kr8
 
 We use all of these methods in [kr8](https://kr8.rocks) to make creating and manipulating configuration for multiple Kubernetes clusters easy and simple. I highly recommend you check it out if any of the concepts you've found here have found you nodding your head.
-
-
-
-
-
-
-
-
