@@ -43,7 +43,7 @@ AWS has leaned into OIDC as an authentication mechanism since they introduced [I
 
 We'll need the [Pulumi AWS provider](https://www.pulumi.com/registry/packages/aws/) in order to interact with AWS, as well as the [GitHub provider](https://www.pulumi.com/registry/packages/github/), so make sure you've got those installed in your Pulumi program like so:
 
-```yaml
+```bash
 npm install @pulumi/aws @pulumi/github
 ```
 
@@ -173,8 +173,7 @@ Now, let's define a workflow to verify what credentials we got:
 ```yaml
 # The workflow Creates static website using aws s3
 name: AWS Workflow
-on:
-  push
+on: [ push ]
 permissions:
   id-token: write
   contents: read
@@ -203,7 +202,7 @@ You'll notice we're passing the `ROLE_ARN` from the repository secret directly, 
 
 To configure "credentialless access" in Azure, we can follow a similar pattern. We'll need to use Pulumi's [Azure AD](https://www.pulumi.com/registry/packages/azuread/) provider, the [GitHub](https://www.pulumi.com/registry/packages/github/) as well as the [Azure Native](https://www.pulumi.com/registry/packages/azure-native/) provider. We're also going to use the Azure SDK to make our life a little easier, so make sure you've run the following in your Pulumi program before you proceed:
 
-```yaml
+```bash
 npm install @pulumi/azure-native @pulumi/azuread @pulumi/github @azure/arm-authorization @azure/ms-rest-js
 ```
 
@@ -558,7 +557,7 @@ Check all this in, and watch the magic as GitHub Actions is now authenticated ag
 
 Google Cloud supports OIDC authentication using workflow providers. We'll use the `@pulumi/gcp` and `@pulumi/google-native` to achieve our goals here, so make sure the following packages are installed in your Pulumi program:
 
-```yaml
+```bash
 npm install @pulumi/gcp @pulumi/google-native
 ```
 
@@ -714,8 +713,7 @@ Now we've configured all the access we need, we can define a workflow to check o
 
 ```yaml
 name: List services in GCP
-on:
-  push
+on: [ push ]
 
 permissions:
   id-token: write

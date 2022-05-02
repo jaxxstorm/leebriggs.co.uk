@@ -26,11 +26,11 @@ Unfortunately, this introduced another layer of complexity. Your cloud provider'
 The most successful tools of this era had something in common, even if they differed in the way they solved the problem. I attribute the success of the two tools I've used the most until this point (Puppet and Terraform) to the fact that they both have very readable and powerful DSLs. The decision to use DSLs made them extremely approachable to people, even with rudimentary software engineering backgrounds. Generally, you can take a simple block of Puppet code and very quickly get an idea of what it's going to do:
 
 ```puppet
-  file { '/tmp/my-file':
-    ensure  => present,
-    content => 'foo',
-    user    => 'jaxxstorm',
-  }
+file { '/tmp/my-file':
+  ensure  => present,
+  content => 'foo',
+  user    => 'jaxxstorm',
+}
 ```
 
 HCL has a similar approach - its simplicity allows you to look at (basic) HCL and get a decent idea of what's going to happen when you execute it. Here's a similar operation as our Puppet example in HCL:
