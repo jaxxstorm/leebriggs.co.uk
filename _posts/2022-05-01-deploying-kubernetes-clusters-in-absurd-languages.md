@@ -11,7 +11,7 @@ tags:
 
 It's been over 3 years since I published my most successful blog post about the abject horror of [templated yaml]({% post_url 2019-02-07-why-are-we-templating-yaml %}) and in many ways, I feel the same way now as I did then, with the exception of falling out of love with jsonnet. Jsonnet seemed like a good tool for the job when I was using Go templates to try and get results, but in 2022 there are lots of different mechanisms you can use to avoid YAML templating hell.
 
-Yesterday, we at [Pulumi](https://pulumi.com) announced YAML support. You might be wondering, "Lee, don't you fucking hate YAML? Isn't that your whole thing?"
+Today, we at [Pulumi](https://pulumi.com) announced [YAML support](https://www.pulumi.com/blog/pulumi-yaml/). You might be wondering, "Lee, don't you fucking hate YAML? Isn't that your whole thing?"
 
 Well, hell has frozen over and Pulumi supports YAML now. So instead of bemoaning this fact, why don't be lean into this and see what kind of miserable experience we can create for ourselves?
 
