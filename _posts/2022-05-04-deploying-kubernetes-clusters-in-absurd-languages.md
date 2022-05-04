@@ -17,7 +17,7 @@ Well, hell has frozen over and Pulumi supports YAML now. So instead of bemoaning
 
 ## Pulumi's YAML compiler
 
-When YAML support was added, enterprising CUE fan, friend and colleague [David Flanagan](https://twitter.com/rawkode) used the Pulumi hackathon to add a mechanism to automatically convert CUE manifests into YAML documents and pipe them directly into the Pulumi CLI. This ability to use exported CUE was initially added directly to the YAML language plugin, but project lead [Aaron Friel](https://twitter.com/aaronfriel) took David's inspiration and added the capability to use any "compiler" that spits out YAML. It looks a bit like this:
+When YAML support was added, enterprising [CUE](https://cuelang.org/) fan, friend and colleague [David Flanagan](https://twitter.com/rawkode) used the Pulumi hackathon to add a mechanism to automatically convert CUE manifests into YAML documents and pipe them directly into the Pulumi CLI. This ability to use exported CUE was initially added directly to the YAML language plugin, but project lead [Aaron Friel](https://twitter.com/aaronfriel) took David's inspiration and added the capability to use any "compiler" that spits out YAML. It looks a bit like this:
 
 ```yaml
 name: my-yaml-program
@@ -34,9 +34,11 @@ Now, I'm sure Aaron's intent was positive, but this gave me an idea: just how mu
 
 It's worth remembering that JSON is a superset of YAML, so any valid JSON is also valid YAML. With that firmly tucked into my mind, I set about seeing what I could do with this new YAML input mechanism.
 
-{% include note.html content="The asciicast following only show the preview stage, because AWS doesn't value you time and takes 10ish minutes to provision an EKS cluster. I did run each example and they work." %}
+{% include note.html content="The asciicasts following only show the preview stage, because AWS doesn't value you time and takes 10ish minutes to provision an EKS cluster. I did run each example and they work, unfortunately." %}
 
 ## HCL
+
+{% include note.html content="The code for the HCL example can be found [here](https://github.com/jaxxstorm/pulumi-examples/tree/main/hcl/aws/eks)" %}
 
 My first thought was that HCL was an obvious candidate to author Pulumi programs, after all, it's already used to deploy infrastructure. I started with `brew install hcl2json` to get the [hcl2json](https://github.com/tmccombs/hcl2json) tool and came up with this:
 
@@ -101,6 +103,8 @@ Obviously, my colleagues were extremely complimentary:
 ![HCL](/img/hcl.png)
 
 ## Perl
+
+{% include note.html content="The code for the Perl example can be found [here](https://github.com/jaxxstorm/pulumi-examples/tree/main/perl/aws/eks)" %}
 
 In the midst of this conversation, my good friend and colleague [Paul Stack](https://twitter.com/stack72) said something that got my interest:
 
@@ -170,7 +174,7 @@ runtime:
 description: WHY HAVE YOU DONE THIS
 ```
 
-And deployed the very first Pulumi program and maybe? the first ever Kubernetes cluster with Perl:
+And deployed the very first Pulumi program and (maybe?) the first ever Kubernetes cluster with Perl:
 
 [![asciicast](https://asciinema.org/a/wd1dktdQk13RJpzIeBhOgHXMQ.svg)](https://asciinema.org/a/wd1dktdQk13RJpzIeBhOgHXMQ)
 
@@ -181,6 +185,8 @@ Then I had a thought.
 Just how far back in time can I go?
 
 ## Fortran
+
+{% include note.html content="The code for the Fortran example can be found [here](https://github.com/jaxxstorm/pulumi-examples/tree/main/fortran/aws/eks)" %}
 
 Look, I knew this was a bad idea. I had never written a line of fortran in my life. Fortran was released in 1958, a full 42 years before YAML even existed. I initially thought I might have to manually generate YAML strings which would have been as horrendous as templating YAML. Then I discovered that Fortan is actually seeing something of a renaissance! Modern Fortran is actually _growing_ in popularity according to the [TIOBE Index](https://www.tiobe.com/tiobe-index/).
 
