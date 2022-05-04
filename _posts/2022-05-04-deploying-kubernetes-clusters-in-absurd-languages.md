@@ -32,7 +32,7 @@ Now, I'm sure Aaron's intent was positive, but this gave me an idea: just how mu
 
 ## JSON and the YAMLnauts
 
-It's worth remembering that JSON is a superset of YAML, so any valid JSON is also valid YAML. With that firmly tucked into my mind, I set about seeing what I could do with this new YAML input mechanism.
+It's worth remembering that YAML is a superset of JSON, so any valid JSON is also valid YAML. With that firmly tucked into my mind, I set about seeing what I could do with this new YAML input mechanism.
 
 {% include note.html content="The asciicasts following only show the preview stage, because AWS doesn't value you time and takes 10ish minutes to provision an EKS cluster. I did run each example and they work, unfortunately." %}
 
