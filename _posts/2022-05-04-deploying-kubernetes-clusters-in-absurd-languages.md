@@ -284,7 +284,7 @@ program pulumi
 end program pulumi
 ```
 
-Is it pretty? Well, no. Is it useful? Almost definitely not. Isn't it _interesting_? Well, I certainly think it is, considering Fortran is older than my Dad. I considered for a moment than I was probably doing something no other idiot has ever done. Then I figured out that I had to _compile_ this Fortran so that Pulumi could render the JSON.
+Is it pretty? Well, no. Is it useful? No, it's really not. Isn't it _interesting_? Well, I certainly think it is, considering Fortran is older than my Dad. I considered for a moment than I was probably doing something no other idiot has ever done. Then I figured out that I had to _compile_ this Fortran so that Pulumi could render the JSON.
 
 I threw together a little script that would compile the program and then clean it up afterwards:
 
