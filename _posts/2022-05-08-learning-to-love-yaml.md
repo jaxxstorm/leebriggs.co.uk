@@ -123,25 +123,25 @@ You can argue (and many do) that these mechanisms are the _perfect_ balance of f
 
 I've been very open about the fact that I don't consider myself a talented software engineer. I've said before that I didn't _truly_ understand programming constructs like [Object orientation](https://en.wikipedia.org/wiki/Object-oriented_programming) until I joined Pulumi. What I mean to say here is that I _get_ this argument. 
 
-What I don't understand about this argument is that people seem unwilling to admit that the world is fundamentally changing. Its my opinion that the people who truly loathe Pulumi don't want to admit they don't understand the languages very well. They're worried that adopting Pulumi is going to put them out of a job. I could never prove this of course, but I believe it because _I_ believed it.
+What I don't understand about this argument is that people seem unwilling to admit that the world is fundamentally changing. It's my opinion that the people who truly loathe Pulumi don't want to admit they don't understand the languages it supports very well. They're worried that adopting Pulumi is going to put them out of a job. I could never prove this of course, but I believe it because _I also_ believed it.
 
 Here's the truths nobody wants to admit.
 
 **There are more "software engineers" than there are "infrastructure engineers" (or DevOps engineers, SREs, Platform Engineers, whatever you want to call them) and they need to ship their software.**
 
-***The vast majority of those software engineers don't want to bolt templates on top of configuration languages or use a DSL they can only use for one purpose.***
+**The vast majority of those software engineers don't want to bolt templates on top of configuration languages or use a DSL they can only use for one purpose.**
 
-So if you're an infrastructure engineer clinging on to your DSL, you might want to consider the idea you're the [Betamax](https://en.wikipedia.org/wiki/Betamax) of the tech industry. Even if you're _right_ about configuration languages being the _right_ way to define infrastructure, the entire industry is moving away from them ([AWS CDK](https://aws.amazon.com/cdk/) and [Terraform CDK](https://www.terraform.io/cdktf) are the investment in them are just proof positive of this) and you're going to get left in the dust, complexity be damned.
+So if you're an infrastructure engineer clinging on to your DSL, you might want to consider the idea you're the [Betamax](https://en.wikipedia.org/wiki/Betamax) of the tech industry. Even if you're _right_ about configuration languages being the _right_ way to define infrastructure, the entire industry is moving away from them ([AWS CDK](https://aws.amazon.com/cdk/) and [Terraform CDK](https://www.terraform.io/cdktf) and the investment in them are just proof positive of this) and you're going to get left in the dust, complexity be damned.
 
 ## Breaking the marmite spectrum
 
-If you've gotten this far, you might be forgiven for thinking "This is just another post about how much you hate YAML Lee, you twat", but its going somewhere, I promise.
+If you've gotten this far, you might be forgiven for thinking "This is just another post about how much you hate YAML Lee", but I promise we're going somewhere.
 
-Pulumi's additional of YAML is in my mind, the perfectly designed way to help users with _both_ of these problems. Here's why.
+Pulumi's additional of YAML is in _my_ mind, a great, balanced addition designed to help users with _both_ of these problems. Here's why.
 
 ### The abstraction problem
 
-If we all with the idea that infrastructure is complex, its difficult to understand how Pulumi YAML solves that problem. Its entirely possible to define a complex set of services using YAML, such as this example of running something in Azure Container Apps
+If we all agree with the idea that infrastructure is complex, it's difficult to understand how Pulumi YAML solves that problem. It's entirely possible to define a complex set of services using YAML, such as this example of running something in Azure Container Apps
 
 ```yaml
 name: azure-app-service
@@ -251,7 +251,7 @@ outputs:
 
 It might just be personal preference here, but I look at that thing and _shudder_. Can you imagine authoring that? Maintaining it?
 
-Sure, its possible for you to author complex infrastructure if you want, but what if you want to override the value of `ApplicationInsightsAgent_EXTENSION_VERSION` in a different Azure subscription? Pass me the bourbon and the [Jinja template documentation](https://jinja.palletsprojects.com/en/3.1.x/) folks, I'm templating me some fucking YAML.
+Sure, its _possible_ for you to author complex infrastructure if you want, but what if you want to override the value of `ApplicationInsightsAgent_EXTENSION_VERSION` in a different Azure subscription? Pass me the bourbon and the [Jinja template documentation](https://jinja.palletsprojects.com/en/3.1.x/) folks, I'm templating me some fucking YAML.
 
 ### Multi language components
 <br>
@@ -307,7 +307,7 @@ Using Pulumi with multi language packages helps with the complexity problem, and
 
 ### "Ejecting" from YAML
 
-Pulumi has an _incredible_ command that will allow you to eject immediately from YAML into a general purpose language. Despite my wishes, its not called `pulumi look-ma-no-hands` (although you can always alias it to that) but `pulumi convert`.
+Pulumi has an _incredible_ command that will allow you to eject immediately from YAML into a general purpose language. Despite my wishes, its not called `pulumi graduate` (although you can always alias it to that) but `pulumi convert`.
 
 Converting a Pulumi YAML program is as easy as taking your existing Pulumi YAML program and running `pulumi convert --language <insert-language-here>`
 
@@ -325,7 +325,11 @@ Converting 100+ lines in TypeScript in seconds means I'm now able to start using
 
 The whole point of adding YAML to Pulumi is to bridge the gap for everyone in the infrastructure as code space. You don't have to choose your authoring experience anymore, you can seamlessly switch between configuration languages and general purpose programming languages as you need. You can define best practices and abstractions and then let your downstream users _choose_ how they want to consume them. Are you a Java application engineer and want to get started with infrastructure as code? Awesome, just use Java. Have you authored millions of lines of Kubernetes manifests and want to eventually get the engineers you support to deploy their own damn workloads and leave you alone? Start with Pulumi YAML, convert it to Python and throw it over the fence to them if you want.
 
-Our latest set of releases had the marketing slogan "[universal infrastructure as code](https://www.pulumi.com/blog/pulumi-universal-iac/)" and for once, I actually believe the marketing.
+I shared the draft of this blog with a friend and former coworker of mine who's a data scientist and business analyst. In addition to providing valuable feedback, he also had this to say:
+
+![YAML-Feedback](/img/yaml-feedback.png)
+
+Our latest set of releases had the marketing slogan "[universal infrastructure as code](https://www.pulumi.com/blog/pulumi-universal-iac/)" and for once, I feel like the product does even more than the marketing promises.
 
 
 
