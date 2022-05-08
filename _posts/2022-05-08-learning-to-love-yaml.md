@@ -17,7 +17,7 @@ Something I miss after emigrating from the UK to the USA is the using the name o
 
 YAML is the "marmite" of infrastructure as code. If you ask a software engineer or DevOps practitioner what they think of YAML, they'll more than likely tell you their write their entire production infrastructure in thousands of lines of YAML, or they'll claw our their eyes and run screaming from the room. There doesn't seem to be much of a middle ground. If you've read this blog [before]({% post_url 2019-02-07-why-are-we-templating-yaml %}) and even as recently as [this week]({% post_url 2022-05-04-deploying-kubernetes-clusters-in-absurd-languages %}) you'll be aware I fall firmly on the "hate it" side of what I'm going to call "the marmite spectrum".
 
-The biggest problem I have with YAML is not the language itself, but the way its shoehorned into situations it has no reasonable right to be involved in. One of those situations is complex infrastructure as code definitions.
+The biggest problem I have with YAML is not the language itself, but the way it's shoehorned into situations it has no reasonable right to be involved in. One of those situations is complex infrastructure as code definitions.
 
 There are a multitude of infrastructure as code tools out there that will allow you to use YAML or other configuration formats to describe infrastructure as code, so [Pulumi adding support for YAML](https://www.pulumi.com/blog/pulumi-yaml/) as a language came as a surprise to many:
 
@@ -29,7 +29,7 @@ When our CTO, Luke Hoban told us all we were adding YAML to the roadmap, I had m
 
 ![Slack-lbriggs-YAML](/img/lbriggs-slack-yaml.png)
 
-So why am I now writing a blog post talking about my love for YAML? Let's talk about it.
+So why am I now writing a blog post talking about me learning to love YAML? Let's talk about it.
 
 ## Let's talk about the YAML
 <br>
@@ -40,17 +40,17 @@ Pulumi has long been the refuge of people not wanting to use YAML in their infra
 
 To understand why YAML is now a supported language, we first need to look at the problem we're trying to solve, and they invariably come from our users or potential users.
 
-The two main problems we have during the Pulumi adoption cycle and in the infrastructure as code community are related to the use of general purpose languages. The first, is that general purpose languages aren't _right_ for infrastructrue, the second is that general purpose languages are too complex for the problem at hand.
+The two main talking points we're faced with during the Pulumi adoption or sales cycle and in the infrastructure as code community are related to the use of general purpose languages. The first, is that general purpose languages aren't _right_ for infrastructrue, the second is that general purpose languages are too complex for the problem at hand.
 
 ### The abstraction argument
 
 The abstraction argument goes a little bit like this:
 
-> Software developers know nothing about infrastructure, and when they write infrastructure as code in the same language they're writing their applications in they made it really complex. I then have to fix it, and thats really really hard.
+> Software developers know nothing about infrastructure, and when they write infrastructure as code in the same language they're writing their applications in they make it really complex. I then have to fix it, and thats really really hard.
 
 Lets put aside for this post my intense frustration with the ivory tower, "I'm better than you because I understand the magical incantation of IAM roles" bullshit this is and focus more on the argument itself.
 
-This line of thinking often continues with the idea that configuration languages are the perfect antidote to this monstrous complexity. In many ways, I agree with this argument, but this entire world view ignores one truth.
+This line of thinking often continues with the idea that configuration languages are the perfect antidote to this monstrous complexity. I agree that configuration languages provide guard rails to complexity, but this entire world view ignores one truth.
 
 **Whether we like it or not, infrastructure is complex.**
 
@@ -117,7 +117,7 @@ Or perhaps this [Helm chart defining](https://github.com/prometheus-community/he
               hostPort: {{ .Values.nodeExporter.service.hostPort }}
 {% endraw %}{% endhighlight %}
 
-You can argue (and many do) that these mechanisms are the _perfect_ balance of flexibility and control. It is my opinion that they are just bolt ons on configuration to make them closer to programming languages  to _try_ and meet users where their needs are.
+You can argue (and many do) that these mechanisms are the _perfect_ balance of flexibility and control. It is my opinion that they are just bolt ons to configuration to make them closer to programming languages  to _try_ and meet users where their needs are.
 
 ### The complexity argument
 
