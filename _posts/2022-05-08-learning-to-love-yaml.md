@@ -329,6 +329,8 @@ I shared the draft of this blog with a friend and former coworker of mine who's 
 
 ![YAML-Feedback](/img/yaml-feedback.png)
 
+Adding YAML as a supported language throws the door open to people wanting to deploy their infrastructure, and the thing is _everyone_ needs to deploy infrastructure. My data scientist friend needs infrastructure for his data analysis in [R](https://www.r-project.org/) and YAML is a mechanism to enable that. If he decides that YAML no longer meets those needs, he can happily convert it to Python and head down the path to learning Python through the lense of something he already knows.
+
 Our latest set of releases had the marketing slogan "[universal infrastructure as code](https://www.pulumi.com/blog/pulumi-universal-iac/)" and for once, I feel like the product does even more than the marketing promises.
 
 
