@@ -36,11 +36,11 @@ So why am I now writing a blog post talking about me learning to love YAML? Let'
 
 ![YAML](/img/talk-about-the-yaml.jpg)
 
-Pulumi has long been the refuge of people not wanting to use YAML in their infrastructure definitions. Our marketing content was focused entirely on the idea you could use familiar or general purpose, expressive languages to define your infrastructure. I talked with hundreds of users who repeatedly told me that not having YAML support was enlightening.
+Pulumi has long been the refuge of people not wanting to use YAML in their infrastructure definitions. Our marketing content was focused entirely on the idea you could use familiar or general purpose, expressive languages to define your infrastructure. I talked with hundreds of users who repeatedly told me that _not_ having YAML support was enlightening.
 
-To understand why YAML is now a supported language, we first need to look at the problem we're trying to solve, and they invariably come from our users or potential users.
+To understand why YAML is now a supported language, we first need to look at the problem we're trying to solve, and those problems invariably come from our users or _potential_ users.
 
-The two main talking points we're faced with during the Pulumi adoption or sales cycle and in the infrastructure as code community are related to the use of general purpose languages. The first, is that general purpose languages aren't _right_ for infrastructrue, the second is that general purpose languages are too complex for the problem at hand.
+The two main talking points we're faced with during the Pulumi adoption or sales cycle and in the infrastructure as code community are related to the use of general purpose languages. The first, is general purpose languages aren't _right_ for infrastructrue, the second is that general purpose languages are too complex for the problem at hand.
 
 ### The abstraction argument
 
@@ -56,9 +56,9 @@ This line of thinking often continues with the idea that configuration languages
 
 We all know one of those people who'll tell you that the answer to all infrastructure problems is a bunch of EC2 instances, a golden AMI and a load balancer. Those people might be right, but if take a look at your infrastructure right now, could you solve the problems in your organization by going back to building AMIs and sticking them behind a load balancer? Even if you can, do you really want to? No, I thought not.
 
-If you're using a configuration language to define your infrastructure, you've no doubt already run into this. We can see this fait accompli by watching evolution of [HCL as a language](https://github.com/hashicorp/hcl). HCL _started_ as a simple mechanism to express JSON files, and now you can define abstractions ([modules](https://www.terraform.io/language/modules/develop)), use conditionals ([sort of](https://www.terraform.io/language/expressions/conditionals), although if you want optional parts of your infrastructure, you'll need to abuse the `count` option) and [leverage loops](https://www.terraform.io/language/meta-arguments/for_each). Its further apparent in [Helm](https://helm.sh/) which uses [Go templates](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/) to allow you to express the complexity that inherently exists in Kubernetes deployments.
+If you're using a configuration language to define your infrastructure, you've no doubt already run into this. We can see this fait accompli by watching the evolution of [HCL as a language](https://github.com/hashicorp/hcl). HCL _started_ as a simple mechanism to express JSON files, and now you can define abstractions ([modules](https://www.terraform.io/language/modules/develop)), use conditionals ([sort of](https://www.terraform.io/language/expressions/conditionals), although if you want optional parts of your infrastructure, you'll need to abuse the `count` option) and [leverage loops](https://www.terraform.io/language/meta-arguments/for_each). Its further apparent in [Helm](https://helm.sh/) which uses [Go templates](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/) to allow you to express the complexity that inherently exists in Kubernetes deployments.
 
-Don't believe me? Take a look at the [AWS Transit Gateway Module](https://github.com/terraform-aws-modules/terraform-aws-transit-gateway/blob/master/main.tf#L1-L21https://github.com/terraform-aws-modules/terraform-aws-transit-gateway/blob/master/main.tf) for Terraform. It has code like this in there:
+Writing Terraform or Helm charts can leave you in a weird twilight zone where you feel like you're writing software but you're just not quite there. Don't believe me? Take a look at the [AWS Transit Gateway Module](https://github.com/terraform-aws-modules/terraform-aws-transit-gateway/blob/master/main.tf#L1-L21https://github.com/terraform-aws-modules/terraform-aws-transit-gateway/blob/master/main.tf) for Terraform. It has code like this in there:
 
 ```hcl
 locals {
