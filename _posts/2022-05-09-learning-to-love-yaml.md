@@ -15,7 +15,7 @@ Something I miss after emigrating from the UK to the USA is the using the name o
 {% include youtube.html id='M29CYYyRnqA' %}
 <br>
 
-YAML is the "marmite" of infrastructure as code. If you ask a software engineer or DevOps practitioner what they think of YAML, they'll more than likely tell you their write their entire production infrastructure in thousands of lines of YAML, or they'll claw our their eyes and run screaming from the room. There doesn't seem to be much of a middle ground. If you've read this blog [before]({% post_url 2019-02-07-why-are-we-templating-yaml %}) and even as recently as [this week]({% post_url 2022-05-04-deploying-kubernetes-clusters-in-absurd-languages %}) you'll be aware I fall firmly on the "hate it" side of what I'm going to call "the marmite spectrum".
+YAML is the "marmite" of infrastructure as code. If you ask a software engineer or DevOps practitioner what they think of YAML, they may tell you they write their entire production infrastructure in thousands of lines of YAML, or they could claw our their eyes and run screaming from the room. There doesn't seem to be much of a middle ground. If you've read this blog [before]({% post_url 2019-02-07-why-are-we-templating-yaml %}) and even as recently as [this week]({% post_url 2022-05-04-deploying-kubernetes-clusters-in-absurd-languages %}) you'll be aware I fall firmly on the "hate it" side of what I'm going to call "the marmite spectrum".
 
 The biggest problem I have with YAML is not the language itself, but the way it's shoehorned into situations it has no reasonable right to be involved in. One of those situations is complex infrastructure as code definitions.
 
@@ -36,7 +36,7 @@ So why am I now writing a blog post talking about me learning to love YAML? Let'
 
 ![YAML](/img/talk-about-the-yaml.jpg)
 
-Pulumi has long been the refuge of people not wanting to use YAML in their infrastructure definitions. Our marketing content was focused entirely on the idea you could use familiar or general purpose, expressive languages to define your infrastructure. I talked with hundreds of users who repeatedly told me that _not_ having YAML support was enlightening.
+Pulumi has long been the refuge of people not wanting to use YAML in their infrastructure definitions. Our marketing content was focused entirely on the idea you could use "familiar" or general purpose, expressive languages to define your infrastructure. I've talked with hundreds of users who repeatedly told me that _not_ having YAML support was enlightening.
 
 To understand why YAML is now a supported language, we first need to look at the problem we're trying to solve, and those problems invariably come from our users or _potential_ users.
 
@@ -131,7 +131,7 @@ Here's the truths nobody wants to admit.
 
 **The vast majority of those software engineers don't want to bolt templates on top of configuration languages or use a DSL they can only use for one purpose.**
 
-So if you're an infrastructure engineer clinging on to your DSL, you might want to consider the idea you're the [Betamax](https://en.wikipedia.org/wiki/Betamax) of the tech industry. Even if you're _right_ about configuration languages being the _right_ way to define infrastructure, the entire industry is moving away from them ([AWS CDK](https://aws.amazon.com/cdk/) and [Terraform CDK](https://www.terraform.io/cdktf) and the investment in them are just proof positive of this) and you're going to get left in the dust, complexity be damned.
+So if you're an infrastructure engineer clinging on to your DSL, you might want to consider the idea you're the [Betamax](https://en.wikipedia.org/wiki/Betamax) of the tech industry. Even if you're _right_ about configuration languages being the _right_ way to define infrastructure, the entire industry is moving away from them ([AWS CDK](https://aws.amazon.com/cdk/) and [Terraform CDK](https://www.terraform.io/cdktf) and the investment in them further support this argument) and you're going to get left in the dust, complexity be damned.
 
 ## Breaking the marmite spectrum
 
@@ -300,6 +300,24 @@ This 30 or so lines of YAML will define an entire EKS cluster, the needed autosc
 [![asciicast](https://asciinema.org/a/yjXzjSw91y6mMckByhcXVeCbT.svg)](https://asciinema.org/a/yjXzjSw91y6mMckByhcXVeCbT)
 
 Being able to define the reusable component in your language of choice gives you all of the flexibility and expressibility you need to truly provide options to your users, but also provides a simple, straightforward interface for users who just want to deploy a Kubernetes cluster without having to deal with Python VirtualEnvs or figure out why NPM is downloading half the internet.
+
+You can see an even simpler implemenation of this with my ["productionapp"](https://github.com/jaxxstorm/pulumi-productionapp) multi language example that I use to for product demos. This example has abstracted _all_ the complexity of a Kubernetes deployment away from the end user. It can be consumed in Pulumi YAML in just 11 lines:
+
+```yaml
+name: pulumi-productionapp-yaml
+runtime: yaml
+description: a kubernetes production app from yaml
+resources:
+  app:
+    type: productionapp:index:Deployment
+    properties:
+      image: "nginx"
+      port: 80
+outputs:
+  url: ${app.url}
+```
+
+The logic is all encapsulated in the component itself, and the user is just left to fill out the image and the port the image runs on.
 
 ### The complexity problem
 
