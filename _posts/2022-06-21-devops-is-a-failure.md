@@ -55,7 +55,7 @@ Almost all the tooling marketed as "DevOps tooling" is focused on operations. If
 
 If DevOps was supposed to be about changing the overall culture, it can't be seen as a successful movement. People on the operations side of the fence will happily say "well, we're trying!" but what they mean by that is they're attempting to be a pied piper towards operational considerations - its not a two way street.
 
-It's worth remembering as an operations person, we are generally out numbered at least 5/1 in any given engineering organisation. Trying to convince every last developer to do things "the operations way" and "use operations tooling" ultimately is a fools errand. We need a change.
+It's worth remembering as an operations person, we are generally out numbered at _least_ 5/1 in any given engineering organisation. Trying to convince every last developer to do things "the operations way" and "use operations tooling" ultimately is a fools errand. We need a change.
 
 ## What can we do about it?
 
