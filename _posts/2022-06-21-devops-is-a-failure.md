@@ -6,11 +6,11 @@ tags:
 - devops
 ---
 
-It's probably impossible for most people to recall the first time they heard a word, but I remember hearing the word "DevOps" for the first time. I was having a beer with a colleague in 2013 who has taught me almost everything I knew at that point and I'd been lucky enough to bring him along to a new job I started where he could do lots of smart things and I could ride his coattails. We were discussing some of the problems we'd seen in the new job that probably feel familiar to most people now: we couldn't get the application running in production.
+It's probably difficult for most people to recall the first time they heard a word, but I remember hearing the word "DevOps" for the first time. I was having a beer with a colleague in 2013 who has taught me almost everything I knew at that point. I'd been lucky enough to bring him along to a new job I started where he could do lots of smart things and I could ride his coattails. We were discussing some of the problems we'd seen in the new company that probably feel familiar to most people now: we were struggling to support the application when it was running in production.
 
 He was talking about how we needed to get involved earlier in the lifecycle to ensure we were all on the same page. In his imitable Australian accent he mentioned the word "DevOps" and it stuck with me.
 
-2013 was relatively late to the game in DevOps. If you ask most people about the origin of the term, the two things pivotal moments everyone seems to agree on are Patrick Debois and Andrew Clay Shafer meeting at the Agile Conference in Toronto, and the talk by [John Allspaw and Paul Hammond at Velocity '09](https://www.youtube.com/watch?v=LdOe18KhtT4)
+2013 was relatively late to the game in DevOps. If you ask most people about the origin of the term, the two pivotal moments everyone seems to agree on are Patrick Debois and Andrew Clay Shafer meeting at the Agile Conference in Toronto, and the talk by [John Allspaw and Paul Hammond at Velocity '09](https://www.youtube.com/watch?v=LdOe18KhtT4)
 
 The ideas back then were simple: fix the culture. Since then, the term has taken on a life of its own. We now have "DevOps Engineer" as a job title.
 
@@ -18,14 +18,14 @@ What's always been curious to me about DevOps as a discipline is how much the te
 
 ## DevOps is just Operations
 
-5 years on from that conversation with my Australian friend, I was sat in another meeting at the same employer when a director level colleague leading the development of one of our products mentioned that his teams were "true devops". I remember being incredibly confused by this. They'd never spoken to us about their operational needs, we didn't even know what they were doing - all we knew is they were using AWS ECS to deploy their application. How could they be "true devops" if our operations team weren't even involved.
+Five years on from that conversation with my Australian friend, I was sat in another meeting at the same employer when a director level colleague leading the development of one of our products mentioned that his teams were "true devops". I remember being incredibly confused by this. They'd never spoken to us about their operational needs, we didn't even know what they were doing - all we knew is they were using AWS ECS to deploy their application. How could they be "true devops" if our operations team weren't even involved?
 
-As I started to have conversations with the developers on the team, I realised what he meant: his developers were handling the entire lifecycle of the application. They were using `boto3` and writing deployment scripts and applications to ship new releases. They were hiring "full stack engineers" who were versed in AWS as well as backend engineer tasks.
+As I started to have conversations with the developers on the team, I realised what he meant: his developers were handling the entire lifecycle of the application. They were using `boto3` and writing deployment scripts to ship new releases. They were hiring "full stack engineers" who were versed in AWS as well as backend engineer tasks.
 As an early adopter to the platform engineering mindset, I was sort of confused why this was going on. We were well on the way to building a [Netflix style paved road](https://www.infoq.com/news/2017/06/paved-paas-netflix/) and the entire reason for this was to make their lives easier, to remove all the pain of deploying and managing the deployment and infrastructure lifecycle. All they meant when they said they were "true devops" was that they were doing their own ops work. Why were they doing it this way?
 
 ## A turning point
 
-The conversation that followed would fundamentally change my entire world view with regards to DevOps but not until many years later, when I joined Pulumi. We were building our paved road with tried and tested tools that operations folks know and love, we had some GitLab CI, we had some Terraform, we were even starting to sprinkle some Kubernetes on the problem. It went a little bit like this:
+The conversation that followed would fundamentally change my entire world view with regards to DevOps but not until years later, when I joined [Pulumi](https://pulumi.com). We were building our paved road with tried and tested tools that operations folks today know and love, we had some GitLab CI, we had some Terraform, we were even starting to sprinkle some Kubernetes on the problem. It went a little bit like this:
 
 > Hey, you should try using our platform! We've fixed all of this stuff and it's way better than the stuff you've built
 
@@ -41,13 +41,15 @@ None of this was unique at this point. I had spent _years_ trying to bring the d
 
 Around 18 months later, I was moving on. Here I am 2 years after that saying how fundamentally wrong I was and that DevOps as we know it is an abject failure.
 
+Since joining [Pulumi](https://pulumi.com), I'm seeing the world through a different lense: the world of the developer. 
+
 ## It's only hubris if I fail
 
 Looking back at that time, it's obvious to me why this attempt to change the culture failed, but at the time I couldn't see it. Remembering the ideas from DevOps at its inception, the point was to remove the friction between developers and operations: have operations stop saying "no" and developers stop saying "yolo lets ship it". Those ideas and goals are still noble, and organisations should still aspire to them today, but what does the world of DevOps actually look like?
 
 Ultimately, my assessment of DevOps in 2022 is this:
 
-_DevOps is about people on the operations side of the fence trying to convince Developers to do things their way_
+**DevOps is about people on the operations side of the fence trying to convince Developers to do things their way**
 
 Almost all the tooling marketed as "DevOps tooling" is focused on operations. If you browse /r/devops you'll see post after post of people talking about operations and operational tooling. If you look at a DevOps engineer job description, it looks remarkably similar to a System Administrator role from 2013, but with some containers and cloud provider management instead of racking and stacking servers.
 
