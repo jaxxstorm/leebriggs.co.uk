@@ -75,7 +75,7 @@ SoftOps is the idea that we're going to build operational practices focused on m
 
 Gone will be the days of "download this tool, read this 48 page man page and tell your PM you're missing your sprint deadlines" and in addition to that, gone are the days of "just give it to me and I'll do it for you". 
 
-SoftOps is the idea that you'll but the developers first, as your primary customer. Building operational practices that speak to a developers world and needs should (in theory) bring developers to the table in order to work collaboratively. Maybe if we focus on that goal alone, we'll ultimately solve the issues DevOps tried to solve all the way back in 2009.
+SoftOps is the idea that you'll put the developers first, as your primary customer. Building operational practices that speak to a developers world should (in theory) bring developers to the table in order to work collaboratively. Maybe if we focus on that goal alone, we'll ultimately solve the issues DevOps tried to solve all the way back in 2009.
 
 Who's with me?
 
