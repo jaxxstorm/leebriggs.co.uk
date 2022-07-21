@@ -1,0 +1,9 @@
+{
+    "grammarly.selectors": [
+        {
+            "language": "markdown",
+            "scheme": "file",
+            "pattern": "_posts/2022-07-18-nobody-knows-what-declarative-is.md"
+        }
+    ]
+}
