@@ -33,7 +33,7 @@ If you didn't skip over the title, you probably already know what I'm talking ab
 
 When talking about infrastructure as code, you'll often hear the term "declarative" very early in the conversation. As I've said multiple times before, we as an industry have essentially settled on the idea that any infrastructure as code tool, to be worth your consideration, _must_ be declarative.
 
-What you often see in conversations about Terraform, [Pulumi](https://pulumi.com), and AWS CDK is the idea that Terraform is "better" than AWS CDK and Terraform because it's _declarative_ while Pulumi and CDK are imperative.
+What you often see in conversations about Terraform, [Pulumi](https://pulumi.com), and AWS CDK is the idea that Terraform is "better" than AWS CDK and [Pulumi](https://pulumi.com) because it's _declarative_ while Pulumi and CDK are imperative.
 
 This is completely fucking incorrect, but it happens all the goddamn time.
 
