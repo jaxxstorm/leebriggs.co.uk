@@ -9,7 +9,7 @@ tags:
 - imperative
 ---
 
-{% include note.html content="If you read the title and thought 'I know what declarative and imperative mean!' note that I'm employing hyperbole as a [comedic [device](https://en.wikipedia.org/wiki/Comedic_device) and lots of people know what declarative means" %}
+{% include note.html content="If you read the title and thought 'I know what declarative and imperative mean!' note that I'm employing hyperbole as a [comedic device](https://en.wikipedia.org/wiki/Comedic_device) and I'm aware lots of people know what the words mean" %}
 
 Like all tech employees, I've had feedback and performance reviews my whole career which varied from "you're doing a great job" to "Stop. Just stop doing that". I like to believe there are things I've addressed, and like all human beings there are things I'll continue to work on and never really get the hang of.
 
@@ -17,9 +17,9 @@ One piece of feedback I've had my entire career is that I "care too much". Now, 
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">I loved <a href="https://twitter.com/ConHome?ref_src=twsrc%5Etfw">@ConHome</a> question to Tory candidates about their greatest weakness. <a href="https://twitter.com/RishiSunak?ref_src=twsrc%5Etfw">@RishiSunak</a> is way too diligent, <a href="https://twitter.com/trussliz?ref_src=twsrc%5Etfw">@trussliz</a> is too enthusiastic, <a href="https://twitter.com/TomTugendhat?ref_src=twsrc%5Etfw">@TomTugendhat</a> is too loyal to the army, <a href="https://twitter.com/PennyMordaunt?ref_src=twsrc%5Etfw">@PennyMordaunt</a> is too much of a team player and <a href="https://twitter.com/KemiBadenoch?ref_src=twsrc%5Etfw">@KemiBadenoch</a> is way too funny. Such self knowledge!</p>&mdash; Robert Peston (@Peston) <a href="https://twitter.com/Peston/status/1547934205702615046?ref_src=twsrc%5Etfw">July 15, 2022</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
 
-What people _actually_ mean when they tell me I care too much is that I concern myself with things outside the scope of my day-to-day job. My job at Pulumi is to help customers and potential customers see the value in the product. As a result, I see a lot of naysayers and objections who truly believe that Pulumi is just flat-out wrong. A lot of this is just par for the course: not everyone is going to love your product and appreciate it. 
+What I believe people _actually_ mean when they tell me I care too much is that I concern myself with things outside the scope of my day-to-day job. My job at Pulumi is to help potential customers see the value in the product and existing customers be successful. As a result, I see a lot of naysayers and objectionists who truly believe that Pulumi is just _wrong_ in the same way pineapple on pizza is _wrong_. A lot of this is just par for the course: not everyone is going to love your product and appreciate it (altough, our customers overwhelmingly seem to!). 
 
-My job description does _not__ expect me to continuously argue with people on the internet about what words mean. To my detriment, I just cannot stop when it comes to one particular topic.
+My job description does _not_ expect me to continuously argue with people on the internet about what words mean. To my detriment, I just cannot stop when it comes to one particular topic.
 
 ![XKCD](https://imgs.xkcd.com/comics/duty_calls.png)
 
