@@ -187,7 +187,7 @@ const frontend = new k8s.core.v1.Service(appName, {
 
 Here, you can see we've defined a boolean condition `isMinikube` and then we're making decisions for how we construct the resources using a [ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator).
 
-There is no way for me to argue that this is an imperative operation because it is. If you're thinking; "here's that imperative word again with Pulumi" then let me tell you this:
+There is no way for me to argue that this _isn't_ an imperative operation because it is. If you're thinking; "here's that imperative word again with Pulumi" then let me tell you this:
 
 While the operation of checking the value of `isMinikube` is indeed imperative, the result is still declarative. What does this mean?
 
