@@ -69,7 +69,7 @@ Now, before you hold up your hand and say "you just said it uses an imperative l
 
 Before we examine how we got here, let's start with some basics: the definitions of imperative and declarative.
 
-Now, if you really want, you can go and read the wikipedia definition of [imperative](https://en.wikipedia.org/wiki/Imperative_programming) and [declarative](https://en.wikipedia.org/wiki/Declarative_programming). If you don't have time for that or don't want to get sucked into an impromptu game of the [Wikipedia Game](https://www.urbandictionary.com/define.php?term=Hitler%20Wikipedia%20Game) with yourself, I'll provide my own quick high-level definitions.
+Now, if you really want, you can go and read the wikipedia definition of [imperative](https://en.wikipedia.org/wiki/Imperative_programming) and [declarative](https://en.wikipedia.org/wiki/Declarative_programming). If you don't have time for that or don't want to get sucked into an impromptu session of the [Wikipedia Game](https://www.urbandictionary.com/define.php?term=Hitler%20Wikipedia%20Game) with yourself, I'll provide my own quick high-level definitions.
 
 At their core, imperative and declarative differ in one major and fundamental way. **Imperative has [control flow](https://en.wikipedia.org/wiki/Control_flow) and declarative does not.**
 
