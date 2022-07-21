@@ -189,7 +189,7 @@ Here, you can see we've defined a boolean condition `isMinikube` and then we're 
 
 There is no way for me to argue that this is an imperative operation because it is. If you're thinking; "here's that imperative word again with Pulumi" then let me tell you this:
 
-While the operation of checking the value if `isMinikube` is indeed imperative, the result is still declarative. What does this mean?
+While the operation of checking the value of `isMinikube` is indeed imperative, the result is still declarative. What does this mean?
 
 **Pulumi as a tool is declarative**. It's the language you're using to write things that's imperative, not Pulumi itself.
 
@@ -245,7 +245,7 @@ People using Terraform often still want to manipulate the graph the Terraform bu
 count = var.enabled ? 1 : length([some list of resources or datasources])
 ```
 
-_This is functionally the same as the ternary operator seen in the earlier Pulumi example_ except it's hard to read and understand.
+_This is functionally the same as the ternary operator seen in the earlier Pulumi example_ except it's hard to read and understand because it's not an if statement, it's a `count` statement.
 
 Terraform also has the `for_each` meta argument which again, allows you to manipulate the graph that is built to loop through results and create resources that can change depending on conditions from elsewhere.
 
