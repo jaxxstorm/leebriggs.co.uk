@@ -165,7 +165,7 @@ Idempotent just means that if you run the same thing over and over again you can
 
 The simple answer here seems to be: they aren't thinking of the tool, they're thinking of the language being used for the authoring experience.
 
-As I mentioned earlier, I believe the confusion lies solely in the authoring experience. Configuration languages make declarative states easy to grasp because you can't use conditionals in configuration languages without bolting on a templating language or making big changes to a DSL.
+Configuration languages make declarative states easy to grasp because you can't use conditionals in configuration languages without bolting on a templating language or making big changes to a DSL.
 
 With Pulumi and AWS CDK however, you can use conditionals to your heart's content because they use imperative languages as their primary authoring experience.
 
