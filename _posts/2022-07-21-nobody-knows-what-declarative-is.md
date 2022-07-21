@@ -137,7 +137,7 @@ They started to use a DAG, or a [directed acyclic graph](https://en.wikipedia.or
 
 ### Hold on poindexter, what the hell is a DAG?
 
-Well, I'll start by saying I'm not a mathematician (side note: I got my calculator out yesterday to add a 10% tip for dinner, not my proudest moment) but I do have a very general idea of what a DAG is.
+Well, I'll start by saying I'm not a mathematician (side note: I got my calculator out yesterday to add a 20% tip for dinner, not my proudest moment) but I do have a very general idea of what a DAG is.
 
 The simplest and best way to break down what constitues a "DAG" is to examine each word on its own. I'll shamelessly steal from [this StackOverflow answer](https://stackoverflow.com/a/2283770/645002) as it does a way better job of defining it than I ever could.
 
