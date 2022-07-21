@@ -17,13 +17,13 @@ One piece of feedback I've had my entire career is that I "care too much". Now, 
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">I loved <a href="https://twitter.com/ConHome?ref_src=twsrc%5Etfw">@ConHome</a> question to Tory candidates about their greatest weakness. <a href="https://twitter.com/RishiSunak?ref_src=twsrc%5Etfw">@RishiSunak</a> is way too diligent, <a href="https://twitter.com/trussliz?ref_src=twsrc%5Etfw">@trussliz</a> is too enthusiastic, <a href="https://twitter.com/TomTugendhat?ref_src=twsrc%5Etfw">@TomTugendhat</a> is too loyal to the army, <a href="https://twitter.com/PennyMordaunt?ref_src=twsrc%5Etfw">@PennyMordaunt</a> is too much of a team player and <a href="https://twitter.com/KemiBadenoch?ref_src=twsrc%5Etfw">@KemiBadenoch</a> is way too funny. Such self knowledge!</p>&mdash; Robert Peston (@Peston) <a href="https://twitter.com/Peston/status/1547934205702615046?ref_src=twsrc%5Etfw">July 15, 2022</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
 
-What I believe people _actually_ mean when they tell me I care too much is that I concern myself with things outside the scope of my day-to-day job. My job at Pulumi is to help potential customers see the value in the product and existing customers be successful. As a result, I see a lot of naysayers and objectionists who truly believe that Pulumi is just _wrong_ in the same way pineapple on pizza is _wrong_. A lot of this is just par for the course: not everyone is going to love your product and appreciate it (altough, our customers overwhelmingly seem to!). 
+What I believe people _actually_ mean when they tell me I care too much is that I concern myself with things outside the scope of my day-to-day job. My job at Pulumi is to help potential customers see the value in the product and existing customers be successful. As a result, I see a lot of naysayers and objectionists who truly believe that [Pulumi](https://pulumi.com) is just _wrong_ in the same way pineapple on pizza is _wrong_. A lot of this is just par for the course: not everyone is going to love your product and appreciate it (altough, our customers overwhelmingly seem to!). 
 
 My job description does _not_ expect me to continuously argue with people on the internet about what words mean. To my detriment, I just cannot stop when it comes to one particular topic.
 
 ![XKCD](https://imgs.xkcd.com/comics/duty_calls.png)
 
-The problem is, while it's not important to my job, I find myself consistently arguing with people about it because it's just completely wrong. Not only are people consistently wrong about it, but when challenged they will often double-down, instead of even _considering_ the idea they're not correct. It wouldn't usually matter, but like all inaccuracies in this post-truth world, the idea then spreads and becomes a misconception that leads to [FUD](https://en.wikipedia.org/wiki/Fear,_uncertainty,_and_doubt) when I'm having conversations with customers about Pulumi, at which point I sigh and have the same conversation _again_.
+The problem is, while it's not important to my job, I find myself consistently arguing with people about it because it's just completely wrong. Not only are people consistently wrong about it, but when challenged they will often double-down, instead of even _considering_ the idea they're not correct. It wouldn't usually matter, but like all inaccuracies in this post-truth world, the idea then spreads and becomes a misconception that leads to [FUD](https://en.wikipedia.org/wiki/Fear,_uncertainty,_and_doubt) when I'm having conversations with customers about [Pulumi](https://pulumi.com), at which point I sigh and have the same conversation _again_.
 
 If you didn't skip over the title, you probably already know what I'm talking about, but the topic at hand is:
 
@@ -33,7 +33,7 @@ If you didn't skip over the title, you probably already know what I'm talking ab
 
 When talking about infrastructure as code, you'll often hear the term "declarative" very early in the conversation. As I've said multiple times before, we as an industry have essentially settled on the idea that any infrastructure as code tool, to be worth your consideration, _must_ be declarative.
 
-What you often see in conversations about Terraform, Pulumi, and AWS CDK is the idea that Terraform is "better" than AWS CDK and Terraform because it's _declarative_ while Pulumi and CDK are imperative.
+What you often see in conversations about Terraform, [Pulumi](https://pulumi.com), and AWS CDK is the idea that Terraform is "better" than AWS CDK and Terraform because it's _declarative_ while Pulumi and CDK are imperative.
 
 This is completely fucking incorrect, but it happens all the goddamn time.
 
@@ -41,7 +41,7 @@ This is completely fucking incorrect, but it happens all the goddamn time.
 
 Oh no. You're wrong. It happens _constantly_.
 
-It happens on Twitter (feel free to search for the words"pulumi" and "imperative" together for more like this):
+It happens on Twitter (feel free to search for the words "pulumi" and "imperative" together for more like this):
 
 ![Twitter](/img/declarative-twitter.png)
 
@@ -59,7 +59,7 @@ You can even see it on blog posts by engineers with professional certificates at
 
 There are even YouTube videos with thousands of views saying the same thing.
 
-I want to start by stating that I _understand_ why people make this mistake. I get it. It doesn't make the situation any less frustrating. You might be thinking at this point "you're emotionally invested in this, you work at Pulumi" and in many ways you're right, but the same incorrectness is thrown at AWS CDK, Terraform CDK - anything that uses an imperative language for its authoring experience.
+I want to start by stating that I _understand_ why people make this mistake. I get it. It doesn't make the situation any less frustrating. You might be thinking at this point "you're emotionally invested in this, you work at [Pulumi](https://pulumi.com)" and in many ways you're right, but the same incorrectness is thrown at AWS CDK, Terraform CDK - anything that uses an imperative language for its authoring experience.
 
 Now, before you hold up your hand and say "you just said it uses an imperative language for its authoring experience, you're arguing against yourself now!" let's examine the situation before you ride off on your high horse.
 
@@ -67,9 +67,9 @@ Now, before you hold up your hand and say "you just said it uses an imperative l
 
 ## “We demand rigidly defined areas of doubt and uncertainty!” 
 
-Before we examine how we got here, let's start with some basics. The definitions of imperative and declarative.
+Before we examine how we got here, let's start with some basics: the definitions of imperative and declarative.
 
-Now, if you really want, you can go and read the definition of [imperative](https://en.wikipedia.org/wiki/Imperative_programming) and [declarative](https://en.wikipedia.org/wiki/Declarative_programming). If you don't have time for that or don't want to get sucked into an impromptu game of the [Wikipedia Game](https://www.urbandictionary.com/define.php?term=Hitler%20Wikipedia%20Game) with yourself, I'll provide my own quick high-level definitions.
+Now, if you really want, you can go and read the wikipedia definition of [imperative](https://en.wikipedia.org/wiki/Imperative_programming) and [declarative](https://en.wikipedia.org/wiki/Declarative_programming). If you don't have time for that or don't want to get sucked into an impromptu game of the [Wikipedia Game](https://www.urbandictionary.com/define.php?term=Hitler%20Wikipedia%20Game) with yourself, I'll provide my own quick high-level definitions.
 
 At their core, imperative and declarative differ in one major and fundamental way. **Imperative has [control flow](https://en.wikipedia.org/wiki/Control_flow) and declarative does not.**
 
@@ -145,13 +145,13 @@ The simplest and best way to break down what constitues a "DAG" is to examine ea
   - directed = the connections between the nodes (edges) have a direction: A -> B is not the same as B -> A 
   - acyclic = "non-circular" = moving from node to node by following the edges, you will never encounter the same node for the second time.
 
-If you put this into the concept of infrastructure as code tool whether that be in Terraform, Pulumi, CloudFormation, CDK, or any other declarative tool you can think of it like this; each of the "resources" you're defining in the program is a node. Any dependencies between those nodes (for example, the S3 Bucket Policy requires the S3 Bucket to exist) are _directed_ and finally, you cannot create a circular dependency because the tool will yell at you.
+If you put this into the concept of infrastructure as code tool whether that be in Terraform, [Pulumi](https://pulumi.com), CloudFormation, CDK, or any other declarative tool you can think of it like this; each of the "resources" you're defining in the program is a node. Any dependencies between those nodes (for example, the S3 Bucket Policy requires the S3 Bucket to exist) are _directed_ and finally, you cannot create a circular dependency because the tool will yell at you.
 
 To drill down just a little bit, if you imagine an infrastructure as code program that defines an S3 bucket and an S3 bucket policy. The bucket policy cannot be created until the S3 bucket itself exists, otherwise, where would you attach the policy? That's a directed edge, we're saying S3 Bucket -> S3 Bucket Policy.
 
-Terraform makes this very very easy to understand because of its configuration language authoring experience, but Pulumi, AWS CDK, and other infrastructure as code programs do **exactly the same thing**.
+Terraform makes this very very easy to understand because of its configuration language authoring experience, but [Pulumi](https://pulumi.com), AWS CDK, and other infrastructure as code programs do **exactly the same thing**.
 
-Not only do Pulumi and Terraform build a graph for you, but they also allow you to _examine_ the graph that's built! Pulumi has the `pulumi stack graph` command and Terraform has the `terraform graph` command.
+Not only do [Pulumi](https://pulumi.com) and Terraform build a graph for you, but they also allow you to _examine_ the graph that's built! [Pulumi](https://pulumi.com) has the `pulumi stack graph` command and Terraform has the `terraform graph` command.
 
 This graph is built when you've authored your Terraform or Pulumi program and is then executed by the respective tool's engines that idempotently walk that graph on each tool instantiation.
 
@@ -162,6 +162,8 @@ Idempotent is another key part of any infrastructure as code tool that originate
 Idempotent just means that if you run the same thing over and over again you can expect to get the same results. Every infrastructure as code tool (unless I've missed one) is declarative and idempotent. Configuration management tools are generally idempotent, but not necessarily declarative. I'll come back to that in a few moments
 
 ## I think I get it. Why do people think Pulumi and CDK are imperative then?
+
+The simple answer here seems to be: they aren't thinking of the tool, they're thinking of the language being used for the authoring experience.
 
 As I mentioned earlier, I believe the confusion lies solely in the authoring experience. Configuration languages make declarative states easy to grasp because you can't use conditionals in configuration languages without bolting on a templating language or making big changes to a DSL.
 
@@ -187,7 +189,9 @@ Here, you can see we've defined a boolean condition `isMinikube` and then we're 
 
 There is no way for me to argue that this is an imperative operation because it is. If you're thinking; "here's that imperative word again with Pulumi" then let me tell you this:
 
-While the operation of checking the value if `isMinikube` is indeed imperative, the result is still declarative. 
+While the operation of checking the value if `isMinikube` is indeed imperative, the result is still declarative. What does this mean?
+
+**Pulumi as a tool is declarative**. It's the language you're using to write things that's imperative, not Pulumi itself.
 
 ## An imperative graph
 
