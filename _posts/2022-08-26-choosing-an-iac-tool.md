@@ -293,7 +293,7 @@ People who are deeply invested in the Kubernetes ecosystem love Crossplane. I ju
 
 ### Cloud Provider Experience
 
-The [crossplane marketplace](https://marketplace.upbound.io) as providers for the major clouds, but the landscape is relatively scarce. You won't find support for popular clouds like [Digital Ocean](https://www.digitalocean.com/) even though there is [contributor based support](https://github.com/crossplane-contrib/provider-digitalocean
+The [crossplane marketplace](https://marketplace.upbound.io) has providers for the major clouds, but the landscape is relatively scarce. You won't find support for popular clouds like [Digital Ocean](https://www.digitalocean.com/) in the marketplace even though there is [contributor based support](https://github.com/crossplane-contrib/provider-digitalocean)
 
 Crossplane supports bridging Terraform providers from its [Terrajet](https://github.com/crossplane/terrajet) tool, but it's in its infancy.
 
