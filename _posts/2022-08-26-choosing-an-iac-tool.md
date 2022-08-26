@@ -12,11 +12,11 @@ tags:
 - arm
 ---
 
-{% include note.html content="I am a [Pulumi](https://pulumi.com) employee which means I have an agenda when writing this post. That said, my intent here is to accurately describe the state of the infrastructure as code market, so will endeavour to be objective with my opinions." %}
+{% include note.html content="I am a [Pulumi](https://pulumi.com) employee which means I have an agenda when writing this post. That said, my intent here is to accurately describe the state of the Infrastructure as Code market, so will endeavour to be objective with my opinions." %}
 
 # This is long. What's the TL;DR?
 
-I made a decision tree to help you decide what IaC tool you should use
+I made a decision tree to help you decide what Infrastructure as Code tool you should use
 
 ![Decision Tree](/img/iac-selector.png)
 
@@ -24,9 +24,9 @@ But you need to read the whole thing to use it properly. Stop being lazy.
 
 # Infrastructure as Code Comparisons
 
-As a person with more than a vested interest in the infrastructure as code market, I see a whole lot of conversations in the public sphere about choosing an infrastructure as code tool. I'll often see people having discussions about their favourite tool on Twitter, Reddit or `<insert other online platform here>` and undoubtedly come across a lot of strong opinions.
+As a person with more than a vested interest in the Infrastructure as Code market, I see a whole lot of conversations in the public sphere about choosing solution. I'll often see people having discussions about their favourite tool on Twitter, Reddit or `<insert other online platform here>` and undoubtedly come across a lot of strong opinions.
 
-I have strong opinions myself. They're so strong I joined an infrastructure as code startup because I believed in the product. Hell, I sell the damn thing to people. As a result, I have to be hyper focused on the way our product and our competitor's products change, and need to be able to speak to the value of them in order to try and understand what's going through a user's mind.
+I have strong opinions myself. They're so strong I joined an Infrastructure as Code startup because I believed in the product. Hell, I sell the damn thing to people. As a result, I have to be hyper focused on the way our product and our competitor's products change, and need to be able to speak to the value of them in order to try and understand what's going through a user's mind.
 
 A common pattern I've seen as the industry has evolved and new competitors have joined the growing market is the habit of creating an article that compares _features_ of the tools. These often look like this:
 
@@ -55,13 +55,13 @@ The **authoring experience** is defined as what mechanisms you have at your disp
 
 A domain specific language is what it sounds like: a language defined specifically for that domain. 
 
-DSLs often have a shallow learning curve, and are built specifically for that purpose meaning they are often well suited to the purpose. They are often not [turing complete](https://en.wikipedia.org/wiki/Turing_completeness) on their own and have a "ceiling" in terms of how expressive they are.
+DSLs often have a shallow learning curve, and are built specifically for that purpose meaning they are often well suited to the purpose. They are often not [Turing complete](https://en.wikipedia.org/wiki/Turing_completeness) on their own and have a "ceiling" in terms of how expressive they are.
 
-Some people will argue that DSLs are favourable for Infrastructure as Code because they revent you from creating complexity because of that limited expressiveness. Those people are wrong, because ultimately badly written DSL code is just as complex and hard to refactor and understand as badly written code in a general purpose language, but I've found people are very very willing to die on that hill.
+Some people will argue that DSLs are favourable for Infrastructure as Code because they prevent you from creating complexity because of that limited expressiveness. Those people are wrong, because ultimately badly written DSL code is just as complex and hard to refactor and understand as badly written code in a general purpose language, but I've found people are very very willing to die on that hill.
 
 ### Programming Languages
 
-Programming languages are the language you know and love from application development or scripting. Python, TypeScript, Go, Java and many more are options in the Infrastructure as Code space, and they all bring their own toolchains, syntax and idiosyncrosies.
+Programming languages are the language(s) you know and love from application development or scripting. Python, TypeScript, Go, Java and many more are options in the Infrastructure as Code space, and they all bring their own toolchains, syntax and idiosyncrasies.
 
 Programming languages are flexible, well understood in the industry (we build applications with them!), well supported by development tools and processes and have large ever growing communities behind them. You'll often find that if you're using an IDE in general development, your IDE gives you a lot of extra support and functionality beyond scribbling your infrastructure into a word document and hoping you didn't make any mistakes.
 
@@ -100,7 +100,7 @@ People will often argue that introducing state storage adds complexity and manag
 
 The server side experience is the practice of handing off the execution to your cloud provider. You dispatch your authored IaC off to the cloud providers service, and it takes care of building a graph for you and managing how it runs.
 
-THis removes the need for state storage, but also completely removes your ability to manipulate the workflow and how it executes. You have zero control over prioritization, you can't speed it up (or slow it down, if necessary) and you have very little control over the feedback loop for your developers. 
+This removes the need for state storage, but also completely removes your ability to manipulate the workflow and how it executes. You have zero control over prioritization, you can't speed it up (or slow it down, if necessary) and you have very little control over the feedback loop for your developers. 
 
 ### The Unique Experience
 
@@ -112,7 +112,7 @@ The final experience I'll define is the **cloud provider experience**. This is a
 
 ### Multi Cloud Support
 
-Multi cloud support - The tool allows you to interact with multiple cloud providers and often pass values from one cloud provider to another. If you define a load balancer in AWS, you can pass the resulting CNAME from that to Cloudflare, for example.
+Multi cloud support - The tool allows you to interact with multiple cloud providers and often pass values from one cloud provider to another. If you define a load balancer in AWS, you can pass the resulting address from that to Cloudflare, for example.
 
 Tools that support multiple clouds can often have differing levels of support for the varying APIs that are added. Cloud providers are continuously adding new features, and it's often up to the Infrastructure as Code tool, or their respective community to add those features.
 
@@ -120,7 +120,7 @@ Tools that support multiple clouds can often have differing levels of support fo
 
 With single cloud support, the tool only gives a shit about the cloud that provides it. Advocates of CloudFormation will often exclaim that you can extend the single cloud tools out to other clouds, but in practice nobody does that because it's a ridiculous maintenance burden nobody wants to undertake.
 
-What's alluring tools that focus on a single cloud is that new features are often available very quickly for that tool. Is AWS adds a brand new tool called AWS System Manager for Management of Systems in Management, it will (often) add support for it on launch day. This isn't always the case for multi cloud tools.
+What's alluring about the tools that focus on a single cloud is that new features are often available very quickly for that tool. Is AWS adds a brand new tool called AWS System Manager for Management of Systems in Management, it will (often) add support for it on launch day. This isn't always the case for multi cloud tools.
 
 Personally, I can't ever see why I'd use a single cloud tool, not because I'd advocate for a multi cloud strategy for compute, but mainly because I want the choice to choose another DNS provider or monitoring tool, and I want to be able to manage it with Infrastructure as Code. Ultimately though, you do you.
 
@@ -473,7 +473,7 @@ The final unique element to Pulumi's configuration language based experience is 
 
 ### Execution Experience
 
-The Pulumi execution experience is client side, meaning you have to provide  credentials to the Pulumi CLI and provider in order for it to create resources. You author your Pulumi programn, then run the Pulumi CLI to let the cloud provider know about it.
+The Pulumi execution experience is client side, meaning you have to provide  credentials to the Pulumi CLI and provider in order for it to create resources. You author your Pulumi program, then run the Pulumi CLI to let the cloud provider know about it.
 
 ```bash
 Do you want to perform this update? yes
