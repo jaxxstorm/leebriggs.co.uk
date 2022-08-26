@@ -120,9 +120,9 @@ Tools that support multiple clouds can often have differing levels of support fo
 
 With single cloud support, the tool only gives a shit about the cloud that provides it. Advocates of CloudFormation will often exclaim that you can extend the single cloud tools out to other clouds, but in practice nobody does that because it's a ridiculous maintenance burden nobody wants to undertake.
 
-What's alluring about the tools that focus on a single cloud is that new features are often available very quickly for that tool. Is AWS adds a brand new tool called AWS System Manager for Management of Systems in Management, it will (often) add support for it on launch day. This isn't always the case for multi cloud tools.
+What's alluring about the tools that focus on a single cloud is that new features are often available very quickly for that tool. If AWS adds a brand new tool called AWS System Manager for Management of Systems in Management, it will (often) add support for it on launch day. This isn't always the case for multi cloud tools.
 
-Personally, I can't ever see why I'd use a single cloud tool, not because I'd advocate for a multi cloud strategy for compute, but mainly because I want the choice to choose another DNS provider or monitoring tool, and I want to be able to manage it with Infrastructure as Code. Ultimately though, you do you.
+Personally, I can't ever see why I'd use a single cloud tool, not because I'd advocate for a multi cloud strategy for compute, but mainly because I want the choice to choose another DNS provider or monitoring tool. I want to be able to manage everything from my cloud provider, to my version control repositories with Infrastructure as Code. Ultimately though, you do you.
 
 # The Choices
 
