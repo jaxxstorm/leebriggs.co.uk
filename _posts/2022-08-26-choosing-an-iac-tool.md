@@ -466,7 +466,7 @@ outputs:
 
 You can use generators like [CUE](https://cuelang.org) for this as well (and you can also get a little bit wild with it, as I've posted before).
 
-Uniquely, Pulumi has support for improving the IDE experience via a [language server plugin](https://github.com/pulumi/pulumi-lsp), which is usually reserved for DSLs. This means you can get all the benefits of the shallower learning curve but some of the benefits of the DSL or programming language based authoring experiences.
+Uniquely, Pulumi has support for improving the IDE experience for its configuration language authoring model via a [language server plugin](https://github.com/pulumi/pulumi-lsp), which is usually reserved for DSLs or programming languages. This means you can get all the benefits of the shallower learning curve but some of the benefits of the DSL or programming language based authoring experiences.
 
 The final unique element to Pulumi's configuration language based experience is that it allows you to "eject" to a programming language based experience once you've gotten tired of it. You can simply run `pulumi convert --language` and the Pulumi YAML program will be converted to the language of your choice, bringing you all the benefits like increased flexibility.
 
