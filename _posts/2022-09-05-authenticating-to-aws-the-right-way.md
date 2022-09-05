@@ -62,6 +62,8 @@ Yes, that's right. You'll have AWS credentials you have to _constantly renew_ in
 
 # Back to Authentication
 
+I started off making the point that AWS makes the _right_ thing hard to do, and in the case of temporary credentials, the difficult comes in know what the hell is the right thing to do. AWS makes it really fucking easy to generate long standing AWS credentials, in a lot of ways, the _default_ for AWS is to use AWS IAM Users. It doesn't tell you about all the alternatives to IAM users, when to use them and how to implement them at all.
+
 While it may or may not be clear to you that temporary credentials provide a huge security benefit, what may not be clear at this stage is how the hell you actually generate them.
 
 The answer to that largely depends on your current use case. Generating temporary credentials is different depending on if you're a human, machine or application. So now I've spent the better part of this post explaining things you probably don't care about like an online recipe that makes you scroll for 10 minutes, lets actually talk about the different strategies for authenticating to AWS.
