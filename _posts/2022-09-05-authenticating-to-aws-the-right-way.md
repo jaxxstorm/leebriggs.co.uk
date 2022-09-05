@@ -18,7 +18,7 @@ Before I go off into a rant about why AWS authentication is broken by default, I
 
 Authentication is the mechanism by which you tell a service _who you are_. The most common form of authentication is a username and password, but there are many other ways of providing authentication like [AWS access keys and secret keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). You send your credentials over to a service and it verifies that those credential are correct. As an aside here, one of the biggest problems with the internet is that credentials are designed to verify who you are but don't actually verify the person owning the credentials is the person who's supposed to. [Multi-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication) is designed to help with this, but there's still lots of room for improvement.
 
-Authorization is the way the service knows _what you're allowed to do_. An AWS IAM is a document that allows you to dictate that once someone or something has authenticated to AWS, this is the actions they're allowed to perform.
+Authorization is the way the service knows _what you're allowed to do_. An AWS IAM policy is a document that give you the ability to dictate that once someone or something has authenticated to AWS, this is the actions they're allowed to perform.
 
 I have a lot of time for AWS authorization via IAM policies because they're extremely verbose and operate on a whitelisting basis, meaning by default you can't really do anything at all.
 
@@ -46,7 +46,7 @@ Well the answer is that it could cost you a lot of your money or your companies 
 
 ![Hacked AWS Accounts](/img/aws-reddit-hacked.png)
 
-If you head into Reddit's cesspit for a second and read one of those threads, you'll see the advice to "make sure you have MFA turned on!" which is very good advice. The problem is, AWS access keys and secret keys don't _need_ MFA to be effective. If you some has your keys, they can do a whole bunch of stuff, including change your password to lock you out. That's not good, is it?
+If you head into Reddit's cesspit for a second and read one of those threads, you'll see the advice to "make sure you have MFA turned on!" which is very good advice. The problem is, AWS access keys and secret keys don't _need_ MFA to be effective. If someone has your keys, they can do a whole bunch of stuff, including change your password to lock you out. That's not good, is it?
 
 # Temporary Credentials to the rescue
 
