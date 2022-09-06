@@ -16,7 +16,7 @@ It largely does a good job of providing these building blocks, but where it real
 
 Before I go off into a rant about why AWS authentication is broken by default, I'd like to talk about where [AWS Identity and Access Manager's](https://aws.amazon.com/iam/) responsibilities lie. The same service, _IAM_, is largely responsible for both authentication and authorization within AWS. Let's define those before we explain IAM's role.
 
-Authentication is the mechanism by which you tell a service _who you are_. The most common form of authentication is a username and password, but there are many other ways of providing authentication like [AWS access keys and secret keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). You send your credentials over to a service and it verifies that those credential are correct. As an aside here, one of the biggest problems with the internet is that credentials are designed to verify who you are but don't actually verify the person owning the credentials is the person who's supposed to. [Multi-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication) is designed to help with this, but there's still lots of room for improvement.
+Authentication is the mechanism by which you tell a service _who you are_. The most common form of authentication is a username and password, but there are many other ways of providing authentication like [AWS access keys and secret keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). You send your credentials over to a service and it verifies those credentials are correct. As an aside here, one of the biggest problems with the internet is that credentials are designed to verify who you are but don't actually verify the person owning the credentials is the person who's supposed to. [Multi-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication) is designed to help with this, but there's still lots of room for improvement.
 
 Authorization is the way the service knows _what you're allowed to do_. An AWS IAM policy is a document that give you the ability to dictate that once someone or something has authenticated to AWS, this is the actions they're allowed to perform.
 
@@ -54,7 +54,7 @@ The obvious solution to this is to just not use AWS Access Keys or Secret Keys, 
 
 ## Session Tokens
 
-AWS can provide you with an AWS Access Key and an AWS secret key via [AWS STS](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), its security token service. Credentials generated via STS are very similar to the tokens you see in the AWS IAM User interface, but they also some with an AWS Session Token which has requires you to specify _duration_. Once that duration has expired, the issued credentials become inactive and can't be used, so you now need to generate some more.
+AWS can provide you with an AWS Access Key and an AWS secret key via [AWS STS](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), its security token service. Credentials generated via STS are very similar to the tokens you see in the AWS IAM User interface, but they also come with an AWS Session Token which requires you to specify _duration_. Once that duration has expired, the issued credentials become inactive and can't be used, so you now need to generate some more.
 
 ## Hang on...
 
@@ -62,7 +62,7 @@ Yes, that's right. You'll have AWS credentials you have to _constantly renew_ in
 
 # Back to Authentication
 
-I started off making the point that AWS makes the _right_ thing hard to do, and in the case of temporary credentials, the difficult comes in know what the hell is the right thing to do. AWS makes it really fucking easy to generate long standing AWS credentials, in a lot of ways, the _default_ for AWS is to use AWS IAM Users. It doesn't tell you about all the alternatives to IAM users, when to use them and how to implement them at all.
+I started off making the point that AWS makes the _right_ thing hard to do, and in the case of temporary credentials, the difficulty comes in knowing what the hell is the right thing to do. AWS makes it really fucking easy to generate long standing AWS credentials, in a lot of ways, the _default_ for AWS is to use AWS IAM Users. It doesn't tell you about all the alternatives to IAM users, when to use them and how to implement them at all.
 
 While it may or may not be clear to you that temporary credentials provide a huge security benefit, what may not be clear at this stage is how the hell you actually generate them.
 
@@ -74,7 +74,7 @@ From here, we're going to detail the scenarios in the form of user stories, beca
 
 ## Authenticate to AWS as a Human User
 
-As a human user, the temptation is there to generate AWS keys via the IAM user interface. That's wrong. You should be using [AWS IAM Identity Center](https://aws.amazon.com/iam/identity-center/) aka (the artist formerly known as AWS SSO).
+As a human user, the temptation is there to generate AWS keys via the IAM user interface. That's wrong. You should be using [AWS IAM Identity Center](https://aws.amazon.com/iam/identity-center/) aka the artist formerly known as AWS SSO.
 
 AWS SSO allows you to either use AWS as an identity provider, or hook in your own identity provider like [Okta](https://www.okta.com/), [Auth0](https://auth0.com/) or even [Google](https://support.google.com/a/answer/60224). Any service that provides services as an [Identity Provider](https://en.wikipedia.org/wiki/Identity_provider) (or IdP) can be hooked into AWS IAM Identity Center.
 
