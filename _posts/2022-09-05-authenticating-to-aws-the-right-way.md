@@ -92,7 +92,7 @@ region = us-west-2
 output = json
 ```
 
-Once you run `aws sso login` for that profile, the AWS CLI will walk you through the authentication flow, very who you are and then issue temporary credentials for you!
+Once you run `aws sso login` for that profile, the AWS CLI will walk you through the authentication flow, verify who you are and then issue temporary credentials for you!
 
 These temporary credentials get stored inside `~/.aws/sso/cache` and will expire within a duration you specify at the AWS IAM Identity Center level. Generally you will have to reauthenticate once a day via `aws sso login`, but that's good because it means if anyone steals your temporary credentials, they will automatically expire after a certain time period. 
 
