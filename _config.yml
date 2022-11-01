@@ -13,7 +13,7 @@ author:
   twitter: briggsl
   homepage: https://leebriggs.co.uk
 g_track_id: UA-34865189-1
-disqus_name: leebriggs
+# disqus_name: leebriggs
 markdown: kramdown
 compress_html:
   clippings: all
