@@ -139,6 +139,10 @@ Every IaC tool has a different way of managing this. In Pulumi you can create a 
 
 A good consideration for for when to start encapsulating resources is to think about your organisational structure and and application architecture. If you're only one team deploying a single application, you might not need to go down the path of encapsulating anything, but if you're a platform team that's likely to support dozens of teams to deploy to a shared layer 5 compute resource, creating a Pulumi package that encapsulates the best practices for deploying your application or creating a package for a best practice object storage bucket which has the required permissions is going to save the teams you're supporting a _lot_ of time.
 
+These encapsulations should be in their own, _distinct_ repository. You'll want to version these encapsulations in the same way you version and release your applications - follow semver and make sure you create an API that your downstream users can use.
+
+As your downstream users start to depend on these encapsulations, you can introduce concepts like [unit testing](https://www.pulumi.com/docs/using-pulumi/testing/unit/) to make sure you [don't break userspace](https://lkml.org/lkml/2012/12/23/75) with your infrastructure.
+
 # Putting it together
 
 An example is worth a thousand words, so let's take a look at a hypothetical control repo and application repo.
@@ -241,6 +245,10 @@ Once we get to our application repo, it's a lot harder to be prescriptive, but l
 ```
 
 Hopefully this is fairly self explanatory, you've got your application and mechanisms for local development with a `Dockerfile` and `Makefile`, and we can put our Pulumi code in a `deploy/` directory.
+
+## Encapsulation Repo
+
+Finally, let's take a look at an example encapsulation repo. These repos can be quite complex, so as an example, take a look at this Pulumi package which encapsulates some level compute [here](https://github.com/lbrlabs/pulumi-lbrlabs-eks).
 
 # Conclusion
 
