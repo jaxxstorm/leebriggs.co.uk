@@ -109,6 +109,8 @@ You might choose not to use IaC for application at all, but if you do..
 
 ## Visualization
 
+If you're a visual learner like me, you might find this visualization helpful:
+
 | Layer | Name | Example Resources |
 |-------|--------|---------|
 | 0 | Billing | AWS Organization/Azure Account/Google Cloud Account |
