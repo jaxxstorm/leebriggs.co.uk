@@ -138,7 +138,7 @@ As with all principals in life, there are situations where principal 1 doesn't b
 
 There are resources within the above layers where you might think "ah! this is a network resources so I'll put it in my network project" but the _lifecycle_ of the resource doesn't necessarily fit as a shared resource. A great example of this is an AWS security group.
 
-Security groups are generally specific to another resource - perhaps an application you're deploying, a loadbalancer that's shared or maybe a database in the database tier. With these resources, it's generally best to consider the overall lifecycle of the dependent resources when deciding where to put it.
+Security groups are generally specific to another resource - perhaps an application you're deploying, a loadbalancer that's shared or maybe a database in the data layer. With these resources, it's generally best to consider the overall lifecycle of the dependent resources when deciding where to put it.
 
 My rule of thumb here is this - if I wanted to provision this resource in a different environment, or better yet, destroy it - what other resources do I want to destroy at the same time?
 
