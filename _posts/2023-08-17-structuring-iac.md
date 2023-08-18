@@ -9,7 +9,7 @@ tags:
 - pulumi
 ---
 
-If you're thinking of migrating to another infrastructure as code tool (and why would you, everything is _great_ in the IaC world now, right?!) you might find yourself asking yourself a fundamental question when you get started: how do I lay things out so I can be most effective?
+If you're thinking of migrating to another infrastructure as code tool (and why would you, everything is _great_ in the IaC world now, right?!) you might find yourself asking yourself a fundamental question when you get started: how do I structure things in a way that scales well and stands the test of time?
 
 There's no canonical answer. Everyone does things slightly different, and different tools have different ideas on the best way.
 
@@ -17,9 +17,11 @@ In my day to day role as a Solutions Engineer at [Pulumi](https://pulumi.com) I 
 
 This blog post is designed to detail my high(ish) level thoughts on the concepts and principals I like to use, and why. As we explore these concepts, I'll talk about some of the lessons I learned from my time in configuration management and the myriad IaC tools I've used before today.
 
+A lot of the concepts in this post are focused on [Pulumi](https://pulumi.com), but lots are broadly applicable to other tools.
+
 # Layers
 
-I'm sure my system administrator past is showing, but I like to think about infrastructure through the concept of _layers_ similar to the [OSI Model](https://en.wikipedia.org/wiki/OSI_model). Most of the layers I'll outline here closely mirror the OSI model, but what you'll likely want to do before you create your Git repo or write a single line of code, is group your cloud infrastructure into layers. The reason why will become apparent later.
+I'm sure my system administrator background is showing, but I like to think about infrastructure through the concept of _layers_ similar to the [OSI Model](https://en.wikipedia.org/wiki/OSI_model). Most of the layers I'll outline here closely mirror the OSI model, but what you'll likely want to do before you create your Git repo or write a single line of code, is group your cloud infrastructure into layers. The reason why will become apparent later.
 
 ## Layer 0: Billing
 
@@ -142,6 +144,54 @@ A good consideration for for when to start encapsulating resources is to think a
 These encapsulations should be in their own, _distinct_ repository. You'll want to version these encapsulations in the same way you version and release your applications - follow semver and make sure you create an API that your downstream users can use.
 
 As your downstream users start to depend on these encapsulations, you can introduce concepts like [unit testing](https://www.pulumi.com/docs/using-pulumi/testing/unit/) to make sure you [don't break userspace](https://lkml.org/lkml/2012/12/23/75) with your infrastructure.
+
+### Pitfalls
+
+A common mistake I see at the encapsulation layer when adopting Pulumi is trying to avoid object orientated principles and using a what I like to call the "function based approach".
+
+As an example of this, you might try and encapsulate some resources into a function. In TypeScript it'd look like this:
+
+```typescript
+export function createBucket(name: string) {
+    return new aws.s3.Bucket(name);
+}
+```
+
+and in Python like so:
+
+```python
+def create_bucket(name: str) -> aws.s3.Bucket:
+    return aws.s3.Bucket(name)
+```
+
+The problem with this implementation of an abstraction is that it creates a nested mechanism that is difficult to manage successfully.
+
+If you use a component, you get you get an abstraction mechanism that is much more native to the the way the language works. In TypeScript, it looks like this:
+
+```typescript
+export class Bucket extends pulumi.ComponentResource {
+    public readonly bucket: aws.s3.Bucket;
+
+    constructor(name: string, args: BucketArgs, opts?: pulumi.ComponentResourceOptions) {
+        super("lbrlabs:index:Bucket", name, {}, opts);
+
+        this.bucket = new aws.s3.Bucket(name, args, { parent: this });
+    }
+}
+```
+
+and in Python:
+
+```python
+class Bucket(pulumi.ComponentResource):
+    def __init__(self, name: str, args: BucketArgs, opts: Optional[pulumi.ResourceOptions] = None):
+        super().__init__("lbrlabs:index:Bucket", name, {}, opts)
+
+        self.bucket = aws.s3.Bucket(name, args, parent=self)
+
+```
+
+While the instantiation of the resource is more complex, the manageability of this over time is exponentially easier. Trust me, I've untangled this mess before.
 
 # Putting it together
 
