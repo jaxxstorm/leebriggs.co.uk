@@ -130,7 +130,21 @@ You might be wondering why this matter - the answer to this is because when stru
 
 When creating and defining resources in a Pulumi project, the fundamental consideration you need think of when adding a resource is "which layer does this resource live in?". You generally shouldn't have resources from different layers in the same project, because the rate of change of those resources will be different and the risk of changing them is different.
 
-## Principal 2: Repositories
+## Principal 2: Resource Lifecycle
+
+As with all principals in life, there are situations where principal 1 does't broadly apply.
+
+There are resources within the above layers where you might think "ah! this is a network resources so I'll put it in my network project" but the _lifecycle_ of the resource doesn't necessarily fit as a shared resource. A great example of this is an AWS security group.
+
+Security groups are generally specific to another resource - perhaps an application you're deploying, a loadbalancer that's shared or maybe a database in the database tier. With these resources, it's generally best to consider the overall lifecycle of the dependent resources when deciding where to put it.
+
+My rule of thumb here is this - if I wanted to provision this resource in a different environment, or better yet, destroy it - what other resources do I want to destroy at the same time?
+
+Another great considering for this is the permissions layer. I already mentioned when discussing permissions that you'll need to think about that layer as _shared_ permissions, application specific permissions are entirely different - they really want to go directly with your application deployment code.
+
+The summary here is: don't be afraid to break the first principal, but make sure when you're doing it you're thinking about the resource lifecycle.
+
+## Principal 3: Repositories
 
 The mono-repo vs multi-repo debate is one that's will rage long after we're all done with cloud computing and have migrated back to physical infrastructure, and I'm not going to try and solve it here. What I _will_ say is that I've seen both work well, and both work poorly.
 
@@ -158,13 +172,13 @@ You'll need to think about the rate of change here when you're defining projects
 
 The primary reason for making the decision to use both mono-repos and keeping deployment code with applications is built from a perspective of _ownership_ and _orchestration_.
 
-Foundational infrastructure at layers 1, 2 and possibly up to layer 5 is an order of operations problem and a workflow orcehstration problem. In most circumstances, you'll be creating resources that depend on _other_ resources while building the IaC graph. 
+Foundational infrastructure at layers 1, 2 and possibly up to layer 5 is an order of operations problem and a workflow orchestration problem. In most circumstances, you'll be creating resources that depend on _other_ resources while building the IaC graph. 
 
 By deciding to break the resources into different projects, you can create a workflow that allows you to deploy the resources in the correct order. You'll be able to utilize Pulumi [stack references](https://www.pulumi.com/learn/building-with-pulumi/stack-references/) to share resources between stacks and projects, but you'll need to ensure that a resource in a project in layer 2 that depends on a project in layer 1 has been created and resolved first.
 
 In a mono-repo, this is as simple as ensuring that the workflow or CI/CD tool runs the projects in the correct order, but in a multi-repo implementation, it becomes a complex orchestration problem that likely involves multi repo webhooks and a lot of duct tape.
 
-Application repos are far enough down the layering system that all of the infrastructure required to run your application will be in place. Placing application deployment infrastruture code in the application repo allows you to give the application developers full ownership of their code from writing and features to getting them into production.
+Application repos are far enough down the layering system that all of the infrastructure required to run your application will be in place. Placing application deployment infrastructure code in the application repo allows you to give the application developers full ownership of their code from writing and features to getting them into production.
 
 ## Principal 3: Encapsulation
 
@@ -172,7 +186,7 @@ Once you've made the foundational decisions above, you'll be well on the way to 
 
 Every IaC tool has a different way of managing this. In Pulumi you can create a [Component Resource](https://www.pulumi.com/docs/concepts/resources/components/) for a single language or if you want to support multiple language, you might want to create a [Pulumi Package](https://www.pulumi.com/docs/using-pulumi/pulumi-packages/), but the reason for doing this is the same: you want to encapsulate a set of best practices that you can share across multiple projects.
 
-A good consideration for for when to start encapsulating resources is to think about your organisational structure and and application architecture. If you're only one team deploying a single application, you might not need to go down the path of encapsulating anything, but if you're a platform team that's likely to support dozens of teams to deploy to a shared layer 5 compute resource, creating a Pulumi package that encapsulates the best practices for deploying your application or creating a package for a best practice object storage bucket which has the required permissions is going to save the teams you're supporting a _lot_ of time.
+A good consideration for for when to start encapsulating resources is to think about your organisational structure and application architecture. If you're only one team deploying a single application, you might not need to go down the path of encapsulating anything, but if you're a platform team that's likely to support dozens of teams to deploy to a shared layer 5 compute resource, creating a Pulumi package that encapsulates the best practices for deploying your application or creating a package for a best practice object storage bucket which has the required permissions is going to save the teams you're supporting a _lot_ of time.
 
 These encapsulations should be in their own, _distinct_ repository. You'll want to version these encapsulations in the same way you version and release your applications - follow semver and make sure you create an API that your downstream users can use.
 
@@ -199,7 +213,7 @@ def create_bucket(name: str) -> aws.s3.Bucket:
 
 The problem with this implementation of an abstraction is that it creates a nested mechanism that is difficult to manage successfully.
 
-If you use a component, you get you get an abstraction mechanism that is much more native to the the way the language works. In TypeScript, it looks like this:
+If you use a component, you get you get an abstraction mechanism that is much more native to the way the language works. In TypeScript, it looks like this:
 
 ```typescript
 export class Bucket extends pulumi.ComponentResource {
