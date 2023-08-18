@@ -43,11 +43,11 @@ The privilege layer is how you fundementally separate access in the cloud provid
 - Azure: Subscription
 - Google Cloud: Project
 
-You _might_ not want to manage this layer with IaC, but you need to decide how that'd work
+You _might_ want to manage this layer with IaC, but you need to decide how that'd work. Personally, I find that the API level support for this layer and the rarity of needing to perform this operation means it's often easier to manage this layer manually.
 
 ## Layer 2: Network
 
-Now we're getting to the layers that'll be heavily managed by IaC. The network layer is foundational to how everything will work in your infrastructure, and includes things like a VPC, subnets, NAT Gateways, VPNs, and anything else that facilitates network communication.
+Now we're getting to the layers that'll should _definitely_ be managed by IaC. The network layer is foundational to how everything will work in your infrastructure, and includes things like a VPC, subnets, NAT Gateways, VPNs, and anything else that facilitates network communication.
 
 ### Example Resources
 
@@ -79,6 +79,8 @@ The data layer is where the resources you're managing really start to open up. T
 
 The compute layer is where your applications actually run - this is where you'll find things like virtual machines, containers, and serverless functions.
 
+### Example Resources
+
 - AWS: EC2, ECS, EKS, Fargate
 - Azure: Virtual Machines, Container Instances, AKS
 - Google Cloud: Compute Engine, GKE
@@ -86,6 +88,8 @@ The compute layer is where your applications actually run - this is where you'll
 ## Layer 6: Ingress
 
 Layer 6 is where you'll find the resources that allow your applications to be accessed by the outside world.
+
+### Example Resources
 
 - AWS: Application Load Balancers, Network Load Balancers, Classic Load Balancers, API Gateways
 - Azure: Application Gateways, Load Balancers, API Management
@@ -95,11 +99,26 @@ Layer 6 is where you'll find the resources that allow your applications to be ac
 
 Once we've provisioned all the supporting infrastructure, we now need to actually deploy the application itself. This is where things really get a little tricky and depend entirely on your application's deployment model, technology and architecture.
 
-You might choose not to use IaC for application at all, but if you do it might include some of the following resources:
+You might choose not to use IaC for application at all, but if you do..
+
+### Example Resources
 
 - AWS: Lambda, ECS Tasks, Kubernetes Manifests, EC2 User Data
 - Azure: Azure Functions, Kubernetes Manifests
 - Google Cloud: Cloud Functions, Kubernetes Manifests
+
+## Visualization
+
+| Layer | Name | Example Resources |
+|-------|--------|---------|
+| 0 | Billing | AWS Organization/Azure Account/Google Cloud Account |
+| 1 | Privilege | AWS Account/Azure Subscription/Google Cloud Project |
+| 2 | Network | AWS VPC/Google Cloud VPC/Azure Virtual Network |
+| 3 | Permissions | AWS IAM/Azure Managed Identity/Google Cloud Service Account |
+| 4 | Data | AWS RDS/Azure Cosmos DB/Google Cloud SQL |
+| 5 | Compute | AWS EC2/Azure Container Instances/GKE |
+| 6 | Ingress | AWS ELB/Azure Load Balancer/Google Cloud Load Balancer |
+| 7 | Application | Kubernetes Manifests/Azure Functions/ECS Taks/Google Cloud Functions |
 
 ## Principal 1: The Rate of Change
 
