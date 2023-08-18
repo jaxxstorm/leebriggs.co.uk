@@ -152,6 +152,18 @@ At the very least, if you're using IaC to deploy your application, having a `dep
 
 You'll need to think about the rate of change here when you're defining projects to group resources together. Do you perhaps need to separate your database layer and your application layer resources? I'd argue that you do, because the rate of change of your application layer is likely going to be much higher than your database layer, but you'll need to make a decision that makes sense for your organisation and project.
 
+### Why do this?
+
+The primary reason for making the decision to use both mono-repos and keeping deployment code with applications is built from a perspective of _ownership_ and _orchestration_.
+
+Foundational infrastructure at layers 1, 2 and possibly up to layer 5 is an order of operations problem and a workflow orcehstration problem. In most circumstances, you'll be creating resources that depend on _other_ resources while building the IaC graph. 
+
+By deciding to break the resources into different projects, you can create a workflow that allows you to deploy the resources in the correct order. You'll be able to utilize Pulumi [stack references](https://www.pulumi.com/learn/building-with-pulumi/stack-references/) to share resources between stacks and projects, but you'll need to ensure that a resource in a project in layer 2 that depends on a project in layer 1 has been created and resolved first.
+
+In a mono-repo, this is as simple as ensuring that the workflow or CI/CD tool runs the projects in the correct order, but in a multi-repo implementation, it becomes a complex orchestration problem that likely involves multi repo webhooks and a lot of duct tape.
+
+Application repos are far enough down the layering system that all of the infrastructure required to run your application will be in place. Placing application deployment infrastruture code in the application repo allows you to give the application developers full ownership of their code from writing and features to getting them into production.
+
 ## Principal 3: Encapsulation
 
 Once you've made the foundational decisions above, you'll be well on the way to structuring a well defined set of infrastructure as code patterns, but the final thing you'll need to consider is how you'll share resource patterns across your control repo and application repos.
