@@ -306,6 +306,10 @@ Let's say we're going to be super original and call our repo `infrastructure`. H
 
 You can see here that we're using [Pulumi stacks](https://www.pulumi.com/docs/concepts/stack/) to target differing environments (in this case, development and production), and creating a new project for different layers and resources.
 
+You'll likely also notice that I've been quite liberal with my use of directories for each set of services. I'm not grouping all of the network/layer 2 resources into a single project, however I'm following the layering principal by not grouping any resources from different layers into the same project.
+
+You can definitely reduce the number of projects here (for example, you might choose to groups the VPC and VPN projects together in a `network` project) but I generally find that projects/directories are "free" and reducing the blast radius of changes makes people feel comfortable about contributing to these shared elements.
+
 ## Application Repo
 
 Once we get to our application repo, it's a lot harder to be prescriptive, but let's say we have a simple Go application called `example-app`. Here's how that might look:
