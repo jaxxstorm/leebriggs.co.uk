@@ -134,7 +134,7 @@ When creating and defining resources in a Pulumi project, the fundamental consid
 
 {% include note.html content="This principal comes to you thanks to my wonderful colleague Ringo De Smet, who reminded me of the importance of breaking the rules when reviewing this post" %}
 
-As with all principals in life, there are situations where principal 1 does't broadly apply.
+As with all principals in life, there are situations where principal 1 doesn't broadly apply.
 
 There are resources within the above layers where you might think "ah! this is a network resources so I'll put it in my network project" but the _lifecycle_ of the resource doesn't necessarily fit as a shared resource. A great example of this is an AWS security group.
 
