@@ -15,7 +15,7 @@ There's no canonical answer. Everyone does things slightly different, and differ
 
 In my day to day role as a Solutions Engineer at [Pulumi](https://pulumi.com) I get to answer this question a _lot_. Customers are migrating from other IaC tools and they want to take this opportunity to think about the way they'd like to structure things.
 
-This blog post is designed to detail my high(ish) level thoughts on the concepts and principals I like to use, and why. As we explore these concepts, I'll talk about some of the lessons I learned from my time in configuration management and the myriad IaC tools I've used before today.
+This blog post is designed to detail my high(ish) level thoughts on the concepts and principles I like to use, and why. As we explore these concepts, I'll talk about some of the lessons I learned from my time in configuration management and the myriad IaC tools I've used before today.
 
 A lot of the concepts in this post are focused on [Pulumi](https://pulumi.com), but lots are broadly applicable to other tools.
 
@@ -122,7 +122,7 @@ If you're a visual learner like me, you might find this visualization helpful:
 | 6 | Ingress | AWS ELB/Azure Load Balancer/Google Cloud Load Balancer |
 | 7 | Application | Kubernetes Manifests/Azure Functions/ECS Taks/Google Cloud Functions |
 
-## Principal 1: The Rate of Change
+## Principle 1: The Rate of Change
 
 One of the difficult concepts to quantify when thinking of these layers is the _rate of change_ that these resources undergo when you're managing them. The lower layers generally will change _less frequently_ than your higher layers, and in addition to this these layers are generally most fraught with risk when changing them.
 
@@ -130,11 +130,11 @@ You might be wondering why this matter - the answer to this is because when stru
 
 When creating and defining resources in a Pulumi project, the fundamental consideration you need think of when adding a resource is "which layer does this resource live in?". You generally shouldn't have resources from different layers in the same project, because the rate of change of those resources will be different and the risk of changing them is different.
 
-## Principal 2: Resource Lifecycle
+## Principle 2: Resource Lifecycle
 
-{% include note.html content="This principal comes to you thanks to my wonderful colleague Ringo De Smet, who reminded me of the importance of breaking the rules when reviewing this post" %}
+{% include note.html content="This principle comes to you thanks to my wonderful colleague Ringo De Smet, who reminded me of the importance of breaking the rules when reviewing this post" %}
 
-As with all principals in life, there are situations where principal 1 doesn't broadly apply.
+As with all Principle in life, there are situations where principle 1 doesn't broadly apply.
 
 There are resources within the above layers where you might think "ah! this is a network resources so I'll put it in my network project" but the _lifecycle_ of the resource doesn't necessarily fit as a shared resource. A great example of this is an AWS security group.
 
@@ -144,9 +144,9 @@ My rule of thumb here is this - if I wanted to provision this resource in a diff
 
 Another great considering for this is the permissions layer. I already mentioned when discussing permissions that you'll need to think about that layer as _shared_ permissions, application specific permissions are entirely different - they really want to go directly with your application deployment code.
 
-The summary here is: don't be afraid to break the first principal, but make sure when you're doing it you're thinking about the resource lifecycle.
+The summary here is: don't be afraid to break the first principle, but make sure when you're doing it you're thinking about the resource lifecycle.
 
-## Principal 3: Repositories
+## Principle 3: Repositories
 
 The mono-repo vs multi-repo debate is one that's will rage long after we're all done with cloud computing and have migrated back to physical infrastructure, and I'm not going to try and solve it here. What I _will_ say is that I've seen both work well, and both work poorly.
 
@@ -182,7 +182,7 @@ In a mono-repo, this is as simple as ensuring that the workflow or CI/CD tool ru
 
 Application repos are far enough down the layering system that all of the infrastructure required to run your application will be in place. Placing application deployment infrastructure code in the application repo allows you to give the application developers full ownership of their code from writing and features to getting them into production.
 
-## Principal 3: Encapsulation
+## Principle 3: Encapsulation
 
 Once you've made the foundational decisions above, you'll be well on the way to structuring a well defined set of infrastructure as code patterns, but the final thing you'll need to consider is how you'll share resource patterns across your control repo and application repos.
 
@@ -322,7 +322,7 @@ Let's say we're going to be super original and call our repo `infrastructure`. H
 
 You can see here that we're using [Pulumi stacks](https://www.pulumi.com/docs/concepts/stack/) to target differing environments (in this case, development and production), and creating a new project for different layers and resources.
 
-You'll likely also notice that I've been quite liberal with my use of directories for each set of services. I'm not grouping all of the network/layer 2 resources into a single project, however I'm following the layering principal by not grouping any resources from different layers into the same project.
+You'll likely also notice that I've been quite liberal with my use of directories for each set of services. I'm not grouping all of the network/layer 2 resources into a single project, however I'm following the layering principle by not grouping any resources from different layers into the same project.
 
 You can definitely reduce the number of projects here (for example, you might choose to groups the VPC and VPN projects together in a `network` project) but I generally find that projects/directories are "free" and reducing the blast radius of changes makes people feel comfortable about contributing to these shared elements.
 
