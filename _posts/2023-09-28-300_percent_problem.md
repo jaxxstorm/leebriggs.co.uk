@@ -9,6 +9,8 @@ tags:
 
 Earlier this year, I attended CfgMgmtCamp in Ghent and listened to Adam Jacob's "What if Infrastructure as Code never existed" keynote.
 
+{% include note.html content="I'd like to extend a huge thanks to Adam for taking the time to review this post, and for an unnamed person for consistently reviewing these posts and for inspiring the thoughts here." %}
+
 Not only is Adam an excellent speaker, but he can capture thoughts that most people can't articulate and explain them in a way that revolutionises people's thinking. 
 
 This talk was no exception. If you have yet to see it, I'd like to introduce you to something I've always known but have yet to appropriately identify: the 200% knowledge problem.
@@ -25,7 +27,7 @@ That's the theory. The reality of these modules is that you need to understand t
 
 In addition, the desire to create Terraform modules that meet _every single user's possible use case_ means that often, the module will expose the entire surface area of the APIs the module is managing to the user. Usually, this leaves you in a position of having to painstakingly read the whole module's code before using it, and if something breaks, you're shit out of luck.
 
-Hearing Adam describe this problem has had my break slowly creaking for a while. We've seen lots of literature in the past few years about the explosion of knowledge required to be a successful "DevOps Engineer", "Site Reliability Engineer" or "Platform Engineer" or whatever that role's title is this week. As I've noodled on this for the past few months, I've started to leverage the 200% problem and give it a moniker of my own: "the 300% production problem".
+Hearing Adam describe this problem has had my brain slowly creaking for a while. We've seen lots of literature in the past few years about the explosion of knowledge required to be a successful "DevOps Engineer", "Site Reliability Engineer" or "Platform Engineer" or whatever that role's title is this week. As I've noodled on this for the past few months, I've started to leverage the 200% problem and give it a moniker of my own: "the 300% production problem".
 
 ## The 300% Production Problem
 
@@ -75,9 +77,17 @@ Yes. There's a cloud backlash slowly starting to form. I'm not going to share my
 
 The ultimate solution to the 300% problem will be the same across the 3 pillars. _Simplicity_. Making decisions that reduce the amount of knowledge required to become an expert in one of those 3 pillars will dramatically affect your overall success rate at getting your applications into production.
 
-This isn't new ground. People have been writing about keeping "Keep it simple stupid" for a long time. What is often overlooked is how important it is that decisions and responsibilities that can be shared are made to appease a small number of potential experts rather than the broader organisation. Intelligent individuals with political power will happily introduce this framework, that deployment model, or the other tool because they like it and are experts.
+This isn't new ground. People have been writing about keeping "Keep it simple stupid" for a long time. The problem is that the "simplicity" is often defined by the people building the system, and those people are _experts_ already in the system they're building.
 
-Hopefully, if you're reading this, you'll start to think about how many other people need to be an expert in something before they can be successful.
+When I shared this post with [Adam](https://x.com/adamhjk), he gave me an excellent analogy which helped me round this post out:
+
+> You want simplicity where it benefits the _user_, which often requires increased complexity for the _developer_. My analogy for this is how complex modern cars are, but you push a button to “start” them. Vs a very simple model t, that breaks your arm if you start it wrong.
+
+As usual, Adam has done a much better job of encapsulating the core ideas in this post than I have, but to expand on it, the missing piece to me is the "producification" of the systems we're building. 
+
+What is often overlooked is how important it is that decisions and responsibilities that can be shared are made to appease the opinions of a small number of potential experts rather than the broader organisation. Intelligent individuals with political power will happily introduce this framework, that deployment model, or the other tool because they like it and are experts and they _believe_ it's simple, which ultimately it is - to them.
+
+Hopefully, if you're reading this and you're trying to build something that simplifies a process in your organisation, you'll consider the 300% problem, and make it simple for everyone, not just yourself.
 
 
 
