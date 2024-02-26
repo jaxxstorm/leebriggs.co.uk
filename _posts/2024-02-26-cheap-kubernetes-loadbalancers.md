@@ -80,6 +80,8 @@ As a proud [Yorkshireman](https://en.wikipedia.org/wiki/Culture_of_Yorkshire#Tra
 
 So let's see what this could look like with Tailscale. We'll install the Tailscale operator into our cluster, but first we need to knock out a few small steps.
 
+{% include note.html content="I am showcasing this with DigitalOcean Kubernetes, but this will work on ANY Kubernetes cluster, even your homelab. Try it!" %}
+
 ### Create your Tailnet
 
 The first step along this journey is to [sign up for Tailscale](https://login.tailscale.com/start?source=leebriggs.co.uk) and create a Tailnet. This is a network that your Kubernetes cluster will join, and allows anyone on the Tailnet to access the Kubernetes cluster.
