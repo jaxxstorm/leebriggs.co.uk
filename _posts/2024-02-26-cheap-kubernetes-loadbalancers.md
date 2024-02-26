@@ -1,5 +1,5 @@
 ---
-title: "Free Kubernetes Load Balancers and Ingress with Tailscale"
+title: "Free Kubernetes Load Balancers with Tailscale"
 layout: post
 category: blog
 tags:
