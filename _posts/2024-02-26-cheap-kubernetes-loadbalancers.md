@@ -12,17 +12,17 @@ Load Balancers are expensive.
 
 If you're using Kubernetes, they are also a necessity. Figuring out how to expose a Kubernetes workload to the world without a Load Balancer is a bit like trying to make a sandwich without bread. You can do it, but nobody is going to want to deal with it.
 
-If you're a startup trying to get your project off the ground, firstly, why are you using Kubernetes? Stop. However, if you insist you're looking at spending at least $10 a month for a load balancer in the cloud before you take data transfer costs into account, and if you're a hobbyist running a small Kubernetes cluster in your home lab, you might read the Metal LB documentation and think "I didn't realise I needed to have a [CCIE certification](https://en.wikipedia.org/wiki/CCIE_Certification) to make this work."
+If you're a startup trying to get your project off the ground, firstly, why are you using Kubernetes? Stop. However, if that's the way you're going - you're looking at spending at least $10 a month for a load balancer in the cloud before you take data transfer costs into account. If you're a hobbyist running a small Kubernetes cluster in your home lab, you might read the Metal LB documentation and think "I didn't realise I needed to have a [CCIE certification](https://en.wikipedia.org/wiki/CCIE_Certification) to make this work."
 
-Well, guess what. You don't need to anymore. Thanks to [Tailscale](https://tailscale.com) and it's relatively new [Kubernetes Operator](https://tailscale.com/blog/kubernetes-operator) you can now get access to Kubernetes workloads using native Service and Ingress objects without paying those greedy cloud provider a single cent.
+Well, guess what! You don't need to anymore. Thanks to [Tailscale](https://tailscale.com) and it's relatively new [Kubernetes Operator](https://tailscale.com/blog/kubernetes-operator) you can now get access to Kubernetes workloads using native Service and Ingress objects without paying those greedy cloud providers a single cent.
 
 {% include note.html content="I recently joined Tailscale as a Solutions Engineer. Make of that what you will." %}
 
 ## A cloud agnostic load balancer
 
-Kubernetes services work on every Kubernetes distribution, but if you want to expose that service to the world, you'll likely need a service of `type=LoadBalancer`. Without rehashing Kubernetes networking concepts, this mechanism will ultimately create something with an IP address that is external to the Kubernetes cluster. Let's take a look at a very simple example on a [DigitalOcean](https://digitalocean.com) Kubernetes cluster:
+Kubernetes services work on every Kubernetes distribution, but if you want to expose that service to the world, you'll likely need a service of `type=LoadBalancer`. Without rehashing Kubernetes networking concepts, this mechanism will ultimately create something with an address that is external to the Kubernetes cluster. Let's take a look at a very simple example on a [DigitalOcean](https://digitalocean.com) Kubernetes cluster:
 
-{% include note.html content="I chose Digital Ocean for this example because it offers a free control plane, but this scenario is essentially for any cloud provider." %}
+{% include note.html content="I chose Digital Ocean for this example because it offers a free control plane, but this scenario works for any cloud provider's Kubernetes offering." %}
 
 ```yaml
 apiVersion: apps/v1
@@ -168,7 +168,7 @@ spec:
     app: nginx
 ```
 
-Wait a few minutes for the magic to happen, then check the service:
+Wait a few minutes for the operator reconciliation to happen, then check the service:
 
 ```
 NAME         TYPE           CLUSTER-IP      EXTERNAL-IP                                    PORT(S)        AGE
@@ -276,7 +276,7 @@ Notice that `TS_DEST_IP` variable? It's the IP of the Kubernetes `ClusterIP` for
 
 ## Going further
 
-This is all well and good for a simple HTTP application, but what if we need HTTPS? How complex can this get? Kubernetes services will do okay for exposing basic TCP passthrough services, but what else can I do.
+This is all well and good for a simple application, but what if we need HTTPS? How complex can this get? Kubernetes services will do okay for exposing basic TCP passthrough services, but what else can I do.
 
 Well, this let's try something a bit more interesting.
 
