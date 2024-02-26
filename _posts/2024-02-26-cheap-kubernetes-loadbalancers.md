@@ -476,7 +476,7 @@ This is all incredibly powerful, and will save you money. However, there are 2 c
 
 ### Supported URLs
 
-Currently, the URLs generated for both services and ingresses are only tailnet addresses, so supported for your own domain is currently not possible. You can of course CNAME access to the tailnet address, but in that case the TLS certificate isn't valid.
+Currently, the URLs generated for both services and ingresses are only tailnet addresses, so support for your own domain is currently not possible. 
 
 ### Ingress HTTPs
 
