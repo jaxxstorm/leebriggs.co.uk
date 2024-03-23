@@ -20,7 +20,7 @@ curl -k $(kubectl config view --output jsonpath='{.clusters[*].cluster.server}')
 
 Assuming everything is working as expected (and if it isn't, you should probably stop reading and go figure out what), it should return `ok`.
 
-Has it ever come to your attention that this _just works_ from a networking persepctive? More than likely you didn't have to a connect to a VPN, or  SSH into a bastion/jump host host? 
+Has it ever come to your attention that this _just works_ from a networking perspective? More than likely you didn't have to a connect to a VPN, or  SSH into a bastion/jump host host? 
 
 How did I know that? Well, because the vast majority of Kubernetes clusters are just hanging out on the public internet, without a care in the world.
 
