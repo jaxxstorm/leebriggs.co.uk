@@ -8,19 +8,23 @@ tags:
 - devops
 ---
 
-If you run the following command, you should see the health of your Kubernetes control plane:
+Do you ever really think about how you get access to your Kubernetes control plane? Whatever mechanism you use to provision your cluster, you get a `KUBECONFIG` and usually just go on your merry way to overcomplicating your infrastructure.
+
+However, if you stop and examine the server in your `KUBECONFIG`, you might question, where _is_ that server.
+
+You can check the health of your cluster by doing the following:
 
 ```bash
 curl -k $(kubectl config view --output jsonpath='{.clusters[*].cluster.server}')/healthz
 ```
 
-Assuming everything is working as expected, it should return `ok`.
+Assuming everything is working as expected (and if it isn't, you should probably stop reading and go figure out what), it should return `ok`.
 
-The real question though, is did you have to do anything _before_ running that command? Did you have to set up a VPN? Did you have to SSH into a bastion host? Did you have to do anything _other_ than just run the command?
+Has it ever come to your attention that this _just works_ from a networking persepctive? More than likely you didn't have to a connect to a VPN, or  SSH into a bastion/jump host host? 
 
-If not, it's because your Kubernetes API servers are accessible on the public internet. How did I know that? Almost everyone is.
+How did I know that? Well, because the vast majority of Kubernetes clusters are just hanging out on the public internet, without a care in the world.
 
-If you search [shodan.io for Kubernetes clusters](https://www.shodan.io/search?query=kubernetes) you'll see there's almost 1.4 million clusters just like yours.
+If you search [shodan.io for Kubernetes clusters](https://www.shodan.io/search?query=kubernetes) you'll see there's almost 1.4 million clusters, readily accessible and open to the scary, scary world.
 
 For reasons I can't quite understand, we've sort of collectively decided that it's okay to put our Kubernetes control planes on the public internet. At the very least, we've sort of decided it's okay to give them a public IP address - sure you might add some security groups of firewall rules from specific IP addresses, but the control plane is still accessible from the internet.
 
@@ -37,7 +41,7 @@ We sort of accept these for things like databases because we very rarely need to
 
 In addition to this, when cloud providers started offering managed Kubernetes servers, most of them didn't even _have_ private control planes. It was only in the last few years that they started offering this as a feature, and even then, it's not the default.
 
-So the practice of putting a very important API on the internet has proliferated because it's just _easier_ to do it that way. The real concern here is that we're one severe vulnberability from having a bitcoin miner on every Kubernetes cluster on the internet.
+So the practice of putting a very important API on the internet has proliferated because it's just _easier_ to do it that way. The real concern here is that we're one severe vulnerability from having a bitcoin miner on every Kubernetes cluster on the internet.
 
 ## An alternative
 
@@ -114,7 +118,7 @@ You'll need to configure your `KUBECONFIG` using the following command:
 tailscale configure kubeconfig <hostname>
 ```
 
-This will set up your `KUBECONFIG` to use the Tailscale API server proxy as the server for your cluster. If you example your `KUBECONFIG` you should see something like this:
+This will set up your `KUBECONFIG` to use the Tailscale API server proxy as the server for your cluster. If you examine your `KUBECONFIG` you should see something like this:
 
 ```yaml
 apiVersion: v1
@@ -146,7 +150,7 @@ kubectl get nodes
 error: You must be logged in to the server (Unauthorized)
 ```
 
-What's happened here? Well, the good news is, we've been able to route to our private Kubernetes control plane, but we're not sending any information back to about who we are. So let's make a small change to our Tailscale ACL in the Tailscale console. Add the following:
+What's happened here? Well, the good news is, we've been able to route to our private Kubernetes control plane, but we're not sending any information back about who we are. So let's make a small change to our Tailscale ACL in the Tailscale console. Add the following:
 
 ```json
 	"grants": [
@@ -211,7 +215,7 @@ Error from server (Forbidden): nodes is forbidden: User "jaxxstorm@github" canno
 
 The reason for this is a little obvious, the EKS cluster I'm using has absolutely no idea who `jaxxstorm@github` is - because it uses IAM to authenticate me to the cluster.
 
-So let's modify our `KUBECONFIG` to retrieve a token as EKS expects. We'll modify the `user` section to leverage an `exec` directib - it should look a little bit like this:
+So let's modify our `KUBECONFIG` to retrieve a token as EKS expects. We'll modify the `user` section to leverage an `exec` directive - it should look a little bit like this:
 
 ```yaml
 apiVersion: v1
@@ -253,7 +257,7 @@ A common question I get asked is why wouldn't I just use a subnet router in the 
 
 This is a legimate solution to the problem, and if you don't want to use the operator in `auth` mode, keep living your life. However, one benefit you get by installing the operator and talking directly to it via your `KUBECONFIG` is being able to use Tailscale's ACLs to dictate who can actually communicate with the operator.
 
-If you recall our `grant` from earlier, we were able to dictate who was able to impersonate users inside the cluster in `auth` mode, but with Tailscale's ACL system we can also be prescriptive about connectivity. Consider if you removed the default, permissive ACL
+If you recall our `grant` from earlier we were able to dictate who was able to impersonate users inside the cluster in `auth` mode, but with Tailscale's ACL system we can also be prescriptive about connectivity. Consider if you removed the default, permissive ACL
 
 ```json
 //{"action": "accept", "src": ["*"], "dst": ["*:*"]}, # commented out because hujson
@@ -277,9 +281,9 @@ Then defining a group of users who can access the cluster, and adding a more exp
 	],
 ```
 
-I can be much more granular about my access to my cluster, and have a Zero Trust model for my Kubernetes control plane at the _network_ level as well as the authorization level. Your information security team will _love_ you.
+I can be much more granular about my access to my cluster, and have a Zero Trust model for my Kubernetes control plane at the _network_ level as well as the authorization level. Your information security team will _love_ you for this.
 
-When you provision the operator in the cluster, you can modify the tags it uses to even further allow segment your Tailnet, see the [operator config in the Helm chart's values.yaml](https://github.com/tailscale/tailscale/blob/main/cmd/k8s-operator/deploy/chart/values.yaml#L23)
+When you provision the operator in the cluster, you can modify the tags it uses to even further allow you to segment your Tailnet, see the [operator config in the Helm chart's values.yaml](https://github.com/tailscale/tailscale/blob/main/cmd/k8s-operator/deploy/chart/values.yaml#L23)
 
 Just remember to ensure your oauth clients has the correct permissions to manage those tags!
 
@@ -356,4 +360,4 @@ As always with the posts I write on here, I'm writing in my personal capacity, b
 
 I've always had an uneasy feeling about these public clusters, and I can't help but feel we're one RCE away from a disaster.
 
-So now you now how easy it is to get your Kubernetes control plane off the internet, what are you waiting for? 
+So now you know how easy it is to get your Kubernetes control plane off the internet, what are you waiting for? 
