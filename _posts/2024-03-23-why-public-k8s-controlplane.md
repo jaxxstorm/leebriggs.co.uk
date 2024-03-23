@@ -10,7 +10,7 @@ tags:
 
 Do you ever really think about how you get access to your Kubernetes control plane? Whatever mechanism you use to provision your cluster, you get a `KUBECONFIG` and usually just go on your merry way to overcomplicating your infrastructure.
 
-However, if you stop and examine the server in your `KUBECONFIG`, you might question, where _is_ that server.
+However, if you've ever looked at your `KUBECONFIG` you'll see you have a server address.
 
 You can check the health of your cluster by doing the following:
 
