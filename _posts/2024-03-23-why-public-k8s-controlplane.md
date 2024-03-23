@@ -1,5 +1,5 @@
 ---
-title: "Why the hell is your Kubernetes control plane public?"
+title: "Why the hell is your Kubernetes API public?"
 layout: post
 category: blog
 tags:
