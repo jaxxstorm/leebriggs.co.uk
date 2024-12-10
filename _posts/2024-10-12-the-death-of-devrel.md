@@ -18,20 +18,21 @@ Admittedly, some of this could be circumstantial. For instance, KubeCon NA was h
 
 DevRel has always been a role that defies simple definition. It’s not marketing, but it overlaps with marketing. It’s not sales, but it supports sales. It’s not customer success, but it builds relationships with users. And it’s certainly not engineering, though it requires technical skills.
 
-It demands a rare combination of traits: technical aptitude, charisma, and customer empathy. Having worked in a DevRel role for six months, I can attest—it’s one of the hardest jobs I’ve ever had.
+It demands a rare combination of traits: technical aptitude, charisma, and customer empathy. Having worked in a DevRel role for six months, I can attest - it’s one of the hardest jobs I’ve ever had.
 
 When done well, DevRel can be transformative. Companies like HashiCorp, Stripe, and Twilio have built exceptional brands in part due to their effective DevRel strategies. But the very ambiguity that has been DevRel’s strength is now starting to feel like a liability.
 
-If You Can’t Measure It, You Can’t Manage It
+# If You Can’t Measure It, You Can’t Manage It
+
 During my brief stint in DevRel, I often asked my manager, “What does good performance look like in this role?” The answer, more often than not, was fuzzy.
 
 For example, I spent hours answering questions in community Slack channels. It felt impactful, but we couldn’t quantify how it moved the needle on metrics like sales pipeline or customer retention. I gave virtual conference talks, but we struggled to tie those efforts to lead generation or brand impact.
 
-This isn’t unique to my experience. Many DevRel professionals resist being measured by traditional KPIs, arguing their work is about “building community,” “fostering trust,” or “engaging developers.” While those outcomes are valuable, they’re hard to quantify in ways a CFO or board member cares about.
+I don't think this is unique to my experience. Many DevRel professionals resist being measured by traditional KPIs, arguing their work is about “building community,” “fostering trust,” or “engaging developers.” While those outcomes are valuable, they’re hard to quantify in ways a CFO or board member cares about.
 
 Then, external factors came along and forced everyone to take a harder look at roles like DevRel.
 
-The VC Money Printer
+# The VC Money Printer
 
 For much of the 2010s, startups existed in a world of near-limitless capital. Low interest rates made borrowing cheap, and VCs funded companies generously, hoping to catch the next unicorn. In this environment, initiatives without immediate ROI—like DevRel—had room to thrive.
 
@@ -45,9 +46,11 @@ DevRel, for all its intangible benefits, became a glaring target.
 
 In tough times, businesses ask hard questions: “Which teams are directly contributing to the bottom line?” DevRel often struggled to answer.
 
-Sponsoring conferences? Expensive, with unclear ROI.
-Writing blogs and creating videos? Great for brand awareness, but does it generate leads?
-Running Slack communities? Valuable, but hard to tie directly to revenue.
+- Sponsoring conferences? Expensive, with unclear ROI.
+- Running Slack communities? Valuable, but hard to tie directly to revenue.
+- Conference talks? Great for brand awareness, but hard to tie to lead generation
+- Social media posts? Effective at generating leads if done from company accounts, but very hard to measure from personal accounts
+
 By contrast, roles like sales, marketing, and engineering have clear outputs tied to outcomes. Sales closes deals. Marketing generates leads. Engineering ships features. DevRel, sitting somewhere between these disciplines, risks being seen as neither fish nor fowl—doing a little of everything but owning none of it.
 
 # Product Led Growth
