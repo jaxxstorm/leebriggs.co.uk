@@ -10,7 +10,7 @@ tags:
 
 Every year, I gear up for "conference season," which includes KubeCon NA (typically held between mid-October and mid-November) and AWS re:Invent, always the week after Thanksgiving in the US. As a sales engineer, this time of year is exhilarating. It’s a chance to speak with customers, prospects, and technology leaders in the ever-evolving cloud-native and cloud computing spaces.
 
-While I usually leave these events motivated and energized, this year felt different—marked by a noticeable absence. I could count on one hand the number of conversations I had with anyone in Developer Relations (DevRel)—whether they were community builders, developer advocates, or part of any similar role.
+While I usually leave these events motivated and energized, something this year was different — marked by a noticeable absence. I could count on one hand the number of conversations I had with anyone in Developer Relations (DevRel) - whether they were community builders, developer advocates, or part of any similar role.
 
 Admittedly, some of this could be circumstantial. For instance, KubeCon NA was held in Salt Lake City this year, a location that understandably kept some attendees away. But for me, it felt like a reflection of broader, more fundamental shifts happening in the tech industry.
 
@@ -63,9 +63,9 @@ This isn’t to say DevRel is useless in a PLG world, but it does mean the tradi
 
 # The Future of DevRel
 
-Despite the title of this post, I don’t think DevRel is truly dead. The need for technical advocacy and community building hasn’t disappeared—it’s just evolving.
+Despite the title of this post, I don’t think DevRel is truly dead. The need for technical advocacy and community building hasn’t disappeared - it’s just evolving. Many of the developer relations engineers that have survived this change have embraced the shift into marketing, leaning on their expertise as content generators to create documentation, tutorials, write blog posts and generate video content for YouTube. At Tailscale, we often seen incredible engagement with our content team and wonderful feedback from our YouTube channel. What's been so obvious about the success here is that they're measurable outcomes, and the people in these roles have embraced the challenges around having measurable goals. 
 
-Here’s where I see the role going:
+Content generations is only one part of the DevRel flywheel, and I think I can see a world where we have specific personas tied to different parts of the business that have focus on the parts of a DevRel job that each line of business care about, such as:
 
 **Community Solutions Engineer**
 
