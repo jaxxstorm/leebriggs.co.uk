@@ -26,7 +26,7 @@ At its core, MCP is a funnel. How do I get local information - or - information 
 
 The initial version of the spec seemed destined for local connectivity. The servers were designed to be accessed over a [stdio](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#stdio), which you'd run locally and then connect to with an MCP client, like Claude Desktop. Stdio is just "standard input and output streams" and isn't at all designed to be called remotely, so generally your data is pretty safe. It's really not easy to intentionally expose your data to the big scary world.
 
-Running a stdio MCP server was pretty easy, most of them are written in Typescript or Python, and you'd just add commands that you ran into your MCP client and it'd execute it on startup.
+Running a stdio MCP server was pretty straightforward, most of them are written in Typescript or Python, and you'd just add commands that you ran into your MCP client and it'd execute it on startup - easy.
 
 In Claude Desktop for example, here's how you'd run a filesystem MCP so Claude can analyse your local filesystem:
 
