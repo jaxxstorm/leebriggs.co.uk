@@ -48,7 +48,7 @@ In Claude Desktop for example, here's how you'd run a filesystem MCP so Claude c
 
 Pretty straightforward if you can, you know - easily write JSON and understand what the hell `npx` is. Obviously for non-technical users, this looks like a magical incantation, but that's okay, MCP is early.
 
-As things have progressed (very very quickly, I might add) it's become obvious to people that eventually, you want to be able to run these MCP servers somewhere else other than your local machine. Various companies have sprung up around this, with varying degrees of success and questionable security tactics themselves.
+As things have progressed (very very quickly, I might add) it's become obvious to people that eventually, you want to be able to run these MCP servers somewhere else other than your local machine. Various companies have sprung up around this, with varying degrees of success and questionable security tactics.
 
 So the spec evolved to meet these needs, and the next iteration introduced a mechanism to access MCP servers remotely, which became [Server Side Events](https://modelcontextprotocol.io/docs/concepts/transports#server-sent-events-sse).
 
@@ -66,29 +66,30 @@ SSE started to take off despite these warnings on the server side, but due to th
 
 So we started to see a new type of tool appear - the proxy. It would proxy requests from stdio clients into SSE events, allowing people to run those SSE servers remotely.
 
-Finally, the most recent innovation has been to completely ditch SSE (after only 5 months, by my count!) and switch to [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) as an alternative, which might just set the land speed record for a protocol deprecation, but still, an evolution nonetheless.
+Finally, the most recent innovation has been to completely rework SSE (after only 5 months, by my count!) and switch to [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) as an alternative, which might just set the land speed record for a protocol deprecation, but still, an evolution nonetheless.
 
 ## And yet, there's still a problem
 
 As all this change has happened, I've been watching it and thinking to myself "well, okay, but this is still a security nightmare". There are obviously things happening in the space that are changing here, and there's _intent_ to fix it, but take another look at the [streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#security-warning) warnings and spec - there is absolutely no written document at the time of writing this blog post to introduce any sort of authentication to the protocol. It _has_ been [drafted](https://modelcontextprotocol.io/specification/draft/basic/authorization) and is following a fairly typical pattern of late - "let's slap some oauth on top of it and call it good".
 
-Personally, that doesn't make me particularly happy, because I think oauth is really confusing and easy to screw up and secondly you still have a _communication_ problem. I don't care how much authentication you put on top of something, if there's particularly sensitive data behind something, I still don't want it hanging around on the internet.
+Personally, that doesn't make me particularly happy, because I think oauth is really confusing and easy to screw up and secondly you still have a _communication_ problem. I don't care how much authentication you put on top of something, if there's particularly sensitive data behind something, I still don't want it hanging around on the internet. If you _do_ feel okay with this, I presume all your databases are on the internet as well, but it's okay because they have passwords on them. Right?
 
 So, this got me thinking. I work for Tailscale, Tailscale's really quite good at protecting your data and connecting things together. How can we improve this situation?
 
 ## My first MCP server
 
-As things were evolving, I wrote a little MCP server for the Tailscale API that allows you to query a few things there, primarily to try and understand the protocol and see what useful things we could do. I stuck with `stdio` and then introduced SSE, but was pretty unhappy with how things looked at that point, so left it at that.
+As things were evolving, [I wrote a little MCP server for the Tailscale API](https://github.com/jaxxstorm/tailscale-mcp) that allows you to query a few things there, primarily to try and understand the protocol and see what useful things we could do. I stuck with `stdio` and then introduced SSE, but was pretty unhappy with how things looked at that point, so left it at that.
 
-However, when streaming HTTP was published a few weeks ago, I realised there was an opportunity here to really make the security model robust.
+However, when streaming HTTP was published a few weeks ago, I realised there was an opportunity here to think differently about the security model to make it a little more robust and considerably more _private_.
 
-You can get some of the benefits of Tailscale with streaming HTTP by just having a Tailscale on both ends of the equation. Install Tailscale on your local machine, spin up another one somewhere and run a streamable HTTP server, then configure your MCP client to run an MCP proxy (of which there many, such as [sparfenyuk/mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) or if you prefer Typescript, [punkpye/mcp-proxy](https://github.com/punkpeye/mcp-proxy)). When you configure the proxy, set your `endpoint` to the remote Tailscale client and you're golden.
+You can get some of the benefits of Tailscale with streaming HTTP by just having a Tailscale on both ends of the equation. Install Tailscale on your local machine, spin up another one somewhere and run a streamable HTTP server, then configure your MCP client to run an MCP proxy (of which there many, such as [sparfenyuk/mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) or if you prefer Typescript, [punkpye/mcp-proxy](https://github.com/punkpeye/mcp-proxy)). When you configure the proxy, set your `endpoint` to the remote Tailscale address and the port/url your MCP server is listening on and you're golden.
 
-This is a massive massive improvement because now you don't have to run the damn thing on the public internet, which should be fairly obvious, but I had an idea - what if we could use Tailscale's application awareness to improve the security model _even more_.
+This is a massive improvement over the "run it on the internet model with oauth" because now you don't have to run the damn thing on the public internet, which should be fairly obvious. I was going to go with this approach, but then I had an idea - what if we could use Tailscale's application awareness to improve the security model _even more_?
 
 So I did two things:
 
-- I wrote a little MCP proxy in Go that forwards Tailscale's headers like `X-Tailscale-User` to the remote HTTP MCP server, and then I updated my Tailscale MCP server to support reading Tailscale's grants mechanism to determine _what that Tailscale user is allowed to do_.
+- I wrote a little MCP proxy in Go that forwards Tailscale's headers like `X-Tailscale-User` to the remote HTTP MCP server
+- Then I updated my Tailscale MCP server to support reading Tailscale's grants mechanism to determine _what that Tailscale user is allowed to do_.
 
 ## A proper security model in action
 
