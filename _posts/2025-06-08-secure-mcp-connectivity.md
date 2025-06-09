@@ -8,7 +8,7 @@ tags:
 - networks
 ---
 
-You can't escape it. Everywhere you turn in the tech ecosystem, AI is everywhere.
+You can't escape it. Everywhere you turn in the tech ecosystem, AI is there.
 
 ![Dwight](/img/dwight-angela.jpeg)
 
