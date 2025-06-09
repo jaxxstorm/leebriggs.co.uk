@@ -142,7 +142,7 @@ Now, I can fire up Claude Desktop and ask it questions about my Tailnet:
 
 ![Access denied](/img/claude-access-denied.png)
 
-But wait, it's telling me I don't have permission? If we look at the MCP server's logs, we can see I don't have the right permissions to run the query:
+But wait, it's telling me I don't have permission? If we look at the MCP server's logs, we can see I don't have the right access to run the query:
 
 ```
 15:17:08	INFO	tailscale-mcp/main.go:159	No MCP capabilities found
