@@ -22,7 +22,7 @@ I'm being as glib as I always am on this blog with the last paragraph, but in al
 
 ## A quick history of the MCP evolution
 
-At its core, MCP is a funnel, how do I get local information - or - information that isn't crawlable on the public internet - into an LLM so it can analyse it. Anthropic defined a spec that will help you do just that, and in its infancy, the trick was simple - run a local server that speaks JSON so that a local client can call and pipe it into the LLM.
+At its core, MCP is a funnel. How do I get local information - or - information that isn't crawlable on the public internet - into an LLM so it can analyse it. Anthropic defined a spec that will help you do just that, and in its infancy, the trick was simple - run a local server that speaks JSON so that a local client can call and pipe it into the LLM.
 
 The initial version of the spec seemed destined for local connectivity. The servers were designed to be accessed over a [stdio](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#stdio), which you'd run locally and then connect to with an MCP client, like Claude Desktop. Stdio is just "standard input and output streams" and isn't at all designed to be called remotely, so generally your data is pretty safe. It's really not easy to intentionally expose your data to the big scary world.
 
