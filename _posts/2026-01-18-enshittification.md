@@ -62,7 +62,7 @@ Companies don’t enshittify because time passes. They enshittify because incent
 
 ## Trust is a business constraint
 
-Trust isn’t a marketing asset - it’s a constraint. Once users believe you will eventually make their experience worse in pursuit of growth, every decision you make is filtered through that assumption and at that point, even good changes are met with suspicion. I've seen Reddit comments recently that have framed "new Tailscale features" as the beginnging of Tailscale's enshittification cycle because _any_ change is now considered enshittification.
+Trust isn’t a marketing asset - it’s a constraint. Once users believe you will eventually make their experience worse in pursuit of growth, every decision you make is filtered through that assumption and at that point, even good changes are met with suspicion. I've seen Reddit comments recently that have framed "new Tailscale features" as the beginning of Tailscale's enshittification cycle because _any_ change is now considered enshittification.
 
 For a company like Tailscale, trust compounds slowly and breaks quickly. Our product sits directly in the critical path of how people access their networks and their work. If users stop believing we’re acting in good faith, no amount of pricing optimization or feature bundling will fix that and the most important thing about this is that _everyone who makes decisions at Tailscale knows it_.
 
