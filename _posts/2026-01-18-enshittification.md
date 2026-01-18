@@ -72,4 +72,4 @@ None of this is to say the model is immortal. There are conditions under which i
 
 If that day ever comes, the _honest response_ wouldn’t be to degrade the experience and hope people don’t notice or don't care. It would be to explain the tradeoffs openly, change the model explicitly, and accept the consequences of that decision. I suspect in that set of circumstances, Tailscale has enough competitors (including our open source control plane!) that it would lead to a significant drop off in users.
 
-Until then, the incentives are clear. Making personal users happy isn’t charity, and it isn’t a teaser for future monetization. It’s the foundation of how the product grows.
+Until then, it’s worth being honest about the consequences. Calling enshittification prematurely doesn’t protect users, _it can accelerate the conditions that make it more likely_. If you scare people away from trying the product, you erode the very trust and adoption that keeps it working. It might make you feel better, but it's also self-fulfilling cynicism - and it leaves everyone worse off.
