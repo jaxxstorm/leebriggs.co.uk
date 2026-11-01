@@ -1,5 +1,19 @@
 @charset "UTF-8";
 
+/* Preserve the theme's card layout with Bootstrap 5. */
+.card-columns {
+  column-count: 1;
+  column-gap: 1.25rem;
+}
+
+.card-columns > .card {
+  break-inside: avoid;
+}
+
+@media (min-width: 576px) {
+  .card-columns { column-count: 3; }
+}
+
 a {
   color: #57a;
   text-decoration: none;

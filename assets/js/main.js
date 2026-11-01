@@ -8,7 +8,6 @@ function render_dark_mode_icon(darkmode, id) {
   var x = document.getElementsByTagName("img");
   var i;
 
-  console.log(x);
   if (darkmode.isActivated()) {
     document.getElementById(id).classList.remove("fa-sun");
     document.getElementById(id).classList.add("fa-moon");
@@ -25,6 +24,13 @@ function render_dark_mode_icon(darkmode, id) {
 }
 
 // Modal link
-$(document).ready(function() {
-    $(window.location.hash).modal('show');
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.hljs) {
+      window.hljs.highlightAll();
+    }
+    var id = window.location.hash.slice(1);
+    var modal = id && document.getElementById(id);
+    if (modal && modal.classList.contains('modal') && window.bootstrap) {
+      window.bootstrap.Modal.getOrCreateInstance(modal).show();
+    }
 });

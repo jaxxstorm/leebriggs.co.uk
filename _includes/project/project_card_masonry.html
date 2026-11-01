@@ -5,7 +5,7 @@
     <div class="card-body">
       {% assign tags = project.tags %}
       {% include tag_loop.html %}
-      <h4><b><a data-toggle="collapse" class="stretched-link" href="#{{ project.id }}" role="button" aria-expanded="false"
+      <h4><b><a data-bs-toggle="collapse" class="stretched-link" href="#{{ project.id }}" role="button" aria-expanded="false"
           aria-controls="collapseExample">{{ project.name }}</a></b></h4>
       <p>{{ project.description_less }}</p>
       <div class="collapse" id="{{ project.id }}">

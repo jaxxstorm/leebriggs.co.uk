@@ -13,7 +13,7 @@ permalink: /projects/
     {% endif %}
     <div class="card-body">
       {{ project.tags }}
-      <h5><a data-toggle="collapse" class="stretched-link" href="#{{ project.id }}" role="button" aria-expanded="false" aria-controls="collapseExample"><b>{{ project.name }}</b></a></h5>
+      <h5><a data-bs-toggle="collapse" class="stretched-link" href="#{{ project.id }}" role="button" aria-expanded="false" aria-controls="{{ project.id }}"><b>{{ project.name }}</b></a></h5>
       <p>{{ project.description_less }}</p>
       <div class="collapse" id="{{ project.id }}">
         {{ project.description_more }}

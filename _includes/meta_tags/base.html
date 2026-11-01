@@ -1,37 +1,28 @@
-<meta charset="utf-8" /> 
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="{{ site.url }}{{ page.url | remove: "index.html" }}">
-<meta property="og:url" content="{{ site.url }}{{ page.url | remove: "index.html" }}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+{% assign canonical_url = page.url | remove: 'index.html' | absolute_url %}
+<link rel="canonical" href="{{ canonical_url | escape }}">
+<meta property="og:url" content="{{ canonical_url | escape }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:site_name" content="{{ site.title | escape }}">
 
-{% if page.c_title %}
-<title>{{ page.c_title }}</title>
-<meta property="og:title" content="{{ page.c_title }}">
-{% else %}
-<title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
-<meta property="og:title" content="{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}">
-{% endif %}
+{% capture page_title %}{% if page.c_title %}{{ page.c_title }}{% else %}{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}{% endif %}{% endcapture %}
+<title>{{ page_title | escape }}</title>
+<meta property="og:title" content="{{ page_title | escape }}">
 
 {% if page.description %}
-<meta name="description" content="{{ page.description }}">
-<meta property="og:description" content="{{ page.description }}">
-
-{% elsif page.layout == "post" %}
-<meta name="description" content="{{ page.content | strip_html | truncatewords: 30, "" }}">
-<meta property="og:description" content="{{ page.content | strip_html | truncatewords: 30, "" }}">
+  {% assign description = page.description %}
+{% elsif page.layout == 'post' %}
+  {% assign description = page.content | strip_html | truncatewords: 30, '' %}
 {% else %}
-<meta name="description" content="{{ site.description }}">
-<meta property="og:description" content="{{ site.description }}">
+  {% assign description = site.description %}
 {% endif %}
+<meta name="description" content="{{ description | strip_newlines | escape }}">
+<meta property="og:description" content="{{ description | strip_newlines | escape }}">
 
-{% if page.author %}
-<meta name="author" content="{{ page.author.name }}">
-{% elsif page.layout == "post" and site.author.name %}
-<meta name="author" content="{{ site.author.name }}">
-{% endif %}
-
+{% assign author_name = page.author.name | default: page.author | default: site.author.name %}
+<meta name="author" content="{{ author_name | escape }}">
 {% if page.index == false %}
 <meta name="robots" content="noindex">
 {% endif %}
@@ -39,11 +30,8 @@
 {% include meta_tags/g_track.html %}
 
 {% if page.splash_img_source %}
-<meta property="og:image" content="{{ site.url }}{{ page.splash_img_source }}">
+<meta property="og:image" content="{{ page.splash_img_source | absolute_url | escape }}">
 {% endif %}
-
 {% if site.author.twitter %}
-<meta name="twitter:site" content="@{{ site.author.twitter }}">
+<meta name="twitter:site" content="@{{ site.author.twitter | escape }}">
 {% endif %}
-
-

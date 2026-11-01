@@ -12,7 +12,7 @@ author:
   email: contact@leebriggs.co.uk
   twitter: briggsl
   homepage: https://leebriggs.co.uk
-g_track_id: UA-34865189-1
+# Set g_track_id to a GA4 measurement ID to enable analytics.
 # disqus_name: leebriggs
 markdown: kramdown
 compress_html:
@@ -32,4 +32,13 @@ defaults:
       comments: true
       listed: true
       author: Lee Briggs
-      author_link: <a href="https://leebriggs.co.uk/">Lee Briggs<a>
+      author_link: <a href="https://leebriggs.co.uk/">Lee Briggs</a>
+
+# Keep development files out of the published site.
+exclude:
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - Rakefile
+  - vendor

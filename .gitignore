@@ -5,3 +5,7 @@ vendor
 .idea
 .DS_Store
 .jekyll-cache
+.jekyll-metadata
+.env
+.env.*
+!.env.example
