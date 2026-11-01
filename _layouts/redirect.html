@@ -1,7 +1,11 @@
----
-layout: compress
----
-<meta name="robots" content="noindex">
-<meta http-equiv="Refresh" content="0; url='{{ page.redirect_link }}'" />
-{% include meta_tags/g_track.html %}
-If not redirected, please click here <a href="{{ page.redirect_link }}">here</a>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content="0; url={{ page.redirect_link | escape }}">
+  <title>Redirecting — Lee Briggs</title>
+</head>
+<body><p><a href="{{ page.redirect_link | escape }}">Continue to the destination</a>.</p></body>
+</html>

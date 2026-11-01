@@ -1,24 +1,20 @@
 ---
 layout: page
 title: Projects
-subtitle: Things I have worked on.
+subtitle: A few things I’ve helped build.
 permalink: /projects/
 ---
-
-<div class="card-columns">
-  {% for project in site.data.projects %}
-  <div class="card mb-4">
-    {% if project.img_src %}
-    <img class="card-img-top" src="{{ site.baseurl }}{{ project.img_src }}">
-    {% endif %}
-    <div class="card-body">
-      {{ project.tags }}
-      <h5><a data-bs-toggle="collapse" class="stretched-link" href="#{{ project.id }}" role="button" aria-expanded="false" aria-controls="{{ project.id }}"><b>{{ project.name }}</b></a></h5>
-      <p>{{ project.description_less }}</p>
-      <div class="collapse" id="{{ project.id }}">
-        {{ project.description_more }}
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
+{% for project in site.data.projects %}
+<article class="project">
+  <p class="eyebrow">Project {{ forloop.index | prepend: '0' }}</p>
+  <h2>{{ project.name | escape }}</h2>
+  {{ project.description_less }}
+  {% if project.img_src %}<img src="{{ project.img_src | relative_url }}" alt="{{ project.name | escape }}" loading="lazy">{% endif %}
+  {{ project.description_more }}
+  {% if project.main_link and project.main_link != '/' %}
+    {% assign project_url = project.main_link %}
+    {% unless project_url contains '://' %}{% assign project_url = project_url | prepend: 'https://' %}{% endunless %}
+    <a class="read-link" href="{{ project_url }}">View project →</a>
+  {% endif %}
+</article>
+{% endfor %}

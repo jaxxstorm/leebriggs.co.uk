@@ -1,48 +1,12 @@
-<header class="header">
-<div class="navigation">
-{% if page.full_logo %}
-<a href="{{ '/' | relative_url }}" class="logo">{{ site.title | escape }}</a>
-{% else %}
-<a href="{{ '/' | relative_url }}" class="logo">{{ site.short_logo | escape }}</a>
-{% endif %}
-<ul class="menu">
-<li class="menu__entry"><a href="{{ '/' | relative_url }}">home</a></li>
-<li class="menu__entry"><a href="{{ '/projects/' | relative_url }}">projects</a></li>
-<li class="menu__entry"><a href="{{ '/blog/' | relative_url }}">blog</a></li>
-<li class="menu__entry"><a href="{{ '/contact/' | relative_url }}">contact</a></li>
-</ul>
-</div>
-<ul class="social-links">
-{% if site.author.email %}
-<a href="mailto:{{ site.author.email }}" class="social-links__entry" target="_blank" rel="noopener noreferrer" aria-label="Email">
-<i class="fas fa-envelope-square"></i>
-</a>
-{% endif %}
-{% if site.author.github %}
-<a href="https://github.com/{{ site.author.github }}" class="social-links__entry" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-<i class="fab fa-github"></i>
-</a>
-{% endif %}
-{% if site.author.linkedin %}
-<a href="https://en.linkedin.com/in/{{ site.author.linkedin }}" class="social-links__entry" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-<i class="fab fa-linkedin-in"></i>
-</a>
-{% endif %}
-{% if site.author.twitter %}
-<a href="https://twitter.com/{{ site.author.twitter }}" class="social-links__entry" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-<i class="fab fa-twitter-square"></i>
-</a>
-{% endif %}
-{% if site.rss %}
-<a href="{{ '/feed.xml' | relative_url }}" class="social-links__entry" target="_blank" rel="noopener noreferrer" aria-label="RSS feed">
-<i style="color: rgba( 254, 164, 1, 100%);" class="fas fa-rss"></i>
-</a>
-{% endif %}
-
-{% if site.dark_mode %}
-    <a class="social-links__entry" href='#' onclick="switch_dark_mode_icon(darkmode, 'dark_mode_toggle')">
-        <i style="color: rgba( 254, 164, 1, 100%);" id="dark_mode_toggle" class="fas fa-sun"></i>
-    </a>
-{% endif %}
-</ul>
+<header class="masthead">
+  <div class="edition-line"><span>Independent writing by Lee Briggs</span><span>Engineering &amp; opinion</span></div>
+  <a class="wordmark" href="{{ '/' | relative_url }}" aria-label="Lee Briggs — home">lbr<span>.</span></a>
+  <p class="masthead-description">Notes on infrastructure, software &amp; the work behind it.</p>
+  <nav aria-label="Main navigation">
+    <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}aria-current="page"{% endif %}>Home</a>
+    <a href="{{ '/blog/' | relative_url }}" {% if page.url == '/blog/' or page.layout == 'post' %}aria-current="page"{% endif %}>Writing</a>
+    <a href="{{ '/projects/' | relative_url }}" {% if page.url == '/projects/' %}aria-current="page"{% endif %}>Projects</a>
+    <a href="{{ '/about/' | relative_url }}" {% if page.url == '/about/' %}aria-current="page"{% endif %}>About</a>
+    <a href="{{ '/contact/' | relative_url }}" {% if page.url == '/contact/' %}aria-current="page"{% endif %}>Contact</a>
+  </nav>
 </header>

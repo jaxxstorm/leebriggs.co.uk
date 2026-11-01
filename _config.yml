@@ -15,15 +15,6 @@ author:
 # Set g_track_id to a GA4 measurement ID to enable analytics.
 # disqus_name: leebriggs
 markdown: kramdown
-compress_html:
-  clippings: all
-  comments: ["<!-- ", " -->"]
-  endings: all
-  ignore:
-    envs: [local]
-  blanklines: true
-  profile: false
-  startings: [html, head, body]
 defaults:
   -
     scope:

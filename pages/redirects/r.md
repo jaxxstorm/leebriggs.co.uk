@@ -1,4 +1,5 @@
 ---
 permalink: /r/
-redirect_link: https://ritijjain.com/assets/files/Resume.pdf
+layout: redirect
+redirect_link: https://registry.jsonresume.org/jaxxstorm
 ---

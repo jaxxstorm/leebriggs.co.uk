@@ -50,14 +50,20 @@ bundle update
 bundle exec rake test audit
 ```
 
-Browser dependencies are versioned in `_includes/externals/styling.html`.
-When updating them, regenerate their SHA-384 Subresource Integrity hashes
-and check the homepage, blog posts, and project interactions in a browser.
+The editorial design is self-contained: local CSS, system fonts, and Jekyll's
+built-in Rouge syntax highlighting. No browser framework or theme is required.
 Analytics is disabled by default; set `g_track_id` to a GA4 measurement ID
 if needed. Keep credentials outside this repository and the generated site.
 
-## Credits and license
+## Design preview
 
-Based on [Pudhina Fresh](https://github.com/ritijjain/pudhina-fresh), adapted
-from [Pudhina](https://github.com/knhash/Pudhina) by Shashank S.
-See [LICENSE](LICENSE).
+This branch contains **Broadsheet**, a classic newspaper-inspired design with
+a centered masthead, double rules, serif headlines, and a single reading column.
+
+```sh
+mise exec ruby@3.4.12 -- bundle exec jekyll serve --host 127.0.0.1 --port 4001
+```
+
+The homepage, writing index, articles, projects, and supporting pages share
+custom layouts in `_layouts` and styles in `assets/css/main.css`.
+Historical copyright notices are retained in [LICENSE](LICENSE).
