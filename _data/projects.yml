@@ -1,9 +1,39 @@
+- name: ProxyT
+  id: proxyt
+  main_link: https://github.com/jaxxstorm/proxyt
+  description_less: >
+    <p>A lightweight proxy for the Tailscale control plane, helping clients connect from networks that block direct access.</p>
+
+- name: tscli
+  id: tscli
+  main_link: https://github.com/jaxxstorm/tscli
+  description_less: >
+    <p>A command-line interface for the Tailscale API, bringing tailnet management into the terminal.</p>
+
+- name: Stunner
+  id: stunner
+  main_link: https://github.com/jaxxstorm/stunner
+  description_less: >
+    <p>A tool for quickly detecting NAT behaviour and investigating connectivity problems.</p>
+
+- name: DNSScale
+  id: dnsscale
+  main_link: https://github.com/jaxxstorm/dnsscale
+  description_less: >
+    <p>Sync Tailscale IP addresses with your DNS provider to keep records aligned with your tailnet.</p>
+
+- name: Tailscale MCP
+  id: tailscale-mcp
+  main_link: https://github.com/jaxxstorm/tailscale-mcp
+  description_less: >
+    <p>An MCP server that makes Tailscale APIs available to AI tools, with access controlled through Tailscale grants.</p>
+
 - name: Pulumi
   id: pulumi
-  main_link: /
+  main_link: https://github.com/pulumi/pulumi
   img_src: /assets/img/pulumi.png
   description_less: >
-    <p>Modern Infrasturucture as Code</p>
+    <p>Modern infrastructure as code using familiar programming languages.</p>
   description_more: >
     <p></p>
 
@@ -39,10 +69,10 @@
 
 - name: Pulumi Scaleway Provider
   id: pulumi-scaleway
-  main_link: github.com/jaxxstorm/pulumi-scaleway
+  main_link: https://github.com/jaxxstorm/pulumi-scaleway
   img_src: /assets/img/pulumi_scaleway.png
   description_less: >
-    <p>Create Scaleway resources using application development langages</p>
+    <p>Create Scaleway resources using familiar programming languages.</p>
   description_more: >
     <p></p>
   tags: >
