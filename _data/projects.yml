@@ -66,17 +66,3 @@
   tags: >
     <span class="badge text-bg-info">#aws</span>
     <span class="badge text-bg-success">#open-source</span>
-
-- name: Pulumi Scaleway Provider
-  id: pulumi-scaleway
-  main_link: https://github.com/jaxxstorm/pulumi-scaleway
-  img_src: /assets/img/pulumi_scaleway.png
-  description_less: >
-    <p>Create Scaleway resources using familiar programming languages.</p>
-  description_more: >
-    <p></p>
-  tags: >
-    <span class="badge text-bg-info">#cloud</span>
-    <span class="badge text-bg-info">#scaleway</span>
-    <span class="badge text-bg-success">#infrastructure-as-code</span>
-    <span class="badge text-bg-success">#open-source</span>
