@@ -1,22 +1,8 @@
 ---
-layout: page
-tags: about, home
-full_logo: true
-title: 
-subtitle: 
+layout: home
 sitemap:
   priority: 0.9
 ---
-<p id="describe-text">Hello, you've reached the homepage for Lee Briggs.</p>
-<br>
-I write about modern infrastructure, cloud engineering and DevOps.
+I write about things I care about, which includes infrastructure, cloud engineering and recently, leadership.
 
-Everything you see here is just _personal opinion_
-
-If you're interested in working with me, check out my [Resume](https://registry.jsonresume.org/jaxxstorm){:target="_blank"}
-
-<br>
-<br>
-<br>
-<br>
-<br>
+Interested in working together? [Take a look at my résumé](https://registry.jsonresume.org/jaxxstorm).

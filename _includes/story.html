@@ -1,0 +1,6 @@
+<article class="story">
+  <p class="eyebrow"><time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: '%B %-d, %Y' }}</time>{% if include.featured %} · Latest essay{% endif %}</p>
+  <h2><a href="{{ include.post.url | relative_url }}">{{ include.post.title | escape }}</a></h2>
+  <p class="story-excerpt">{{ include.post.excerpt | strip_html | truncatewords: 42 }}</p>
+  <a class="read-link" href="{{ include.post.url | relative_url }}" aria-label="Read {{ include.post.title | escape }}">Read the essay <span aria-hidden="true">→</span></a>
+</article>

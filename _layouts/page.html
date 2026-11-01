@@ -1,5 +1,8 @@
 ---
 layout: default
 ---
-{% include page/title.html %}
-{{ content }}
+<header class="page-heading">
+  <h1>{{ page.title | escape }}</h1>
+  {% if page.subtitle %}<p class="deck">{{ page.subtitle | escape }}</p>{% endif %}
+</header>
+<div class="prose">{{ content }}</div>

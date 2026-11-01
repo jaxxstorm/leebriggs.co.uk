@@ -1,24 +1,18 @@
----
-layout: compress
----
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-{% include meta_tags/base.html %}
-{% include externals/styling.html %}
+  {% include meta_tags/base.html %}
+  <link rel="icon" href="{{ '/favicon.png' | relative_url }}">
+  <link rel="alternate" type="application/rss+xml" title="Lee Briggs" href="{{ '/feed.xml' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
 </head>
 <body>
-<div class="wrapper">
-{% include header.html %}
-{{ content }}
-<span class="toggle"></span>
-<span class="wave"></span>
-<br>
-{% if page.comments %}
-{% include post/disqus.html %}
-{% endif %}
-<br>
-{% include page/about.html %}
-</div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="paper">
+    {% include header.html %}
+    <main id="main" tabindex="-1">{{ content }}</main>
+    {% if page.comments %}{% include post/disqus.html %}{% endif %}
+    {% include footer.html %}
+  </div>
 </body>
 </html>

@@ -1,13 +1,22 @@
 ---
 layout: default
 ---
-<br>
-<br>
-{% include post/title.html %}
-
-{% include post/splash_image.html %}
-
-<br>
-<div class="post_wrapper">
-    {{ content }}
-</div>
+<article>
+  <header class="article-heading">
+    <a class="eyebrow" href="{{ '/blog/' | relative_url }}">The writing desk</a>
+    <h1>{{ page.title | escape }}</h1>
+    {% if page.subtitle %}<p class="deck">{{ page.subtitle | escape }}</p>{% endif %}
+    <p class="byline">By {{ page.author.name | default: page.author | default: site.author.name | escape }}<br>
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time>
+      · {% assign words = content | number_of_words %}{{ words | divided_by: 220 | plus: 1 }} min read
+      {% if page.updated %} · Updated {{ page.updated | date: '%B %-d, %Y' }}{% endif %}
+    </p>
+    {% if page.tags.size > 0 %}<p class="topics">{% for tag in page.tags %}<a href="{{ '/tags/' | relative_url }}#{{ tag | escape }}">{{ tag | escape }}</a>{% endfor %}</p>{% endif %}
+  </header>
+  {% include post/splash_image.html %}
+  <div class="prose article-body">{{ content }}</div>
+  <nav class="article-navigation" aria-label="More writing">
+    <a href="{{ '/blog/' | relative_url }}">← All writing</a>
+    {% if page.previous %}<a href="{{ page.previous.url | relative_url }}">Previously: {{ page.previous.title | escape }} →</a>{% endif %}
+  </nav>
+</article>

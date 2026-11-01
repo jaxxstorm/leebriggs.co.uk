@@ -1,7 +1,6 @@
 {% if page.splash_img_source %}
-<img class="splash-img" src="{{ site.url }}{{ page.splash_img_source }}" loading="lazy" alt="{{ page.splash_img_caption | strip_html }}">
-{% endif %}
-
-{% if page.splash_img_caption %}
-<p class="text-muted caption">{{ page.splash_img_caption }}</p>
+<figure>
+  <img src="{{ page.splash_img_source | relative_url }}" alt="{{ page.splash_img_caption | strip_html | escape }}">
+  {% if page.splash_img_caption %}<figcaption>{{ page.splash_img_caption }}</figcaption>{% endif %}
+</figure>
 {% endif %}
