@@ -57,11 +57,11 @@ if needed. Keep credentials outside this repository and the generated site.
 
 ## Design preview
 
-This branch contains **Broadsheet**, a classic newspaper-inspired design with
-a centered masthead, double rules, serif headlines, and a single reading column.
+This branch contains **Modern Ledger**, a crisp editorial design with a left-aligned
+masthead, green accents, serif headlines, and a sans-serif reading column.
 
 ```sh
-mise exec ruby@3.4.12 -- bundle exec jekyll serve --host 127.0.0.1 --port 4001
+mise exec ruby@3.4.12 -- bundle exec jekyll serve --host 127.0.0.1 --port 4003
 ```
 
 The homepage, writing index, articles, projects, and supporting pages share
